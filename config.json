@@ -4,5 +4,8 @@
         "user": "mkkidnum",
         "pass": "wiZq1MPK2RsMXAkH1DFrhCl9HxI5_sxm",
         "dbname": "mkkidnum"
+    },
+    "api": {
+        "googlemaps": ""
     }
 }

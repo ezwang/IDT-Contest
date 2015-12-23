@@ -16,6 +16,10 @@ conn = psycopg2.connect("dbname='" + config["database"]["dbname"] + "' user='" +
 def root():
     return render_template('index.html')
 
+@app.route('/map')
+def map():
+    return render_template('map.html', mapskey = config["api"]["googlemaps"] if config["api"]["googlemaps"] else "")
+
 @app.route('/tracknewpackage')
 def tracknewpackage():
     name = request.args.get('name')

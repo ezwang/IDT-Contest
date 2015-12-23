@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block title %}Package Manager{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link href='/css/map.css' type='text/css' rel='stylesheet' />
+    <script src="/js/map.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?{{ "key=" + mapskey + "&" if mapskey else "" }}callback=initMap" async defer></script>
+{% endblock %}
+{% block content %}
+<div id="map"></div>
+{% endblock %}
