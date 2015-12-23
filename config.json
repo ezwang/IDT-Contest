@@ -1,8 +1,8 @@
 {
     "database": {
-        "host": "localhost",
-        "user": "test",
-        "pass": "test",
-        "dbname": "packagemanager"
+        "host": "pellefant.db.elephantsql.com",
+        "user": "mkkidnum",
+        "pass": "wiZq1MPK2RsMXAkH1DFrhCl9HxI5_sxm",
+        "dbname": "mkkidnum"
     }
 }
