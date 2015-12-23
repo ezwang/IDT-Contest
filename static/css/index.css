@@ -1,24 +1,8 @@
-#banner {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	background-color: #2E7D32;
-	box-shadow: 0 3px 10px rgba(0, 0, 0, .45);
+.navbar
+{
+    border-radius:0px;
 }
-
-#banner_title {
-	vertical-align: middle;
-	color: white;
-	font-size: 3vw;
-}
-
-#frame {
-	position: absolute;
-	top: 5vw;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	width: 100%;
-	height: calc(100% - 5vw);
+#content
+{
+    padding:15px;
 }
