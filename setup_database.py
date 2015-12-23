@@ -21,7 +21,7 @@ print "[*] Creating user table..."
 cur.execute('CREATE TABLE IF NOT EXISTS users (id SERIAL, username TEXT, password TEXT, email TEXT, type INTEGER)')
 conn.commit()
 print "[*] Creating package table..."
-cur.execute('CREATE TABLE IF NOT EXISTS packages (id UUID, name TEXT, destination POINT, delivered BOOLEAN)')
+cur.execute('CREATE TABLE IF NOT EXISTS packages (id UUID, name TEXT, destination POINT, delivered BOOLEAN, PRIMARY KEY (id))')
 conn.commit()
 print '[*] Creating package steps table...'
 cur.execute('CREATE TABLE IF NOT EXISTS steps (id UUID, pos POINT, ele DOUBLE PRECISION, time TIMESTAMP)')
