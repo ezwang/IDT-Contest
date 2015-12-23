@@ -4,6 +4,16 @@
     {{ super() }}
 {% endblock %}
 {% block content %}
-<h1>Example</h1>
-<p>This is a test page!</p>
+<form>
+    <h1>Login</h1>
+    <fieldset class="form-group">
+        <label for="username">Username</label>
+        <input type="text" class="form-control" id="username" name="username" placeholder="Your Username" />
+    </fieldset>
+    <fieldset class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Your Password" />
+    </fieldset>
+    <input type="submit" value="Login" class="btn btn-primary" />
+</form>
 {% endblock %}
