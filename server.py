@@ -39,7 +39,7 @@ def packagetrackupdate(uuid):
     content = request.get_json()
     if "delivered" in content:
         cur = conn.cursor()
-        cur.execute('UPDATE packages SET delivered = true WHERE uuid = ?', (uuid,))
+        cur.execute('UPDATE packages SET delivered = true WHERE uuid = %s', (uuid,))
         conn.commit()
         socketio.emit('packagedelivered', {'uuid':uuid})
     else:

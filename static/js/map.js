@@ -14,6 +14,9 @@ function initMap() {
             strokeColor:'#000000',
             strokeWeight:3,
             map: map
+        }), marker:new google.maps.Marker({
+            map:map,
+            title:data.name
         }),delivered:false};
         trackingUUID = data.uuid;
     });
@@ -27,5 +30,6 @@ function initMap() {
         if (trackingUUID == data.uuid) {
             map.panTo(pos);
         }
+        packages[data.uuid].marker.setPosition(pos);
     });
 }
