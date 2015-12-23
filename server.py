@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 
+import json
 from flask import Flask, request, render_template, jsonify
 
 app = Flask(__name__, static_url_path='')
+
+with open('config.json') as data:
+    config = json.load(data)
 
 @app.route('/')
 def root():
