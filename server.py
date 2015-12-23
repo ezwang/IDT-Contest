@@ -2,10 +2,12 @@
 
 import json
 from flask import Flask, request, render_template, jsonify
+from flask_socketio import SocketIO
 
 import psycopg2
 
 app = Flask(__name__, static_url_path='')
+socketio = SocketIO(app)
 
 with open('config.json') as data:
     config = json.load(data)
@@ -29,16 +31,18 @@ def tracknewpackage():
     cur = conn.cursor()
     cur.execute('INSERT INTO packages (id, name, destination, delivered) VALUES (%s, %s, \'(%s, %s)\', false)', (uuid, name, dLat, dLon))
     conn.commit()
+    socketio.emit('newpackage', {'name':name,'uuid':uuid})
     return jsonify(**{"ackUUID":"[" + uuid + "]"})
 
 @app.route('/packagetrackupdate/<uuid>', methods=['POST'])
 def packagetrackupdate(uuid):
-    if "delivered" in request.args:
+    content = request.get_json()
+    if "delivered" in content:
         cur = conn.cursor()
         cur.execute('UPDATE packages SET delivered = true WHERE uuid = ?', (uuid,))
         conn.commit()
+        socketio.emit('packagedelivered', {'uuid':uuid})
     else:
-        content = request.get_json()
         lat = float(content['lat'])
         lon = float(content['lon'])
         ele = float(content['ele'])
@@ -46,7 +50,8 @@ def packagetrackupdate(uuid):
         cur = conn.cursor()
         cur.execute('INSERT INTO steps (id, pos, ele, time) VALUES (%s, \'(%s, %s)\', %s, %s)', (uuid, lat, lon, ele, time))
         conn.commit()
+        socketio.emit('plot', {'uuid':uuid,'lat':lat,'lon':lon})
     return jsonify(**{"ackUUID":"[" + uuid + "]"})
 
 if __name__ == '__main__':
-    app.run(threaded=True, port=8080, debug=True)
+    socketio.run(app, port=8080, debug=True)
