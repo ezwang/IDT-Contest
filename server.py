@@ -4,6 +4,8 @@ import json
 from flask import Flask, request, render_template, jsonify
 from flask_socketio import SocketIO
 
+from werkzeug.security import generate_password_hash, check_password_hash
+
 import psycopg2
 
 app = Flask(__name__, static_url_path='')
@@ -21,6 +23,21 @@ def root():
 @app.route('/map')
 def map():
     return render_template('map.html', mapskey = config["api"]["googlemaps"] if config["api"]["googlemaps"] else "")
+
+@app.route('/login', methods=["POST"])
+def login():
+    if not 'username' in request.form or not 'password' in request.form:
+        return jsonify(**{'error':'No data sent to server!'})
+    username = request.form['username']
+    password = request.form['password']
+    cur = conn.cursor()
+    cur.execute('SELECT id, password FROM users WHERE username = %s OR email = %s LIMIT 1', (username,username))
+    if cur.rowcount == 0:
+        return jsonify(**{'error':'No account exists with that username or email!'})
+    if not check_password_hash(cur[0]['password'], password):
+        return jsonify(**{'error':'Wrong password!'})
+    # TODO: set session here
+    return jsonify(**{'redirect':'/map'})
 
 @app.route('/tracknewpackage')
 def tracknewpackage():

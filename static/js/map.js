@@ -5,8 +5,9 @@ var trackingUUID;
 var socket;
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: -34.397, lng: 150.644},
-        zoom: 12
+        center: {lat: 0, lng: 0},
+        zoom: 2,
+        streetViewControl: false
     });
     socket = io.connect('//' + document.domain + ':' + location.port);
     socket.on('newpackage', function(data) {

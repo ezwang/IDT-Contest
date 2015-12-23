@@ -1,10 +1,20 @@
 html, body
 {
     height:100%;
+    background-color:#666;
+}
+body
+{
+    background:url('/images/background.png');
 }
 .navbar
 {
     border-radius:0px;
+    border-bottom:2px solid #2a2a2a;
+}
+.navbar-nav
+{
+    float:right;
 }
 #content
 {
@@ -12,9 +22,22 @@ html, body
 }
 form
 {
+    background-color:white;
     padding:10px;
     border:1px solid #ccc;
     border-radius:5px;
     max-width:400px;
     margin:0 auto;
+}
+form h1
+{
+    text-align:center;
+}
+.form-info
+{
+    display:none;
+}
+.form-control-label
+{
+    padding-left:0px;
 }

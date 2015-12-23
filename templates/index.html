@@ -2,17 +2,26 @@
 {% block title %}Package Manager{% endblock %}
 {% block head %}
     {{ super() }}
+    <script src='/js/index.js'></script>
 {% endblock %}
 {% block content %}
-<form>
+<form action="/login" method="POST">
     <h1>Login</h1>
+    <hr />
+    <div class="form-info alert alert-danger"></div>
     <fieldset class="form-group">
-        <label for="username">Username</label>
-        <input type="text" class="form-control" id="username" name="username" placeholder="Your Username" />
+        <label class="sr-only form-control-label" for="username">Username/Email</label>
+        <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-user fa-fw"></i></div>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Username/Email" />
+        </div>
     </fieldset>
     <fieldset class="form-group">
-        <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" name="password" placeholder="Your Password" />
+        <label class="sr-only form-control-label" for="password">Password</label>
+        <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-key fa-fw"></i></div>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password" />
+        </div>
     </fieldset>
     <input type="submit" value="Login" class="btn btn-primary" />
 </form>
