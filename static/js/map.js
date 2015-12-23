@@ -22,6 +22,7 @@ function initMap() {
     });
     socket.on('packagedelivered', function(data) {
         packages[data.uuid].delivered = true;
+        packages[data.uuid].marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
     });
     socket.on('plot', function(data) {
         var path = packages[data.uuid].polyline.getPath();
