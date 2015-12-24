@@ -39,10 +39,26 @@ def login():
     # TODO: set session here
     return jsonify(**{'redirect':'/map'})
 
+@app.route('/getpackage/<uuid>')
+def getexistingpackage(uuid):
+    cur = conn.cursor()
+    cur.execute('SELECT pos FROM steps WHERE id = %s', (uuid,))
+    return jsonify(**{'data':[[d for d in x[0][1:-1].split(",")] for x in cur]})
+
+@app.route('/getpackages')
+def getexistingdata():
+    cur = conn.cursor()
+    cur.execute('SELECT id,name,delivered,destination FROM packages')
+    return jsonify(**{'data':[x for x in cur]})
+
 @app.route('/tracknewpackage')
 def tracknewpackage():
     name = request.args.get('name')
+    if not name:
+        name = 'Unnamed Package'
     uuid = request.args.get('uuid')
+    if not uuid:
+        return jsonify(**{"error":"No UUID parameter passed to server!"})
     dLat = float(request.args.get('destinationLat'))
     dLon = float(request.args.get('destinationLon'))
     cur = conn.cursor()
@@ -53,6 +69,8 @@ def tracknewpackage():
 
 @app.route('/packagetrackupdate/<uuid>', methods=['POST'])
 def packagetrackupdate(uuid):
+    if not uuid:
+        return jsonify(**{"error":"No UUID parameter passed to server!"})
     content = request.get_json()
     if "delivered" in content:
         cur = conn.cursor()
