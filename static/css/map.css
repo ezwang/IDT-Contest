@@ -19,7 +19,7 @@ body
 {
     height:100%;
 }
-#sidebar #guest
+#guest, #member
 {
     display:none;
 }
@@ -29,7 +29,7 @@ body
     position:absolute;
     left:10px;
     bottom:10px;
-    max-width:250px;
+    width:250px;
 }
 #sidebar .box
 {

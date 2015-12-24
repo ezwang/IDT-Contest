@@ -11,6 +11,8 @@
 <span style='display:none' id="userid">{{ id }}</span>
 <div id="sidebar">
     <div id="packagelist" class="box"><span class="title">Packages</span><span class="message"><ul class="fa-ul" id="list"></ul></span></div>
-    <div id="guest" class="box"><span class="title">You are not logged in!</span><span class="message">You will only be able to see packages marked as public.<br />Click <a href="/">here</a> to login.</span></div></div>
+    <div id="guest" class="box"><span class="title">You are not logged in!</span><span class="message">You will only be able to see packages marked as public.<br />Click <a href="/">here</a> to login.</span></div>
+    <div id="member" class="box"><span class="title" style="font-weight:normal">Hello, <b id="username">{{ username }}</b>!</span><span class="message">Click here to <a href="/logout">logout</a>.</span></div>
+</div>
 <div id="map"></div>
 {% endblock %}

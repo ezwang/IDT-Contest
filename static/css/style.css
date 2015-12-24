@@ -11,6 +11,7 @@ html, body
 .navbar-nav
 {
     float:right;
+    margin-right:10px;
 }
 #content
 {

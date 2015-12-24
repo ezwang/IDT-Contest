@@ -75,6 +75,9 @@ $(document).ready(function() {
     if (!$("#userid").text()) {
         $("#guest").show();
     }
+    else {
+        $("#member").show();
+    }
     $(document).keyup(function(e) {
         if (e.keyCode == 27) {
             map.panTo(new google.maps.LatLng(20, 0));

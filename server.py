@@ -23,7 +23,7 @@ def root():
 
 @app.route('/map')
 def map():
-    return render_template('map.html', mapskey = config["api"]["googlemaps"] if config["api"]["googlemaps"] else "", id = session['id'] if 'id' in session else '')
+    return render_template('map.html', mapskey = config["api"]["googlemaps"] if config["api"]["googlemaps"] else "", id = session['id'] if 'id' in session else '', username = session['username'] if 'username' in session else '')
 
 @app.route('/login', methods=["POST"])
 def login():
