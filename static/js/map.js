@@ -25,6 +25,11 @@ function addPackage(uuid, name, delivered) {
 function onMarkerClick(uuid) {
     map.panTo(packages[uuid].marker.getPosition());
     map.setZoom(12);
+    $("#packageinfo #phelp").hide();
+    $("#packageinfo #pinfo").show();
+    $("#packageinfo #pname").text(packages[uuid].name);
+    $("#packageinfo #puuid").text(uuid);
+    $("#packageinfo #pstatus").text(packages[uuid].delivered ? 'Delivered' : 'In Transit');
 }
 
 function addPoint(uuid, lat, lon) {

@@ -68,3 +68,18 @@ body
 {
     background-color:#eee;
 }
+#packageinfo
+{
+    position:absolute;
+    top:65px;
+    right:5px;
+    z-index:1;
+    background-color:white;
+    padding:10px;
+    border:1px solid #ccc;
+    width:300px;
+}
+#packageinfo #puuid
+{
+    font-size:12px;
+}
