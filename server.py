@@ -137,7 +137,7 @@ def tracknewpackage():
     cur = conn.cursor()
     cur.execute('INSERT INTO packages (id, name, destination, delivered) VALUES (%s, %s, \'(%s, %s)\', false)', (uuid, name, dLat, dLon))
     conn.commit()
-    socketio.emit('newpackage', {'name':name,'uuid':uuid})
+    socketio.emit('newpackage', {'name':name,'uuid':uuid,'dest':[dLat,dLon]})
     return jsonify(**{"ackUUID":"[" + uuid + "]"})
 
 @app.route('/packagetrackupdate/<uuid>', methods=['POST'])
