@@ -110,8 +110,8 @@ def login():
 @app.route('/getpackage/<uuid>')
 def getexistingpackage(uuid):
     cur = conn.cursor()
-    cur.execute('SELECT pos FROM steps WHERE id = %s', (uuid,))
-    return jsonify(**{'data':[[d for d in x[0][1:-1].split(",")] for x in cur]})
+    cur.execute('SELECT pos,ele FROM steps WHERE id = %s', (uuid,))
+    return jsonify(**{'data':[[d for d in x[0][1:-1].split(",")] + [x[1]] for x in cur]})
 
 @app.route('/logout')
 def logout():
@@ -140,10 +140,17 @@ def tracknewpackage():
     socketio.emit('newpackage', {'name':name,'uuid':uuid,'dest':[dLat,dLon]})
     return jsonify(**{"ackUUID":"[" + uuid + "]"})
 
+import re
+
+uuidpattern = re.compile("^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$")
+
 @app.route('/packagetrackupdate/<uuid>', methods=['POST'])
 def packagetrackupdate(uuid):
     if not uuid:
         return jsonify(**{"error":"No UUID parameter passed to server!"})
+    if not uuidpattern.match(uuid):
+        print 'Warning: Received invalid UUID ' + uuid
+        return jsonify(**{"error":"Invalid UUID!"})
     content = request.get_json()
     if "delivered" in content:
         cur = conn.cursor()
@@ -158,7 +165,7 @@ def packagetrackupdate(uuid):
         cur = conn.cursor()
         cur.execute('INSERT INTO steps (id, pos, ele, time) VALUES (%s, \'(%s, %s)\', %s, %s)', (uuid, lat, lon, ele, time))
         conn.commit()
-        socketio.emit('plot', {'uuid':uuid,'lat':lat,'lon':lon})
+        socketio.emit('plot', {'uuid':uuid,'lat':lat,'lon':lon,'ele':ele})
     return jsonify(**{"ackUUID":"[" + uuid + "]"})
 
 if __name__ == '__main__':
