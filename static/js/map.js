@@ -84,7 +84,7 @@ function initMap() {
     });
     socket = io.connect('//' + document.domain + ':' + location.port);
     socket.on('newpackage', function(data) {
-        addPackage(data.uuid, data.name, data.dest[0], data.dest[1]);
+        addPackage(data.uuid, data.name, false, data.dest[0], data.dest[1]);
     });
     socket.on('packagedelivered', function(data) {
         setDelivered(data.uuid);
