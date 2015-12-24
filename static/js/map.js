@@ -72,7 +72,7 @@ function initMap() {
 }
 
 $(document).ready(function() {
-    if (!$("#usrid").val()) {
+    if (!$("#userid").text()) {
         $("#guest").show();
     }
     $(document).keyup(function(e) {

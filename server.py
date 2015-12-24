@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import json
-from flask import Flask, request, render_template, jsonify, session
+from flask import Flask, request, render_template, jsonify, session, redirect
 from flask_socketio import SocketIO
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -23,7 +23,7 @@ def root():
 
 @app.route('/map')
 def map():
-    return render_template('map.html', mapskey = config["api"]["googlemaps"] if config["api"]["googlemaps"] else "", id = session.id if 'id' in session else '')
+    return render_template('map.html', mapskey = config["api"]["googlemaps"] if config["api"]["googlemaps"] else "", id = session['id'] if 'id' in session else '')
 
 @app.route('/login', methods=["POST"])
 def login():
