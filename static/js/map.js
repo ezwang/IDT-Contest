@@ -27,16 +27,18 @@ var trackingUUID = false;
 function onMarkerClick(uuid) {
     map.panTo(packages[uuid].marker.getPosition());
     map.setZoom(12);
-    $("#packageinfo #phelp").hide();
-    $("#packageinfo #pinfo").show();
     trackingUUID = uuid;
     updateInfoBox();
 }
 
 function updateInfoBox() {
     if (!trackingUUID) {
+        $("#packageinfo #phelp").show();
+        $("#packageinfo #pinfo").hide();
         return;
     }
+    $("#packageinfo #phelp").hide();
+    $("#packageinfo #pinfo").show();
     $("#packageinfo #pname").text(packages[trackingUUID].name);
     $("#packageinfo #puuid").text(trackingUUID);
     $("#packageinfo #pstatus").text(packages[trackingUUID].delivered ? 'Delivered' : 'In Transit');
@@ -69,6 +71,9 @@ function initMap() {
         center: {lat: 20, lng: 0},
         zoom: 3,
         streetViewControl: false
+    });
+    map.addListener('drag', function() {
+        trackingUUID = false;
     });
     $.getJSON('/getpackages', function(data) {
         $.each(data.data, function(k, v) {
@@ -105,9 +110,8 @@ $(document).ready(function() {
         if (e.keyCode == 27) {
             map.panTo(new google.maps.LatLng(20, 0));
             map.setZoom(3);
-            $("#packageinfo #phelp").show();
-            $("#packageinfo #pinfo").hide();
             trackingUUID = false;
+            updateInfoBox();
         }
     });
     $("#list").on("click", "li", function(e) {

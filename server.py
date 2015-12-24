@@ -110,7 +110,7 @@ def login():
 @app.route('/getpackage/<uuid>')
 def getexistingpackage(uuid):
     cur = conn.cursor()
-    cur.execute('SELECT pos,ele FROM steps WHERE id = %s', (uuid,))
+    cur.execute('SELECT pos,ele FROM steps WHERE id = %s ORDER BY time DESC', (uuid,))
     return jsonify(**{'data':[[d for d in x[0][1:-1].split(",")] + [x[1]] for x in cur]})
 
 @app.route('/logout')
