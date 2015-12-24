@@ -61,6 +61,7 @@ function setDelivered(uuid) {
     packages[uuid].delivered = true;
     packages[uuid].marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
     $("#list li[data-id='" + uuid + "'] i").addClass('fa-check').removeClass('fa-archive');
+    $("#list li[data-id='" + uuid + "']").append("<i class='p-delete fa fa-times'></i>");
     packages[uuid].marker.setPosition(packages[uuid].destination);
 }
 
@@ -117,5 +118,19 @@ $(document).ready(function() {
     $("#list").on("click", "li", function(e) {
         e.preventDefault();
         onMarkerClick($(this).attr("data-id"));
+    });
+    $("#list").on("click", ".p-delete", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var uuid = $(this).parent().attr('data-id');
+        if (!confirm('Are you sure you want to delete this package record?\n' + uuid)) {
+            return;
+        }
+        $(this).parent().remove();
+        packages[uuid].marker.setMap(null);
+        packages[uuid].polyline.setMap(null);
+        delete packages[uuid];
+        $.get("/map/delete_package/" + uuid, function(data) {
+        });
     });
 });

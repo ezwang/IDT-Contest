@@ -88,3 +88,14 @@ body
     list-style-type:none;
     margin-bottom:0px;
 }
+.p-delete
+{
+    cursor:pointer;
+    color:#ccc;
+    float:right;
+    margin-right:3px;
+}
+.p-delete:hover
+{
+    color:red;
+}

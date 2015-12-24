@@ -90,6 +90,14 @@ def changeemail():
 def map():
     return render_template('map.html', mapskey = config["api"]["googlemaps"] if config["api"]["googlemaps"] else "", id = session['id'] if 'id' in session else '', username = session['username'] if 'username' in session else '')
 
+@app.route('/map/delete_package/<uuid>')
+def deletepackage(uuid):
+    cur = conn.cursor()
+    cur.execute('DELETE FROM packages WHERE id = %s', (uuid,))
+    cur.execute('DELETE FROM steps WHERE id = %s', (uuid,))
+    conn.commit()
+    return jsonify(**{'ackUUID':'[' + uuid + ']'})
+
 @app.route('/login', methods=["POST"])
 def login():
     if not 'username' in request.form or not 'password' in request.form:
