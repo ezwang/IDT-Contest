@@ -13,13 +13,18 @@ function addPackage(uuid, name, delivered) {
         map:map,
         title:name
     }),delivered:delivered};
+    $("#list").append("<li data-id='" + uuid + "'><i class='fa-li fa fa-archive'></i> " + name + "</li>");
     if (delivered) {
         setDelivered(uuid);
     }
     packages[uuid].marker.addListener('click', function() {
-        map.panTo(packages[uuid].marker.getPosition());
-        map.setZoom(12);
+        onMarkerClick(uuid);
     });
+}
+
+function onMarkerClick(uuid) {
+    map.panTo(packages[uuid].marker.getPosition());
+    map.setZoom(12);
 }
 
 function addPoint(uuid, lat, lon) {
@@ -32,6 +37,7 @@ function addPoint(uuid, lat, lon) {
 function setDelivered(uuid) {
     packages[uuid].delivered = true;
     packages[uuid].marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
+    $("#list li[data-id='" + uuid + "'] i").addClass('fa-check').removeClass('fa-archive');
 }
 
 var map;
@@ -66,10 +72,17 @@ function initMap() {
 }
 
 $(document).ready(function() {
+    if (!$("#usrid").val()) {
+        $("#guest").show();
+    }
     $(document).keyup(function(e) {
         if (e.keyCode == 27) {
             map.panTo(new google.maps.LatLng(20, 0));
             map.setZoom(3);
         }
+    });
+    $("#list").on("click", "li", function(e) {
+        e.preventDefault();
+        onMarkerClick($(this).attr("data-id"));
     });
 });

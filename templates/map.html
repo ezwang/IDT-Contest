@@ -8,5 +8,9 @@
     <script src="https://maps.googleapis.com/maps/api/js?{{ "key=" + mapskey + "&" if mapskey else "" }}callback=initMap" async defer></script>
 {% endblock %}
 {% block content %}
+<span style='display:none' id="userid">{{ id }}</span>
+<div id="sidebar">
+    <div id="packagelist" class="box"><span class="title">Packages</span><span class="message"><ul class="fa-ul" id="list"></ul></span></div>
+    <div id="guest" class="box"><span class="title">You are not logged in!</span><span class="message">You will only be able to see packages marked as public.<br />Click <a href="/">here</a> to login.</span></div></div>
 <div id="map"></div>
 {% endblock %}
