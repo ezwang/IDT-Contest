@@ -18,9 +18,14 @@ $(document).ready(function() {
                 window.location.href = data.redirect;
                 return;
             }
-            if (data.error) {
-                a.find('.form-info').html(data.error).slideDown('fast');
+            if (data.success) {
+                a.find('.form-info').html(data.success).addClass('alert-success').removeClass('alert-danger').slideDown('fast');
             }
-        }, 'json');
+            if (data.error) {
+                a.find('.form-info').html(data.error).addClass('alert-danger').removeClass('alert-success').slideDown('fast');
+            }
+        }, 'json').fail(function() {
+            a.find('.form-info').html('Failed to communicate with server!').addClass('alert-danger').removeClass('alert-success').slideDown('fast');
+        });
     });
 });

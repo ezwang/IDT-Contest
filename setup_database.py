@@ -23,6 +23,9 @@ conn.commit()
 print "[*] Adding 'admin' user with password 'admin'..."
 cur.execute('INSERT INTO users (username, password, type) VALUES (%s, %s, 1)', ('admin', generate_password_hash('admin')))
 conn.commit()
+print "[*] Adding 'user' user with password 'user'..."
+cur.execute('INSERT INTO users (username, password, type) VALUES (%s, %s, 0)', ('user', generate_password_hash('user')))
+conn.commit()
 print "[*] Creating package table..."
 cur.execute('CREATE TABLE IF NOT EXISTS packages (id UUID, name TEXT, destination POINT, delivered BOOLEAN, PRIMARY KEY (id))')
 conn.commit()

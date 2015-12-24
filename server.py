@@ -19,13 +19,72 @@ conn = psycopg2.connect("dbname='" + config["database"]["dbname"] + "' user='" +
 
 @app.route('/')
 def root():
+    if 'id' in session:
+        return redirect('/map')
     return render_template('index.html')
+
+def getemail(usrid):
+    cur = conn.cursor()
+    cur.execute('SELECT email FROM users WHERE id = %s', (usrid,))
+    if cur.rowcount == 0:
+        return ""
+    row = cur.fetchone()
+    return row[0] if not row[0] == None else ""
 
 @app.route('/settings')
 def settings():
     if not 'id' in session:
         return redirect('/')
-    return render_template('settings.html')
+    return render_template('settings.html', email = getemail(session['id']).replace('"', '\\"'))
+
+@app.route('/settings/change_password', methods=['POST'])
+def changepassword():
+    if not 'id' in session:
+        return redirect('/')
+    old = request.form['password']
+    new = request.form['newpassword']
+    confirm = request.form['confirmpassword']
+    if len(new) == 0:
+        return jsonify(**{'error':'Please enter a new password!'})
+    if new != confirm:
+        return jsonify(**{'error':'Your confirm does not match your password!'})
+    cur = conn.cursor()
+    cur.execute('SELECT password FROM users WHERE id = %s', (session['id'],))
+    if cur.rowcount == 0:
+        return jsonify(**{'error':'Your account does not exist anymore!'})
+    row = cur.fetchone()
+    if not check_password_hash(row[0], old):
+        return jsonify(**{'error':'Wrong password!'})
+    cur.execute('UPDATE users SET password = %s WHERE id = %s', (generate_password_hash(new), session['id']))
+    conn.commit()
+    return jsonify(**{'success':'Your password has been changed!'})
+
+@app.route('/settings/delete_account', methods=['POST'])
+def deleteaccount():
+    if not 'id' in session:
+        return redirect('/')
+    password = request.form['password']
+    cur = conn.cursor()
+    cur.execute('SELECT password FROM users WHERE id = %s', (session['id'],))
+    if cur.rowcount == 0:
+        return jsonify(**{'error':'Your account does not exist anymore!'})
+    row = cur.fetchone()
+    if not check_password_hash(row[0], password):
+        return jsonify(**{'error':'Wrong password!'})
+    cur.execute('DELETE FROM users WHERE id = %s', (session['id'],))
+    conn.commit()
+    session.clear()
+    return jsonify(**{'success':'Your account has been deleted!','redirect':'/'})
+
+@app.route('/settings/change_email', methods=["POST"])
+def changeemail():
+    if not 'id' in session:
+        return redirect('/')
+    email = request.form['email']
+    cur = conn.cursor()
+    cur.execute('UPDATE users SET email = %s WHERE id = %s', (email, session['id']))
+    conn.commit()
+    return jsonify(**{'success':'Your email address has been updated!'})
 
 @app.route('/map')
 def map():
