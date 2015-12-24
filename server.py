@@ -34,7 +34,7 @@ def login():
     cur.execute('SELECT id, password FROM users WHERE username = %s OR email = %s LIMIT 1', (username,username))
     if cur.rowcount == 0:
         return jsonify(**{'error':'No account exists with that username or email!'})
-    if not check_password_hash(cur[0]['password'], password):
+    if not check_password_hash(cur.fetchone()[1], password):
         return jsonify(**{'error':'Wrong password!'})
     # TODO: set session here
     return jsonify(**{'redirect':'/map'})

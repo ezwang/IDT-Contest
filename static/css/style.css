@@ -3,10 +3,6 @@ html, body
     height:100%;
     background-color:#666;
 }
-body
-{
-    background:url('/images/background.png');
-}
 .navbar
 {
     border-radius:0px;
