@@ -21,6 +21,12 @@ conn = psycopg2.connect("dbname='" + config["database"]["dbname"] + "' user='" +
 def root():
     return render_template('index.html')
 
+@app.route('/settings')
+def settings():
+    if not 'id' in session:
+        return redirect('/')
+    return render_template('settings.html')
+
 @app.route('/map')
 def map():
     return render_template('map.html', mapskey = config["api"]["googlemaps"] if config["api"]["googlemaps"] else "", id = session['id'] if 'id' in session else '', username = session['username'] if 'username' in session else '')
