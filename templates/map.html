@@ -11,8 +11,16 @@
 <span style='display:none' id="userid">{{ id }}</span>
 <div id="sidebar">
     <div id="packagelist" class="box"><span class="title">Packages</span><span class="message"><ul class="fa-ul" id="list"></ul></span></div>
-    <div id="guest" class="box"><span class="title">You are not logged in!</span><span class="message">You will only be able to see packages marked as public.<br />Click <a href="/">here</a> to login.</span></div>
-    <div id="member" class="box"><span class="title" style="font-weight:normal">Hello, <b id="username">{{ username }}</b>!</span><span class="message">Click here to <a href="/logout">logout</a>.</span></div>
+    <div id="guest" class="box">
+        <span class="title">You are not logged in!</span><span class="message">You will only be able to see packages marked as public.<br />Click <a href="/">here</a> to login.</span></div>
+    <div id="member" class="box"><span class="title" style="font-weight:normal">Hello, <b id="username">{{ username }}</b>!</span>
+        <span class="message">
+            <ul class="fa-ul">
+                <li><i class="fa-li fa fa-wrench"></i><a href="/settings">Settings</a></li>
+                <li><i class="fa-li fa fa-sign-out"></i><a href="/logout">Logout</a></li>
+            </ul>
+        </span>
+    </div>
 </div>
 <div id="packageinfo"><div id="phelp">Click a marker to see package information associated with that marker.</div><div id="pinfo" style="display:none"><b>Name:</b> <span id="pname"></span><br /><b>UUID:</b> <span id="puuid"></span><br /><b>Status:</b> <span id="pstatus"></span></div></div>
 <div id="map"></div>

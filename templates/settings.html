@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block title %}Account Settings - Package Manager{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link href='/css/index.css' rel='stylesheet' type='text/css' />
+    <script src='/js/index.js'></script>
+{% endblock %}
+{% block content %}
+<form method="POST">
+    <h3>Change Password</h3>
+    <hr />
+    <div class="form-info alert alert-danger"></div>
+    <fieldset class="form-group">
+        <label class="sr-only form-control-label" for="password">Old Password</label>
+        <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-key fa-fw"></i></div>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Old Password" />
+        </div>
+    </fieldset>
+    <fieldset class="form-group">
+        <label class="sr-only form-control-label" for="newpassword">New Password</label>
+        <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-key fa-fw"></i></div>
+            <input type="password" class="form-control" id="newpassword" name="newpassword" placeholder="New Password" />
+        </div>
+    </fieldset>
+    <fieldset class="form-group">
+        <label class="sr-only form-control-label" for="confirmpassword">Confirm Password</label>
+        <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-fw fa-check-square-o"></i></div>
+            <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" placeholder="Confirm Password" />
+        </div>
+    </fieldset>
+    <input type="submit" value="Change Password" class="btn btn-warning" />
+</form>
+<form method="POST">
+    <h3>Delete Account</h3>
+    <hr />
+    <div class="form-info alert alert-danger"></div>
+    <fieldset class="form-group">
+        <label class="sr-only form-control-label" for="password">Password</label>
+        <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-key fa-fw"></i></div>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password" />
+        </div>
+    </fieldset>
+    <input type="submit" value="Delete Account" class="btn btn-danger" />
+</form>
+{% endblock %}
