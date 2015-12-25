@@ -70,7 +70,7 @@ var socket;
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 20, lng: 0},
-        zoom: 3,
+        zoom: 2,
         streetViewControl: false
     });
     map.addListener('drag', function() {
@@ -101,7 +101,7 @@ function initMap() {
 }
 
 function package_delete(uuid) {
-    $("#list li[data-id='" + uuid + "']").parent().remove();
+    $("#list li[data-id='" + uuid + "']").remove();
     packages[uuid].marker.setMap(null);
     packages[uuid].polyline.setMap(null);
     delete packages[uuid];

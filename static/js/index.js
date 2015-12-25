@@ -24,6 +24,7 @@ $(document).ready(function() {
             if (data.error) {
                 a.find('.form-info').html(data.error).addClass('alert-danger').removeClass('alert-success').slideDown('fast');
             }
+            a.find("input[type='password']").val("");
         }, 'json').fail(function() {
             a.find('.form-info').html('Failed to communicate with server!').addClass('alert-danger').removeClass('alert-success').slideDown('fast');
         });
