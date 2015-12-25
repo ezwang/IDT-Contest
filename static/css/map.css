@@ -88,12 +88,19 @@ body
     list-style-type:none;
     margin-bottom:0px;
 }
-.p-delete
+.opt
+{
+    float:right;
+}
+.p-delete,.p-rename
 {
     cursor:pointer;
     color:#ccc;
-    float:right;
     margin-right:3px;
+}
+.p-rename:hover
+{
+    color:green;
 }
 .p-delete:hover
 {

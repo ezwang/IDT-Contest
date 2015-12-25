@@ -98,6 +98,13 @@ def deletepackage(uuid):
     conn.commit()
     return jsonify(**{'ackUUID':'[' + uuid + ']'})
 
+@app.route('/map/rename_package/<uuid>/<name>')
+def renamepackage(uuid, name):
+    cur = conn.cursor()
+    cur.execute('UPDATE packages SET name = %s WHERE id = %s', (name, uuid))
+    conn.commit()
+    return jsonify(**{'ackUUID':'[' + uuid + ']'})
+
 @app.route('/login', methods=["POST"])
 def login():
     if not 'username' in request.form or not 'password' in request.form:

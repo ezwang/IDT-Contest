@@ -13,7 +13,7 @@ function addPackage(uuid, name, delivered, dLat, dLon) {
         map:map,
         title:name
     }),delivered:delivered, destination:new google.maps.LatLng(dLat, dLon)};
-    $("#list").append("<li data-id='" + uuid + "'><i class='fa-li fa fa-archive'></i> " + name + "</li>");
+    $("#list").append("<li data-id='" + uuid + "'><i class='fa-li fa fa-archive'></i> <span class='name'>" + name + "</span><span class='opt'><i class='p-rename fa fa-pencil'></i></span></li>");
     if (delivered) {
         setDelivered(uuid);
     }
@@ -61,7 +61,7 @@ function setDelivered(uuid) {
     packages[uuid].delivered = true;
     packages[uuid].marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
     $("#list li[data-id='" + uuid + "'] i").addClass('fa-check').removeClass('fa-archive');
-    $("#list li[data-id='" + uuid + "']").append("<i class='p-delete fa fa-times'></i>");
+    $("#list li[data-id='" + uuid + "'] .opt").append("<i class='p-delete fa fa-times'></i>");
     packages[uuid].marker.setPosition(packages[uuid].destination);
 }
 
@@ -100,6 +100,28 @@ function initMap() {
     });
 }
 
+function package_delete(uuid) {
+    $("#list li[data-id='" + uuid + "']").parent().remove();
+    packages[uuid].marker.setMap(null);
+    packages[uuid].polyline.setMap(null);
+    delete packages[uuid];
+    $.get("/map/delete_package/" + uuid, function(data) {});
+    if (trackingUUID == uuid) {
+        trackingUUID = false;
+        updateInfoBox();
+    }
+}
+
+function package_rename(uuid, name) {
+    $("#list li[data-id='" + uuid + "'] .name").text(name);
+    packages[uuid].name = name;
+    packages[uuid].marker.setTitle(name);
+    $.get("/map/rename_package/" + uuid + "/" + encodeURIComponent(name), function(data) {});
+    if (trackingUUID == uuid) {
+        updateInfoBox();
+    }
+}
+
 $(document).ready(function() {
     if (!$("#userid").text()) {
         $("#guest").show();
@@ -119,18 +141,24 @@ $(document).ready(function() {
         e.preventDefault();
         onMarkerClick($(this).attr("data-id"));
     });
+    $("#list").on("click", ".p-rename", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var uuid = $(this).parent().parent().attr('data-id');
+        var oldname = $(this).parent().parent().find('.name').text();
+        var name = prompt('What should the new name for this package be?\n' + uuid, oldname);
+        if (!name || name == oldname) {
+            return;
+        }
+        package_rename(uuid, name);
+    });
     $("#list").on("click", ".p-delete", function(e) {
         e.preventDefault();
         e.stopPropagation();
-        var uuid = $(this).parent().attr('data-id');
+        var uuid = $(this).parent().parent().attr('data-id');
         if (!confirm('Are you sure you want to delete this package record?\n' + uuid)) {
             return;
         }
-        $(this).parent().remove();
-        packages[uuid].marker.setMap(null);
-        packages[uuid].polyline.setMap(null);
-        delete packages[uuid];
-        $.get("/map/delete_package/" + uuid, function(data) {
-        });
+        package_delete(uuid);
     });
 });
