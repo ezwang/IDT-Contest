@@ -2,7 +2,7 @@ $(document).ready(function() {
     $("form").submit(function(e) {
         e.preventDefault();
         var valid = true;
-        $(this).find('.form-group').removeClass('has-danger');
+        $(this).find('.input-group').removeClass('has-danger');
         $.each($(this).find('input'), function(k, v) {
             if (!$(this).val()) {
                 valid = false;
