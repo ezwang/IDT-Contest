@@ -14,11 +14,14 @@ conn = psycopg2.connect("dbname='" + config["database"]["dbname"] + "' user='" +
 cur = conn.cursor()
 
 print('[*] Deleting previous tables...')
-cur.execute('DROP TABLE IF EXISTS users, packages, steps')
+cur.execute('DROP TABLE IF EXISTS users, packages, steps, access')
 conn.commit()
 
 print "[*] Creating user table..."
 cur.execute('CREATE TABLE IF NOT EXISTS users (id SERIAL, username TEXT UNIQUE, password TEXT, email TEXT, type INTEGER)')
+conn.commit()
+print "[*] Creating access table..."
+cur.execute('CREATE TABLE IF NOT EXISTS access (userid INTEGER, package UUID)')
 conn.commit()
 print "[*] Adding 'admin' user with password 'admin'..."
 cur.execute('INSERT INTO users (username, password, type) VALUES (%s, %s, 1)', ('admin', generate_password_hash('admin')))

@@ -6,6 +6,12 @@
     <script src='/js/index.js'></script>
 {% endblock %}
 {% block content %}
+<div class="form-box">
+    <h3>Account Information</h3>
+    <hr />
+    <b>Username:</b> {{ username }}<br />
+    <b>Account Type:</b> {{ type }}<br />
+</div>
 <form action="/settings/change_password" method="POST">
     <h3>Change Password</h3>
     <hr />

@@ -35,7 +35,7 @@ def getemail(usrid):
 def settings():
     if not 'id' in session:
         return redirect('/')
-    return render_template('settings.html', email = getemail(session['id']).replace('"', '\\"'))
+    return render_template('settings.html', email = getemail(session['id']).replace('"', '\\"'), username = session['username'], type = 'Administrator' if session['type'] > 0 else 'Normal User')
 
 @app.route('/accounts')
 def accounts():
