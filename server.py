@@ -2,7 +2,7 @@
 
 import json
 from flask import Flask, request, render_template, jsonify, session, redirect, abort, Response
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, join_room, leave_room
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -132,11 +132,13 @@ def login():
     session['id'] = row[0]
     session['username'] = row[2]
     session['type'] = row[3]
+    session['access'] = []
     return jsonify(**{'redirect':'/map'})
 
 @app.route('/getpackage/<uuid>')
 def getexistingpackage(uuid):
-    # TODO: auth check here
+    if not checkaccess(uuid):
+        return abort(401)
     cur = conn.cursor()
     cur.execute('SELECT pos,ele FROM steps WHERE id = %s ORDER BY time DESC', (uuid,))
     return jsonify(**{'data':[[d for d in x[0][1:-1].split(",")] + [x[1]] for x in cur]})
@@ -146,8 +148,31 @@ def logout():
     session.clear()
     return redirect('/')
 
+globalaccess = []
+
+def checkaccess(uuid):
+    if 'id' in session:
+        if session['type'] > 0:
+            return True
+        if uuid in session['access']:
+            return True
+    if uuid in globalaccess:
+        return True
+    print uuid
+    return False
+
+def refreshaccess():
+    global globalaccess
+    cur = conn.cursor()
+    if 'id' in session:
+        cur.execute('SELECT package FROM access WHERE userid = %s', (session['id'],))
+        session['access'] = [x[0] for x in cur]
+    cur.execute('SELECT package FROM access WHERE userid < 0')
+    globalaccess = [x[0] for x in cur]
+
 @app.route('/getpackages')
 def getexistingdata():
+    refreshaccess()
     cur = conn.cursor()
     if 'id' in session:
         if session['type'] > 0:
@@ -172,9 +197,11 @@ def tracknewpackage():
     cur.execute('INSERT INTO packages (id, name, destination, delivered) VALUES (%s, %s, \'(%s, %s)\', false)', (uuid, name, dLat, dLon))
     if config["new_package_public"]:
         cur.execute('INSERT INTO access (userid, package) VALUES (-1, %s)',(uuid,))
+        for client in clients:
+            socketio.server.enter_room(client, uuid, namespace='/')
     conn.commit()
-    # TODO: auth check here
-    socketio.emit('newpackage', {'name':name,'uuid':uuid,'dest':[dLat,dLon]})
+    socketio.emit('newpackage', {'name':name,'uuid':uuid,'dest':[dLat,dLon]}, room='admin')
+    socketio.emit('newpackage', {'name':name,'uuid':uuid,'dest':[dLat,dLon]}, room=uuid)
     return jsonify(**{"ackUUID":"[" + uuid + "]"})
 
 import re
@@ -193,7 +220,8 @@ def packagetrackupdate(uuid):
         cur = conn.cursor()
         cur.execute('UPDATE packages SET delivered = true WHERE id = %s', (uuid,))
         conn.commit()
-        socketio.emit('packagedelivered', {'uuid':uuid})
+        socketio.emit('packagedelivered', {'uuid':uuid}, room='admin')
+        socketio.emit('packagedelivered', {'uuid':uuid}, room=uuid)
     else:
         lat = float(content['lat'])
         lon = float(content['lon'])
@@ -202,9 +230,35 @@ def packagetrackupdate(uuid):
         cur = conn.cursor()
         cur.execute('INSERT INTO steps (id, pos, ele, time) VALUES (%s, \'(%s, %s)\', %s, %s)', (uuid, lat, lon, ele, time))
         conn.commit()
-        # TODO: auth check here
-        socketio.emit('plot', {'uuid':uuid,'lat':lat,'lon':lon,'ele':ele})
+        socketio.emit('plot', {'uuid':uuid,'lat':lat,'lon':lon,'ele':ele}, room='admin')
+        socketio.emit('plot', {'uuid':uuid,'lat':lat,'lon':lon,'ele':ele}, room=uuid)
     return jsonify(**{"ackUUID":"[" + uuid + "]"})
+
+clients = []
+
+@socketio.on('connect')
+def client_connect():
+    cur = conn.cursor()
+    flag = True
+    if 'id' in session:
+        if session['type'] > 0:
+            join_room('admin')
+            flag = False
+        else:
+            cur.execute('SELECT package FROM access WHERE userid = %s OR userid < 0', (session['id'],))
+    else:
+        cur.execute('SELECT package FROM access WHERE userid < 0')
+    if flag:
+        clients.append(request.sid)
+        for x in cur:
+            join_room(x[0])
+
+@socketio.on('disconnect')
+def client_disconnect():
+    try:
+        clients.remove(request.sid)
+    except ValueError:
+        pass
 
 if __name__ == '__main__':
     socketio.run(app, port=8080, debug=True)
