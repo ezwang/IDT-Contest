@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import json
-from flask import Flask, request, render_template, jsonify, session, redirect
+from flask import Flask, request, render_template, jsonify, session, redirect, abort, Response
 from flask_socketio import SocketIO
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -36,6 +36,14 @@ def settings():
     if not 'id' in session:
         return redirect('/')
     return render_template('settings.html', email = getemail(session['id']).replace('"', '\\"'))
+
+@app.route('/accounts')
+def accounts():
+    if not 'id' in session:
+        return redirect('/')
+    if session['type'] == 0:
+        return abort(401)
+    return render_template('accounts.html')
 
 @app.route('/settings/change_password', methods=['POST'])
 def changepassword():
@@ -112,7 +120,7 @@ def login():
     username = request.form['username']
     password = request.form['password']
     cur = conn.cursor()
-    cur.execute('SELECT id, password, username FROM users WHERE username = %s OR email = %s LIMIT 1', (username,username))
+    cur.execute('SELECT id, password, username, type FROM users WHERE username = %s OR email = %s LIMIT 1', (username,username))
     if cur.rowcount == 0:
         return jsonify(**{'error':'No account exists with that username or email!'})
     row = cur.fetchone()
@@ -120,6 +128,7 @@ def login():
         return jsonify(**{'error':'Wrong password!'})
     session['id'] = row[0]
     session['username'] = row[2]
+    session['type'] = row[3]
     return jsonify(**{'redirect':'/map'})
 
 @app.route('/getpackage/<uuid>')

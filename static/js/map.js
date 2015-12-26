@@ -132,7 +132,7 @@ $(document).ready(function() {
     $(document).keyup(function(e) {
         if (e.keyCode == 27) {
             map.panTo(new google.maps.LatLng(20, 0));
-            map.setZoom(3);
+            map.setZoom(2);
             trackingUUID = false;
             updateInfoBox();
         }
