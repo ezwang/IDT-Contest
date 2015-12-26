@@ -100,6 +100,7 @@ def map():
 
 @app.route('/map/delete_package/<uuid>')
 def deletepackage(uuid):
+    # TODO: auth check here
     cur = conn.cursor()
     cur.execute('DELETE FROM packages WHERE id = %s', (uuid,))
     cur.execute('DELETE FROM steps WHERE id = %s', (uuid,))
@@ -109,6 +110,7 @@ def deletepackage(uuid):
 
 @app.route('/map/rename_package/<uuid>/<name>')
 def renamepackage(uuid, name):
+    # TODO: auth check here
     cur = conn.cursor()
     cur.execute('UPDATE packages SET name = %s WHERE id = %s', (name, uuid))
     conn.commit()
@@ -134,6 +136,7 @@ def login():
 
 @app.route('/getpackage/<uuid>')
 def getexistingpackage(uuid):
+    # TODO: auth check here
     cur = conn.cursor()
     cur.execute('SELECT pos,ele FROM steps WHERE id = %s ORDER BY time DESC', (uuid,))
     return jsonify(**{'data':[[d for d in x[0][1:-1].split(",")] + [x[1]] for x in cur]})
@@ -146,7 +149,13 @@ def logout():
 @app.route('/getpackages')
 def getexistingdata():
     cur = conn.cursor()
-    cur.execute('SELECT id,name,delivered,destination FROM packages')
+    if 'id' in session:
+        if session['type'] > 0:
+            cur.execute('SELECT id,name,delivered,destination FROM packages')
+        else:
+            cur.execute('SELECT id,name.delivered,destination FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND (access.userid = %s or access.userid < 0))', (session['id'],))
+    else:
+        cur.execute('SELECT id,name,delivered,destination FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND access.userid < 0)')
     return jsonify(**{'data':[x for x in cur]})
 
 @app.route('/tracknewpackage')
@@ -163,6 +172,7 @@ def tracknewpackage():
     cur.execute('INSERT INTO packages (id, name, destination, delivered) VALUES (%s, %s, \'(%s, %s)\', false)', (uuid, name, dLat, dLon))
     cur.execute('INSERT INTO access (userid, package) VALUES (-1, %s)',(uuid,))
     conn.commit()
+    # TODO: auth check here
     socketio.emit('newpackage', {'name':name,'uuid':uuid,'dest':[dLat,dLon]})
     return jsonify(**{"ackUUID":"[" + uuid + "]"})
 
@@ -191,6 +201,7 @@ def packagetrackupdate(uuid):
         cur = conn.cursor()
         cur.execute('INSERT INTO steps (id, pos, ele, time) VALUES (%s, \'(%s, %s)\', %s, %s)', (uuid, lat, lon, ele, time))
         conn.commit()
+        # TODO: auth check here
         socketio.emit('plot', {'uuid':uuid,'lat':lat,'lon':lon,'ele':ele})
     return jsonify(**{"ackUUID":"[" + uuid + "]"})
 
