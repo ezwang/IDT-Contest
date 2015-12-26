@@ -51,7 +51,14 @@ def global_settings_reset():
         return redirect('/')
     if session['type'] == 0:
         return abort(401)
+    password = request.form['password']
     cur = conn.cursor()
+    cur.execute('SELECT password FROM users WHERE id = %s', (session['id'],))
+    if cur.rowcount == 0:
+        return jsonify(**{'error':'Your account does not exist anymore!'})
+    row = cur.fetchone()
+    if not check_password_hash(row[0], password):
+        return jsonify(**{'error':'Wrong password!'})
     cur.execute('TRUNCATE TABLE packages, access, steps')
     conn.commit()
     return jsonify(**{'success':'All package records deleted!'})
