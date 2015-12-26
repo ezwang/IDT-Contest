@@ -170,7 +170,8 @@ def tracknewpackage():
     dLon = float(request.args.get('destinationLon'))
     cur = conn.cursor()
     cur.execute('INSERT INTO packages (id, name, destination, delivered) VALUES (%s, %s, \'(%s, %s)\', false)', (uuid, name, dLat, dLon))
-    cur.execute('INSERT INTO access (userid, package) VALUES (-1, %s)',(uuid,))
+    if config["new_package_public"]:
+        cur.execute('INSERT INTO access (userid, package) VALUES (-1, %s)',(uuid,))
     conn.commit()
     # TODO: auth check here
     socketio.emit('newpackage', {'name':name,'uuid':uuid,'dest':[dLat,dLon]})
