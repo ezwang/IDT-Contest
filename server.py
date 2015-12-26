@@ -45,7 +45,7 @@ def global_settings():
         return abort(401)
     return render_template('global_settings.html')
 
-@app.route('/global_settings/reset')
+@app.route('/global_settings/reset', methods=['POST'])
 def global_settings_reset():
     if not 'id' in session:
         return redirect('/')
@@ -53,7 +53,7 @@ def global_settings_reset():
         return abort(401)
     cur = conn.cursor()
     cur.execute('TRUNCATE TABLE packages, access, steps')
-    cur.commit()
+    conn.commit()
     return jsonify(**{'success':'All package records deleted!'})
 
 @app.route('/accounts')
