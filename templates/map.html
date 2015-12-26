@@ -16,8 +16,10 @@
     <div id="member" class="box"><span class="title" style="font-weight:normal">Hello, <b id="username">{{ username }}</b>!</span>
         <span class="message">
             <ul class="fa-ul">
+                {% if type > 0 %}
                 <li><i class="fa-li fa fa-globe"></i> <a href="/global_settings">Application Settings</a></li>
                 <li><i class="fa-li fa fa-user"></i> <a href="/accounts">Account Management</a></li>
+                {% endif %}
                 <li><i class="fa-li fa fa-wrench"></i><a href="/settings">Settings</a></li>
                 <li><i class="fa-li fa fa-sign-out"></i><a href="/logout">Logout</a></li>
             </ul>
@@ -28,8 +30,9 @@
     <div id="phelp">Click a marker to see package information associated with that marker. Press <kbd>ESC</kbd> to go back to world view.</div>
     <div id="pinfo" style="display:none">
         <b>Name:</b> <span id="pname"></span><br />
-        <b style="font-size:12px">UUID:</b> <span id="puuid"></span><br />
         <b>Status:</b> <span id="pstatus"></span>
+        <b>ETA:</b> <span id="peta"></span><br />
+        <b style="font-size:12px">UUID:</b> <span id="puuid"></span><br />
     </div>
 </div>
 <div id="map"></div>

@@ -122,7 +122,11 @@ def changeemail():
 
 @app.route('/map')
 def map():
-    return render_template('map.html', mapskey = config["api"]["googlemaps"] if config["api"]["googlemaps"] else "", id = session['id'] if 'id' in session else '', username = session['username'] if 'username' in session else '')
+    if 'id' in session:
+        type = session['type']
+    else:
+        type = -1
+    return render_template('map.html', mapskey = config["api"]["googlemaps"] if config["api"]["googlemaps"] else "", id = session['id'] if 'id' in session else '', username = session['username'] if 'username' in session else '', type = type)
 
 @app.route('/map/delete_package/<uuid>')
 def deletepackage(uuid):
@@ -215,8 +219,8 @@ def tracknewpackage():
     if not name:
         name = 'Unnamed Package'
     uuid = request.args.get('uuid')
-    if not uuid:
-        return jsonify(**{"error":"No UUID parameter passed to server!"})
+    if not uuid or not uuidpattern.match(uuid):
+        return jsonify(**{"error":"Invalid UUID parameter passed to server!"})
     dLat = float(request.args.get('destinationLat'))
     dLon = float(request.args.get('destinationLon'))
     cur = conn.cursor()
