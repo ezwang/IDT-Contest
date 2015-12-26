@@ -255,7 +255,7 @@ def getexistingdata():
         if session['type'] > 0:
             cur.execute('SELECT id,name,delivered,destination FROM packages')
         else:
-            cur.execute('SELECT id,name.delivered,destination FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND (access.userid = %s or access.userid < 0))', (session['id'],))
+            cur.execute('SELECT id,name,delivered,destination FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND (access.userid = %s or access.userid < 0))', (session['id'],))
     else:
         cur.execute('SELECT id,name,delivered,destination FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND access.userid < 0)')
     conn.commit()
