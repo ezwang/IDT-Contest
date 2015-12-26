@@ -37,6 +37,25 @@ def settings():
         return redirect('/')
     return render_template('settings.html', email = getemail(session['id']).replace('"', '\\"'), username = session['username'], type = 'Administrator' if session['type'] > 0 else 'Normal User')
 
+@app.route('/global_settings')
+def global_settings():
+    if not 'id' in session:
+        return redirect('/')
+    if session['type'] == 0:
+        return abort(401)
+    return render_template('global_settings.html')
+
+@app.route('/global_settings/reset')
+def global_settings_reset():
+    if not 'id' in session:
+        return redirect('/')
+    if session['type'] == 0:
+        return abort(401)
+    cur = conn.cursor()
+    cur.execute('TRUNCATE TABLE packages, access, steps')
+    cur.commit()
+    return jsonify(**{'success':'All package records deleted!'})
+
 @app.route('/accounts')
 def accounts():
     if not 'id' in session:
