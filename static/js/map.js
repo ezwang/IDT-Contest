@@ -193,6 +193,9 @@ $(document).ready(function() {
                 if ($(this).attr('data-id').indexOf($("#search").val()) <= -1 && $(this).text().indexOf($("#search").val()) <= -1) {
                     package_visible($(this).attr('data-id'), false);
                 }
+                else {
+                    package_visible($(this).attr('data-id'), true);
+                }
             });
         }
     });
