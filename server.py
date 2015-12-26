@@ -71,6 +71,26 @@ def accounts():
         return abort(401)
     return render_template('accounts.html')
 
+@app.route('/accounts/delete_account', methods=['POST'])
+def admin_delete_account():
+    # TODO: implement account deletion
+    pass
+
+@app.route('/accounts/add_account', methods=['POST'])
+def admin_add_account();
+    if not 'id' in session:
+        return redirect('/')
+    if session['type'] == 0:
+        return abort(401)
+    username = request.form['username']
+    email = request.form['email']
+    password = request.form['password']
+    acc_type = int(request.form['type'])
+    cur = conn.cursor()
+    cur.execute('INSERT INTO users (username, email, password, type) VALUES (%s, %s, %s, %s)',(username,email,generate_password_hash(password),acc_type))
+    # TODO: check if executed successfully
+    return jsonify(**{'success':'New account created!'})
+
 @app.route('/settings/change_password', methods=['POST'])
 def changepassword():
     if not 'id' in session:
@@ -94,7 +114,7 @@ def changepassword():
     return jsonify(**{'success':'Your password has been changed!'})
 
 @app.route('/settings/delete_account', methods=['POST'])
-def deleteaccount():
+def delete_account():
     if not 'id' in session:
         return redirect('/')
     password = request.form['password']
