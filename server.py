@@ -103,6 +103,7 @@ def deletepackage(uuid):
     cur = conn.cursor()
     cur.execute('DELETE FROM packages WHERE id = %s', (uuid,))
     cur.execute('DELETE FROM steps WHERE id = %s', (uuid,))
+    cur.execute('DELETE FROM access WHERE package = %s', (uuid,))
     conn.commit()
     return jsonify(**{'ackUUID':'[' + uuid + ']'})
 
@@ -160,6 +161,7 @@ def tracknewpackage():
     dLon = float(request.args.get('destinationLon'))
     cur = conn.cursor()
     cur.execute('INSERT INTO packages (id, name, destination, delivered) VALUES (%s, %s, \'(%s, %s)\', false)', (uuid, name, dLat, dLon))
+    cur.execute('INSERT INTO access (userid, package) VALUES (-1, %s)',(uuid,))
     conn.commit()
     socketio.emit('newpackage', {'name':name,'uuid':uuid,'dest':[dLat,dLon]})
     return jsonify(**{"ackUUID":"[" + uuid + "]"})
