@@ -38,8 +38,24 @@ def register():
 
 @app.route('/register', methods=['POST'])
 def register_submit():
-    # TODO: obey config var
-    pass
+    if not config["allow_registration"]:
+        return abort(403)
+    username = request.form['username']
+    email = request.form['email']
+    password = request.form['password']
+    confirm = request.form['confirmpassword']
+    if len(username) == 0 or len(email) == 0 or len(password) == 0:
+        return jsonify(**{'error':'Please fill out all of the fields!'})
+    if confirm != password:
+        return jsonify(**{'error':'Password does not match confirm!'})
+    cur = conn.cursor()
+    try:
+        cur.execute('INSERT INTO users (username, email, password, type) VALUES (%s, %s, %s, 0)',(username,email,generate_password_hash(password)))
+    except psycopg2.IntegrityError, e:
+        conn.rollback()
+        return jsonify(**{'error':'Username is already taken!'})
+    conn.commit()
+    return jsonify(**{'success':'Account created! Click here to <a href="/">login</a>.'})
 
 @app.route('/settings')
 def settings():
@@ -184,6 +200,7 @@ def login():
     password = request.form['password']
     cur = conn.cursor()
     cur.execute('SELECT id, password, username, type FROM users WHERE username = %s OR email = %s LIMIT 1', (username,username))
+    conn.commit()
     if cur.rowcount == 0:
         return jsonify(**{'error':'No account exists with that username or email!'})
     row = cur.fetchone()
@@ -241,6 +258,7 @@ def getexistingdata():
             cur.execute('SELECT id,name.delivered,destination FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND (access.userid = %s or access.userid < 0))', (session['id'],))
     else:
         cur.execute('SELECT id,name,delivered,destination FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND access.userid < 0)')
+    conn.commit()
     return jsonify(**{'data':[x for x in cur]})
 
 @app.route('/tracknewpackage')

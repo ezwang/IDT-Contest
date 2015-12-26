@@ -13,6 +13,7 @@ $(document).ready(function() {
             return;
         }
         var a = $(this);
+        $(this).find('input[type="submit"]').prop("disabled", true);
         $.post($(this).attr('action'), $(this).serialize(), function(data) {
             if (data.redirect) {
                 window.location.href = data.redirect;
@@ -27,6 +28,8 @@ $(document).ready(function() {
             a.find("input[type='password']").val("");
         }, 'json').fail(function() {
             a.find('.form-info').html('Failed to communicate with server!').addClass('alert-danger').removeClass('alert-success').slideDown('fast');
+        }).always(function() {
+            a.find('input[type="submit"]').prop("disabled", false);
         });
     });
 });
