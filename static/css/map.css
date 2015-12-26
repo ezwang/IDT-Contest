@@ -72,7 +72,7 @@ body
 {
     position:absolute;
     top:65px;
-    right:5px;
+    right:10px;
     z-index:1;
     background-color:white;
     padding:10px;
@@ -82,6 +82,14 @@ body
 #packageinfo #puuid
 {
     font-size:12px;
+}
+#searchbox
+{
+    position:absolute;
+    top:65px;
+    left:10px;
+    z-index:1;
+    min-width:250px;
 }
 #member ul
 {

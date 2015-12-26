@@ -45,24 +45,34 @@ function updateInfoBox() {
 }
 
 function addPoint(uuid, lat, lon) {
-    var path = packages[uuid].polyline.getPath();
-    var pos = new google.maps.LatLng(lat,lon);
-    path.push(pos);
-    if (!packages[uuid].delivered) {
-        packages[uuid].marker.setPosition(pos);
-        if (uuid == trackingUUID) {
-            map.panTo(pos);
-            updateInfoBox();
+    if (uuid in packages) {
+        var path = packages[uuid].polyline.getPath();
+        var pos = new google.maps.LatLng(lat,lon);
+        path.push(pos);
+        if (!packages[uuid].delivered) {
+            packages[uuid].marker.setPosition(pos);
+            if (uuid == trackingUUID) {
+                map.panTo(pos);
+                updateInfoBox();
+            }
         }
+    }
+    else {
+        console.warn('Package with UUID ' + uuid + ' was not initalized!');
     }
 }
 
 function setDelivered(uuid) {
-    packages[uuid].delivered = true;
-    packages[uuid].marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
-    $("#list li[data-id='" + uuid + "'] i").addClass('fa-check').removeClass('fa-archive');
-    $("#list li[data-id='" + uuid + "'] .opt").append("<i class='p-delete fa fa-times'></i>");
-    packages[uuid].marker.setPosition(packages[uuid].destination);
+    if (uuid in packages) {
+        packages[uuid].delivered = true;
+        packages[uuid].marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
+        $("#list li[data-id='" + uuid + "'] i").addClass('fa-check').removeClass('fa-archive');
+        $("#list li[data-id='" + uuid + "'] .opt").append("<i class='p-delete fa fa-times'></i>");
+        packages[uuid].marker.setPosition(packages[uuid].destination);
+    }
+    else {
+        console.warn('Package with UUID ' + uuid + 'was not initalized!');
+    }
 }
 
 var map;
@@ -122,6 +132,17 @@ function package_rename(uuid, name) {
     }
 }
 
+function package_visible(uuid, show) {
+    packages[uuid].marker.setVisible(show);
+    packages[uuid].polyline.setVisible(show);
+    if (show) {
+        $("#list li[data-id='" + uuid + "']").show();
+    }
+    else {
+        $("#list li[data-id='" + uuid + "']").hide();
+    }
+}
+
 $(document).ready(function() {
     if (!$("#userid").text()) {
         $("#guest").show();
@@ -160,5 +181,19 @@ $(document).ready(function() {
             return;
         }
         package_delete(uuid);
+    });
+    $("#search").on('keyup blur paste', function() {
+        if (!$(this).val()) {
+            $("#list li").each(function(k, v) {
+                package_visible($(this).attr('data-id'), true);
+            });
+        }
+        else {
+            $("#list li").each(function(k, v) {
+                if ($(this).attr('data-id').indexOf($("#search").val()) <= -1 && $(this).text().indexOf($("#search").val()) <= -1) {
+                    package_visible($(this).attr('data-id'), false);
+                }
+            });
+        }
     });
 });

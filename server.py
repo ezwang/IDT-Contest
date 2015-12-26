@@ -38,6 +38,7 @@ def register():
 
 @app.route('/register', methods=['POST'])
 def register_submit():
+    # TODO: obey config var
     pass
 
 @app.route('/settings')
