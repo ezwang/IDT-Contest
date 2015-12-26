@@ -31,6 +31,15 @@ def getemail(usrid):
     row = cur.fetchone()
     return row[0] if not row[0] == None else ""
 
+@app.route('/register')
+def register():
+    # TODO: obey config var
+    return render_template('register.html')
+
+@app.route('/register', methods=['POST'])
+def register_submit():
+    pass
+
 @app.route('/settings')
 def settings():
     if not 'id' in session:
@@ -77,7 +86,7 @@ def admin_delete_account():
     pass
 
 @app.route('/accounts/add_account', methods=['POST'])
-def admin_add_account();
+def admin_add_account():
     if not 'id' in session:
         return redirect('/')
     if session['type'] == 0:

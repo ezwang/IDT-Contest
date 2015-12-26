@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block title %}Register - Package Manager{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link href='/css/index.css' rel='stylesheet' type='text/css' />
+    <script src='/js/index.js'></script>
+{% endblock %}
+{% block content %}
+<form action="/register" method="POST">
+    <h3>Create New Account</h3>
+    <hr />
+    <div class="form-info alert alert-danger"></div>
+    <fieldset class="form-group">
+        <label class="sr-only form-control-label" for="username">Username</label>
+        <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-user fa-fw"></i></div>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Username" />
+        </div>
+    </fieldset>
+    <fieldset class="form-group">
+        <label class="sr-only form-control-label" for="email">Email Address</label>
+        <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-envelope fa-fw"></i></div>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Your Email" />
+        </div>
+    </fieldset>
+    <fieldset class="form-group">
+        <label class="sr-only form-control-label" for="password">Password</label>
+        <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-key fa-fw"></i></div>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password" />
+        </div>
+    </fieldset>
+    <fieldset class="form-group">
+        <label class="sr-only form-control-label" for="confirmpassword">Confirm Password</label>
+        <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-fw fa-check-square-o"></i></div>
+            <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" placeholder="Confirm Password" />
+        </div>
+    </fieldset>
+    <input type="submit" value="Register" class="btn btn-success" />
+</form>
+<div style="text-align:center;margin-top:5px"><a href="/">Already have an account?</a></div>
+{% endblock %}
