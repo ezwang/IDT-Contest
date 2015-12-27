@@ -5,49 +5,9 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/s/dt/jq-2.1.4,dt-1.10.10/datatables.min.css"/>
     <script type="text/javascript" src="https://cdn.datatables.net/s/dt/jq-2.1.4,dt-1.10.10/datatables.min.js"></script>
     <link href='/css/index.css' rel='stylesheet' type='text/css' />
+    <link href='/css/accounts.css' rel='stylesheet' type='text/css' />
     <script src='/js/index.js'></script>
-    <style>
-#users_length select, #users_filter input
-{
-    padding: .375rem .75rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: #55595c;
-    background-color: #fff;
-    background-image: none;
-    border: 1px solid #ccc;
-    border-radius: .25rem;
-}
-#users tbody tr td:empty:after
-{
-    content:"None";
-    color:#aaa;
-}
-    </style>
-    <script>
-    $(document).ready(function() {
-        $("#users").DataTable({
-            "ajax": "/accounts/userdata",
-            "autoWidth": false,
-            "columnDefs": [
-                {
-                    "render": function(data, type, row) {
-                        if (data > 0) {
-                            return 'Administrator';
-                        }
-                        else {
-                            return 'Normal User';
-                        }
-                    },
-                    "targets": -1
-                }
-            ]
-        });
-        $("#users tbody").on("click", "tr", function(e) {
-            $(this).toggleClass("selected");
-        });
-    });
-    </script>
+    <script src='/js/accounts.js'></script>
 {% endblock %}
 {% block content %}
 <div class="item-box">
@@ -56,5 +16,22 @@
             <tr><th>Username</th><th>Email</th><th>Type</th></tr>
         </thead>
     </table>
+    <hr />
+    <fieldset class="form-group">
+        <input type="text" id="username" name="username" class="form-control" placeholder="Username" />
+    </fieldset>
+    <fieldset class="form-group">
+        <input type="text" id="password" name="password" class="form-control" placeholder="Email" />
+    </fieldset>
+    <fieldset class="form-group" id="type" name="type">
+        <select class="form-control">
+            <option value="0">Normal User</option>
+            <option value="1">Administrator</option>
+        </select>
+    </fieldset>
+    <button id="btn-create" class="btn btn-success">Create Account</button>
+    <button id="btn-modify" class="btn btn-primary" disabled>Modify Account</button>
+    <button id="btn-permissions" class="btn btn-warning" disabled>Modify Permissions</button>
+    <button id="btn-delete" class="btn btn-danger" disabled>Delete Account</button>
 </div>
 {% endblock %}
