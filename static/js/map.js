@@ -158,6 +158,12 @@ $(document).ready(function() {
             updateInfoBox();
         }
     });
+    $(document).keydown(function(e) {
+        if (e.keyCode == 114 || e.ctrlKey && e.keyCode === 70) {
+            $("#search").focus();
+            e.preventDefault();
+        }
+    });
     $("#list").on("click", "li", function(e) {
         e.preventDefault();
         onMarkerClick($(this).attr("data-id"));
