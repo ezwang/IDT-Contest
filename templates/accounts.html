@@ -2,8 +2,59 @@
 {% block title %}Accounts - Package Manager{% endblock %}
 {% block head %}
     {{ super() }}
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/s/dt/jq-2.1.4,dt-1.10.10/datatables.min.css"/>
+    <script type="text/javascript" src="https://cdn.datatables.net/s/dt/jq-2.1.4,dt-1.10.10/datatables.min.js"></script>
     <link href='/css/index.css' rel='stylesheet' type='text/css' />
     <script src='/js/index.js'></script>
+    <style>
+#users_length select, #users_filter input
+{
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #55595c;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: .25rem;
+}
+#users tbody tr td:empty:after
+{
+    content:"None";
+    color:#aaa;
+}
+    </style>
+    <script>
+    $(document).ready(function() {
+        $("#users").DataTable({
+            "ajax": "/accounts/userdata",
+            "autoWidth": false,
+            "columnDefs": [
+                {
+                    "render": function(data, type, row) {
+                        if (data > 0) {
+                            return 'Administrator';
+                        }
+                        else {
+                            return 'Normal User';
+                        }
+                    },
+                    "targets": -1
+                }
+            ]
+        });
+        $("#users tbody").on("click", "tr", function(e) {
+            $(this).toggleClass("selected");
+        });
+    });
+    </script>
 {% endblock %}
 {% block content %}
+<div class="item-box">
+    <table id="users">
+        <thead>
+            <tr><th>Username</th><th>Email</th><th>Type</th></tr>
+        </thead>
+    </table>
+</div>
 {% endblock %}

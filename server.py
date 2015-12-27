@@ -97,6 +97,17 @@ def accounts():
         return abort(401)
     return render_template('accounts.html')
 
+@app.route('/accounts/userdata')
+def user_data():
+    if not 'id' in session:
+        return redirect('/')
+    if session['type'] == 0:
+        return abort(401)
+    cur = conn.cursor()
+    cur.execute('SELECT username, email, type FROM users')
+    conn.commit()
+    return jsonify(**{"data":[x for x in cur]})
+
 @app.route('/accounts/delete_account', methods=['POST'])
 def admin_delete_account():
     # TODO: implement account deletion
