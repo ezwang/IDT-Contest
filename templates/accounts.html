@@ -11,6 +11,8 @@
 {% endblock %}
 {% block content %}
 <div class="item-box">
+    <p><b>Tip:</b> Hold down the <kbd>Ctrl</kbd> key and click to select multiple rows at once. Hold down the <kbd>Shift</kbd> key and click to select rows between the currently selected row and the row you clicked.</p>
+    <hr />
     <table id="users">
         <thead>
             <tr><th>Username</th><th>Email</th><th>Type</th></tr>
@@ -21,7 +23,7 @@
         <input type="text" id="username" name="username" class="form-control" placeholder="Username" />
     </fieldset>
     <fieldset class="form-group">
-        <input type="text" id="password" name="password" class="form-control" placeholder="Email" />
+        <input type="text" id="email" name="email" class="form-control" placeholder="Email" />
     </fieldset>
     <fieldset class="form-group" id="type" name="type">
         <select class="form-control">
