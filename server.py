@@ -37,7 +37,10 @@ def getemail(usrid):
 
 @app.route('/register')
 def register():
-    # TODO: obey config var
+    if not config["allow_registration"]:
+        return abort(403)
+    if 'id' in session:
+        return redirect('/')
     return render_template('register.html')
 
 @app.route('/register', methods=['POST'])
@@ -128,8 +131,11 @@ def admin_add_account():
     password = request.form['password']
     acc_type = int(request.form['type'])
     cur = conn.cursor()
-    cur.execute('INSERT INTO users (username, email, password, type) VALUES (%s, %s, %s, %s)',(username,email,generate_password_hash(password),acc_type))
-    # TODO: check if executed successfully
+    try:
+        cur.execute('INSERT INTO users (username, email, password, type) VALUES (%s, %s, %s, %s)',(username,email,generate_password_hash(password),acc_type))
+    except psycopg2.IntegrityError, e:
+        conn.rollback()
+        return jsonify(**{'error':'Account exists with that username!'})
     return jsonify(**{'success':'New account created!'})
 
 @app.route('/settings/change_password', methods=['POST'])
