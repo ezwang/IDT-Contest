@@ -25,8 +25,10 @@ $(document).ready(function() {
         else {
             var selected = $(this).hasClass("selected");
             if (!e.ctrlKey) {
+                if ($("#users tr.selected").length > 1) {
+                    selected = false;
+                }
                 $("#users tr.selected").removeClass("selected");
-                selected = false;
             }
             if (selected) {
                 $(this).removeClass("selected");
