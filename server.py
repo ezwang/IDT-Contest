@@ -17,6 +17,10 @@ with open('config.json') as data:
 app.secret_key = config['flasksecret']
 conn = psycopg2.connect("dbname='" + config["database"]["dbname"] + "' user='" + config["database"]["user"] + "' host='" + config["database"]["host"] + "' password='" + config["database"]["pass"] + "'")
 
+@app.context_processor
+def inject_user_data():
+    return dict(logged_in='id' in session)
+
 @app.route('/')
 def root():
     if 'id' in session:

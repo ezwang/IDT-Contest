@@ -13,12 +13,19 @@
     <nav class="navbar navbar-dark bg-inverse">
         <a class="navbar-brand" href="#">Package Manager</a>
         <ul class="nav navbar-nav">
+            {% if not logged_in %}
             <li class="nav-item">
             <a class="nav-link" href="/">Home</a>
             </li>
+            {% endif %}
             <li class="nav-item">
             <a class="nav-link" href="/map">Map</a>
             </li>
+            {% if logged_in %}
+            <li class="nav-item">
+            <a class="nav-link" href="/settings">Settings</a>
+            </li>
+            {% endif %}
         </ul>
     </nav>
     <div id="content">{% block content %}{% endblock %}</div>
