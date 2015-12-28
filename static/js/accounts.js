@@ -40,7 +40,10 @@ $(document).ready(function() {
         }, 'json');
     });
     $("#btn-permissions").click(function(e) {
-        // TODO: implement
+        // TODO: load permission data
+    });
+    $("#modal-permissions-save").click(function(e) {
+        // TODO: save permission data
     });
     $("#users tbody").on("click", "tr", function(e) {
         if (e.shiftKey) {
