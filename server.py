@@ -53,6 +53,8 @@ def register_submit():
     confirm = request.form['confirmpassword']
     if len(username) == 0 or len(email) == 0 or len(password) == 0:
         return jsonify(**{'error':'Please fill out all of the fields!'})
+    if len(password) < 4:
+        return jsonify(**{'error':'Please pick a longer password!'})
     if confirm != password:
         return jsonify(**{'error':'Password does not match confirm!'})
     cur = conn.cursor()
@@ -207,6 +209,8 @@ def changepassword():
     confirm = request.form['confirmpassword']
     if len(new) == 0:
         return jsonify(**{'error':'Please enter a new password!'})
+    if len(new) < 4:
+        return jsonify(**{'error':'Please pick a longer password!'})
     if new != confirm:
         return jsonify(**{'error':'Your confirm does not match your password!'})
     cur = conn.cursor()
