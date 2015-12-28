@@ -26,6 +26,15 @@
             <a class="nav-link" href="/register">Register</a>
             </li>
             {% else %}
+            {% if is_admin %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Admin</a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="/accounts">Account Management</a>
+                    <a class="dropdown-item" href="/global_settings">Global Settings</a>
+                </div>
+            </li>
+            {% endif %}
             <li class="nav-item">
             <a class="nav-link" href="/settings">Settings</a>
             </li>
