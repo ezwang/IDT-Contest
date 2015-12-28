@@ -81,7 +81,8 @@ function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 20, lng: 0},
         zoom: 2,
-        streetViewControl: false
+        streetViewControl: false,
+        mapTypeControl: false
     });
     map.addListener('drag', function() {
         trackingUUID = false;
