@@ -117,7 +117,6 @@ def user_data():
 
 @app.route('/accounts/delete_account', methods=['POST'])
 def admin_delete_account():
-    # TODO: implement account deletion
     ids = [int(x) for x in request.form['id'].split(',')]
     cur = conn.cursor()
     for x in ids:
@@ -132,7 +131,13 @@ def admin_modify_account():
         return redirect('/')
     if session['type'] == 0:
         return abort(401)
-    # TODO: implement
+    userid = request.form['id']
+    username = request.form['username']
+    email = request.form['email']
+    acc_type = int(request.form['type'])
+    cur = conn.cursor()
+    cur.execute('UPDATE users SET username = %s, email = %s, type = %s WHERE id = %s', (username, email, acc_type, userid))
+    conn.commit()
     return jsonify(**{'success':'Account modified!'})
 
 @app.route('/accounts/add_account', methods=['POST'])

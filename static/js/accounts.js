@@ -30,7 +30,7 @@ $(document).ready(function() {
     $("#btn-modify").click(function(e) {
         $.post("/accounts/modify_account", $("#user-form :input").serialize(), function(data) {
             // TODO: update data table more efficiently
-            table.ajax.reload();
+            table.ajax.reload(updateButtons);
         }, 'json');
     });
     $("#btn-delete").click(function(e) {
