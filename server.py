@@ -131,11 +131,17 @@ def admin_permissions_load(ids):
 def admin_permissions_add():
     userid = request.form['id']
     uuid = request.form['uuid']
+    if not uuidpattern.match(uuid):
+        return jsonify(**{'error':'The UUID you entered is not in the correct format!'})
     is_global = request.form['type'] == 'global'
     if is_global:
         userid = -1
     cur = conn.cursor()
-    cur.execute('INSERT INTO access (package, userid) VALUES (%s, %s) RETURNING id', (uuid, userid))
+    try:
+        cur.execute('INSERT INTO access (package, userid) VALUES (%s, %s) RETURNING id', (uuid, userid))
+    except psycopg2.IntegrityError:
+        conn.rollback()
+        return jsonify(**{'error':'A permission pair already exists with that user and package combination!'})
     row = cur.fetchone()
     conn.commit()
     return jsonify(**{'success':'Package permission added!','id':row[0]})

@@ -21,7 +21,7 @@ print "[*] Creating user table..."
 cur.execute('CREATE TABLE IF NOT EXISTS users (id SERIAL, username TEXT UNIQUE, password TEXT, email TEXT, type INTEGER)')
 conn.commit()
 print "[*] Creating access table..."
-cur.execute('CREATE TABLE IF NOT EXISTS access (id SERIAL, userid INTEGER, package UUID)')
+cur.execute('CREATE TABLE IF NOT EXISTS access (id SERIAL, userid INTEGER, package UUID, CONSTRAINT u_constraint UNIQUE (userid, package))')
 conn.commit()
 print "[*] Adding 'admin' user with password 'admin'..."
 cur.execute('INSERT INTO users (username, password, type) VALUES (%s, %s, 1)', ('admin', generate_password_hash('admin')))

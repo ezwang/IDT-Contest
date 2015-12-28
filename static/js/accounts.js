@@ -55,8 +55,20 @@ $(document).ready(function() {
             $("#uuid-add").click();
         }
     });
+    var permtimeoutid = false;
     $("#uuid-add").click(function(e) {
+        if (permtimeoutid) {
+            clearTimeout(permtimeoutid);
+            permtimeoutid = false;
+        }
         $.post("/accounts/permissions/add", $("#id, #uuid, #perm-type").serialize(), function(data) {
+            if (data.error) {
+                $("#perm-info").text(data.error).slideDown();
+                permtimeoutid = setTimeout(function() {
+                    $("#perm-info").slideUp();
+                }, 3000);
+                return;
+            }
             var perm = "<div class='package-permission' data-id='" + data.id + "'><span>" + $("#uuid").val() + "</span><i class='fa fa-times pull-right'></i><i class='pull-right fa fa-" + ($("#perm-type").val() == "global" ? "globe" : "user") + "'></i></div>";
             if ($("#perm-type").val() == "global") {
                 $("#package-list").append(perm);

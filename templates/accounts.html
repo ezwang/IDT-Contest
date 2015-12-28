@@ -49,11 +49,12 @@
                 <h4 class="modal-title">Edit Package Permissions</h4>
             </div>
             <div class="modal-body">
+                <div class="alert alert-danger" id="perm-info" style="display:none"></div>
                 <fieldset class="form-group">
                     <div class="input-group">
                         <input type="text" class="form-control" id="uuid" name="uuid" placeholder="Package UUID" />
-                        <span class="input-group-addon" style="border-left:0px;font-family:'FontAwesome'">
-                            <select id="perm-type" name="type" style="background-color:transparent;border:0px">
+                        <span class="input-group-addon" style="border-left:0px">
+                            <select id="perm-type" name="type">
                                 <option value="user">&#xf007;</option>
                                 <option value="global">&#xf0ac;</option>
                             </select>

@@ -42,6 +42,16 @@
     color:#888;
     cursor:pointer;
 }
+#perm-type
+{
+    background-color:transparent;
+    border:0px;
+    font-family:'FontAwesome';
+}
+#perm-type:focus
+{
+    outline:0;
+}
 .package-permission .fa-times:hover
 {
     color:red;
