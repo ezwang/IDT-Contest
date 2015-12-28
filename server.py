@@ -187,6 +187,8 @@ def admin_add_account():
     if session['type'] == 0:
         return abort(401)
     username = request.form['username']
+    if len(username) == 0:
+        return jsonify(**{'error':'Please enter a username for the new account!'})
     email = request.form['email']
     # TODO: set password for new user
     password = request.form['password'] if 'password' in request.form else ''
