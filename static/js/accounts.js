@@ -41,13 +41,19 @@ $(document).ready(function() {
     });
     function perm_table_update() {
         $("#package-list").children().remove();
-        $.getJSON("/accounts/permissions/" + $("#id").val(), function(data) {
+        $.getJSON("/accounts/permissions/" + ($("#id").val() ? $("#id").val() : "-1"), function(data) {
             $.each(data.packages, function(k, v) {
                 $("#package-list").append("<div class='package-permission' data-id='" + v[2] + "'><span>" + v[0] + "</span><i class='fa fa-times pull-right'></i><i class='pull-right fa " + (v[1] ? 'fa-globe' : 'fa-user') + "'></i></div>");
             });
         });
     }
     $("#btn-permissions").click(function(e) {
+        if (!$("#id").val()) {
+            $("#perm-type").val("global").prop("disabled", true);
+        }
+        else {
+            $("#perm-type").val("user").prop("disabled", false);
+        }
         perm_table_update();
     });
     $("#uuid").keypress(function(e) {
@@ -61,7 +67,7 @@ $(document).ready(function() {
             clearTimeout(permtimeoutid);
             permtimeoutid = false;
         }
-        $.post("/accounts/permissions/add", $("#id, #uuid, #perm-type").serialize(), function(data) {
+        $.post("/accounts/permissions/add", ($("#id").val() ? $("#id, #uuid, #perm-type").serialize() : "type=global&id=-1&uuid=" + encodeURIComponent($("#uuid").val())), function(data) {
             if (data.error) {
                 $("#perm-info").text(data.error).slideDown();
                 permtimeoutid = setTimeout(function() {
@@ -120,8 +126,8 @@ $(document).ready(function() {
         var items = $("#users tr.selected").length;
         if (items == 0) {
             $("#username, #email").val("");
-            $("#btn-create").prop("disabled", false);
-            $("#btn-permissions, #btn-modify, #btn-delete").prop("disabled", true);
+            $("#btn-permissions, #btn-create").prop("disabled", false);
+            $("#btn-modify, #btn-delete").prop("disabled", true);
         }
         else if (items == 1) {
             var row = $("#users tr.selected")[0];
