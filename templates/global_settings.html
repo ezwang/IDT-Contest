@@ -26,15 +26,14 @@
 </form>
 <form action="/global_settings/config" method="POST">
     <h3>Configuration Variables</h3>
+    <p style="text-align:center">These variables can be modified in <b>config.json</b>.</p>
     <hr />
     <h5>Allow Registration</h5>
     <p>Allow users to create an account on the login page.</p>
-    <input type="checkbox" {{ "checked" if config["allow_registration"] }} />
+    <input type="checkbox" {{ "checked" if config["allow_registration"] }} disabled />
     <hr />
     <h5>New Packages</h5>
     <p>Mark new packages as public automatically. All users will be able to view these packages, including users that are not logged in.</p>
-    <input type="checkbox" {{ "checked" if config["new_package_public"] }} />
-    <hr />
-    <input type="submit" class="btn btn-primary" value="Save Changes" />
+    <input type="checkbox" {{ "checked" if config["new_package_public"] }} disabled />
 </form>
 {% endblock %}
