@@ -2,6 +2,11 @@ $(document).ready(function() {
     var table = $("#users").DataTable({
         "ajax": "/accounts/userdata",
         "autoWidth": false,
+        "aoColumns": [
+            {"mData": "username"},
+            {"mData": "email"},
+            {"mData": "type"}
+        ],
         "columnDefs": [
             {
                 "render": function(data, type, row) {
@@ -15,6 +20,27 @@ $(document).ready(function() {
                 "targets": -1
             }
         ]
+    });
+    $("#btn-create").click(function(e) {
+        $.post("/accounts/add_account", $("#user-form :input").serialize(), function(data) {
+            // TODO: update data table more efficiently
+            table.ajax.reload(updateButtons);
+        }, 'json');
+    });
+    $("#btn-modify").click(function(e) {
+        $.post("/accounts/modify_account", $("#user-form :input").serialize(), function(data) {
+            // TODO: update data table more efficiently
+            table.ajax.reload();
+        }, 'json');
+    });
+    $("#btn-delete").click(function(e) {
+        $.post("/accounts/delete_account", $("#user-form :input").serialize(), function(data) {
+            // TODO: update data table more efficiently
+            table.ajax.reload(updateButtons);
+        }, 'json');
+    });
+    $("#btn-permissions").click(function(e) {
+        // TODO: implement
     });
     $("#users tbody").on("click", "tr", function(e) {
         if (e.shiftKey) {
@@ -37,20 +63,29 @@ $(document).ready(function() {
                 $(this).addClass("selected");
             }
         }
-        var items = $("#users tr.selected").length;
+        var ids = [];
+        $.each($("#users tr.selected"), function(k, v) {
+            ids.push(table.row(this).data()["id"]);
+        });
+        $("#id").val(ids.join());
         $("#btn-delete").text("Delete Account");
         $("#username, #type, #email").prop("disabled", false);
+        updateButtons();
+    });
+    function updateButtons() {
+        var items = $("#users tr.selected").length;
         if (items == 0) {
             $("#username, #email").val("");
             $("#btn-create").prop("disabled", false);
             $("#btn-permissions, #btn-modify, #btn-delete").prop("disabled", true);
         }
         else if (items == 1) {
+            var row = $("#users tr.selected")[0];
             $("#btn-create").prop("disabled", true);
             $("#btn-permissions, #btn-modify, #btn-delete").prop("disabled", false);
-            $("#username").val(table.row(this).data()[0]);
-            $("#email").val(table.row(this).data()[1]);
-            $("#type option[value='" + table.row(this).data()[2] + "']").prop("selected", true);
+            $("#username").val(table.row(row).data()["username"]);
+            $("#email").val(table.row(row).data()["email"]);
+            $("#type option[value='" + table.row(row).data()["type"] + "']").prop("selected", true);
         }
         else {
             $("#username, #type, #email").prop("disabled", true).val("(Multiple Accounts)");
@@ -58,5 +93,5 @@ $(document).ready(function() {
             $("#btn-permissions, #btn-delete").prop("disabled", false);
             $("#btn-delete").text("Delete Accounts");
         }
-    });
+    }
 });

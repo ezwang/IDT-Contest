@@ -111,14 +111,29 @@ def user_data():
     if session['type'] == 0:
         return abort(401)
     cur = conn.cursor()
-    cur.execute('SELECT username, email, type FROM users')
+    cur.execute('SELECT id, username, email, type FROM users')
     conn.commit()
-    return jsonify(**{"data":[x for x in cur]})
+    return jsonify(**{"data":[{'id':x[0],'username':x[1],'email':x[2],'type':x[3]} for x in cur]})
 
 @app.route('/accounts/delete_account', methods=['POST'])
 def admin_delete_account():
     # TODO: implement account deletion
-    pass
+    ids = [int(x) for x in request.form['id'].split(',')]
+    cur = conn.cursor()
+    for x in ids:
+        cur.execute('DELETE FROM users WHERE id = %s', (x,))
+        cur.execute('DELETE FROM access WHERE userid = %s', (x,))
+    conn.commit()
+    return jsonify(**{'success':'Account deleted!'})
+
+@app.route('/accounts/modify_account', methods=['POST'])
+def admin_modify_account():
+    if not 'id' in session:
+        return redirect('/')
+    if session['type'] == 0:
+        return abort(401)
+    # TODO: implement
+    return jsonify(**{'success':'Account modified!'})
 
 @app.route('/accounts/add_account', methods=['POST'])
 def admin_add_account():
@@ -128,7 +143,8 @@ def admin_add_account():
         return abort(401)
     username = request.form['username']
     email = request.form['email']
-    password = request.form['password']
+    # TODO: set password for new user
+    password = request.form['password'] if 'password' in request.form else ''
     acc_type = int(request.form['type'])
     cur = conn.cursor()
     try:
@@ -136,6 +152,7 @@ def admin_add_account():
     except psycopg2.IntegrityError, e:
         conn.rollback()
         return jsonify(**{'error':'Account exists with that username!'})
+    conn.commit()
     return jsonify(**{'success':'New account created!'})
 
 @app.route('/settings/change_password', methods=['POST'])

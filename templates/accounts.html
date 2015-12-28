@@ -19,21 +19,24 @@
         </thead>
     </table>
     <hr />
-    <fieldset class="form-group">
-        <input type="text" id="username" name="username" class="form-control" placeholder="Username" />
-    </fieldset>
-    <fieldset class="form-group">
-        <input type="text" id="email" name="email" class="form-control" placeholder="Email" />
-    </fieldset>
-    <fieldset class="form-group" id="type" name="type">
-        <select class="form-control">
-            <option value="0">Normal User</option>
-            <option value="1">Administrator</option>
-        </select>
-    </fieldset>
-    <button id="btn-create" class="btn btn-success">Create Account</button>
-    <button id="btn-modify" class="btn btn-primary" disabled>Modify Account</button>
-    <button id="btn-permissions" class="btn btn-warning" disabled>Modify Permissions</button>
-    <button id="btn-delete" class="btn btn-danger" disabled>Delete Account</button>
+    <div id="user-form">
+        <input type="hidden" id="id" name="id" />
+        <fieldset class="form-group">
+            <input type="text" id="username" name="username" class="form-control" placeholder="Username" />
+        </fieldset>
+        <fieldset class="form-group">
+            <input type="text" id="email" name="email" class="form-control" placeholder="Email" />
+        </fieldset>
+        <fieldset class="form-group">
+            <select class="form-control" id="type" name="type">
+                <option value="0">Normal User</option>
+                <option value="1">Administrator</option>
+            </select>
+        </fieldset>
+        <button id="btn-create" class="btn btn-success">Create Account</button>
+        <button id="btn-modify" class="btn btn-primary" disabled>Modify Account</button>
+        <button id="btn-permissions" class="btn btn-warning" disabled>Modify Permissions</button>
+        <button id="btn-delete" class="btn btn-danger" disabled>Delete Account</button>
+    </div>
 </div>
 {% endblock %}
