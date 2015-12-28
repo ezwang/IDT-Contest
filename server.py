@@ -115,6 +115,35 @@ def user_data():
     conn.commit()
     return jsonify(**{"data":[{'id':x[0],'username':x[1],'email':x[2],'type':x[3]} for x in cur]})
 
+@app.route('/accounts/permissions/<ids>')
+def admin_permissions_load(ids):
+    if not 'id' in session:
+        return redirect('/')
+    if session['type'] == 0:
+        return abort(401)
+    userid = int(ids)
+    cur = conn.cursor()
+    cur.execute('SELECT package,(userid < 0),id FROM access WHERE userid = %s OR userid < 0 ORDER BY userid DESC', (userid,))
+    conn.commit()
+    return jsonify(**{"packages":[x for x in cur]})
+
+@app.route('/accounts/permissions/add', methods=['POST'])
+def admin_permissions_add():
+    userid = request.form['id']
+    uuid = request.form['uuid']
+    cur = conn.cursor()
+    cur.execute('INSERT INTO access (package, userid) VALUES (%s, %s) RETURNING id', (uuid, userid))
+    row = cur.fetchone()
+    conn.commit()
+    return jsonify(**{'success':'Package permission added!','id':row[0]})
+
+@app.route('/accounts/permissions/remove/<id>')
+def admin_permissions_remove(id):
+    cur = conn.cursor()
+    cur.execute('DELETE FROM access WHERE id = %s', (id,))
+    conn.commit()
+    return jsonify(**{'success':'Package permission deleted!'})
+
 @app.route('/accounts/delete_account', methods=['POST'])
 def admin_delete_account():
     ids = [int(x) for x in request.form['id'].split(',')]

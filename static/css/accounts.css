@@ -22,3 +22,32 @@
     -o-user-select: none;
     user-select: none;
 }
+#package-list
+{
+    border: 1px solid #ccc;
+    border-radius: .25rem;
+    padding:15px;
+}
+.package-permission
+{
+    font-family:monospace;
+}
+.package-permission .pull-right
+{
+    line-height: 1.5;
+}
+.package-permission .fa-times
+{
+    margin-left:5px;
+    color:#888;
+    cursor:pointer;
+}
+.package-permission .fa-times:hover
+{
+    color:red;
+}
+#package-list:empty:after
+{
+    content:'No Packages';
+    color:#aaa;
+}

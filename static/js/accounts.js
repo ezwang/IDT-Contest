@@ -39,11 +39,34 @@ $(document).ready(function() {
             table.ajax.reload(updateButtons);
         }, 'json');
     });
+    function perm_table_update() {
+        $("#package-list").children().remove();
+        $.getJSON("/accounts/permissions/" + $("#id").val(), function(data) {
+            $.each(data.packages, function(k, v) {
+                $("#package-list").append("<div class='package-permission' data-id='" + v[2] + "'><span>" + v[0] + "</span><i class='fa fa-times pull-right'></i><i class='pull-right fa " + (v[1] ? 'fa-globe' : 'fa-user') + "'></i></div>");
+            });
+        });
+    }
     $("#btn-permissions").click(function(e) {
-        // TODO: load permission data
+        perm_table_update();
     });
-    $("#modal-permissions-save").click(function(e) {
-        // TODO: save permission data
+    $("#uuid").keypress(function(e) {
+        if (e.keyCode == 13) {
+            $("#uuid-add").click();
+        }
+    });
+    $("#uuid-add").click(function(e) {
+        $.post("/accounts/permissions/add", $("#id, #uuid").serialize(), function(data) {
+            $("#package-list").prepend("<div class='package-permission' data-id='" + data.id + "'><span>" + $("#uuid").val() + "</span><i class='fa fa-times pull-right'></i><i class='pull-right fa fa-user'></i></div>");
+        }, 'json').always(function() {
+            $("#uuid").val("");
+        });
+    });
+    $("#package-list").on("click", ".fa-times", function() {
+        var a = $(this);
+        $.getJSON("/accounts/permissions/remove/" + $(this).parent().data("id"), function(data) {
+            a.parent().remove();
+        });
     });
     $("#users tbody").on("click", "tr", function(e) {
         if (e.shiftKey) {
@@ -86,14 +109,17 @@ $(document).ready(function() {
             var row = $("#users tr.selected")[0];
             $("#btn-create").prop("disabled", true);
             $("#btn-permissions, #btn-modify, #btn-delete").prop("disabled", false);
+            if (table.row(row).data()["type"] > 0) {
+                $("#btn-permissions").prop("disabled", true);
+            }
             $("#username").val(table.row(row).data()["username"]);
             $("#email").val(table.row(row).data()["email"]);
             $("#type option[value='" + table.row(row).data()["type"] + "']").prop("selected", true);
         }
         else {
             $("#username, #type, #email").prop("disabled", true).val("(Multiple Accounts)");
-            $("#btn-create, #btn-modify").prop("disabled", true);
-            $("#btn-permissions, #btn-delete").prop("disabled", false);
+            $("#btn-permissions, #btn-create, #btn-modify").prop("disabled", true);
+            $("#btn-delete").prop("disabled", false);
             $("#btn-delete").text("Delete Accounts");
         }
     }

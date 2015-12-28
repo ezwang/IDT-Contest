@@ -45,3 +45,7 @@ form h3, .form-box h3
     border:1px solid #ccc;
     border-radius:5px;
 }
+.pull-right
+{
+    float:right;
+}

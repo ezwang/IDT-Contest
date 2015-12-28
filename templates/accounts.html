@@ -49,11 +49,18 @@
                 <h4 class="modal-title">Edit Package Permissions</h4>
             </div>
             <div class="modal-body">
-                <p>Permission Editing Here</p>
+                <fieldset class="form-group">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="uuid" name="uuid" placeholder="Package UUID" />
+                        <span class="input-group-btn">
+                            <input type="button" id="uuid-add" class="btn btn-success" value="Add" />
+                        </span>
+                    </div>
+                </fieldset>
+                <div id="package-list"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="modal-permissions-save" data-dismiss="modal">Save Changes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
