@@ -26,5 +26,5 @@
     </fieldset>
     <input type="submit" value="Login" class="btn btn-primary" />
 </form>
-<div style="text-align:center;margin-top:5px"><a href="/register">Don't have an account?</a></div>
+{% if allow_register %}<div style="text-align:center;margin-top:5px"><a href="/register">Don't have an account?</a></div>{% endif %}
 {% endblock %}

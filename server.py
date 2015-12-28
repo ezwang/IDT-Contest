@@ -19,7 +19,7 @@ conn = psycopg2.connect("dbname='" + config["database"]["dbname"] + "' user='" +
 
 @app.context_processor
 def inject_user_data():
-    return dict(logged_in='id' in session, is_admin=session['type'] > 0 if 'type' in session else False)
+    return dict(logged_in='id' in session, is_admin=session['type'] > 0 if 'type' in session else False, allow_register=config["allow_registration"])
 
 @app.route('/')
 def root():
