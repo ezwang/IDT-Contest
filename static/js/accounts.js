@@ -56,8 +56,14 @@ $(document).ready(function() {
         }
     });
     $("#uuid-add").click(function(e) {
-        $.post("/accounts/permissions/add", $("#id, #uuid").serialize(), function(data) {
-            $("#package-list").prepend("<div class='package-permission' data-id='" + data.id + "'><span>" + $("#uuid").val() + "</span><i class='fa fa-times pull-right'></i><i class='pull-right fa fa-user'></i></div>");
+        $.post("/accounts/permissions/add", $("#id, #uuid, #perm-type").serialize(), function(data) {
+            var perm = "<div class='package-permission' data-id='" + data.id + "'><span>" + $("#uuid").val() + "</span><i class='fa fa-times pull-right'></i><i class='pull-right fa fa-" + ($("#perm-type").val() == "global" ? "globe" : "user") + "'></i></div>";
+            if ($("#perm-type").val() == "global") {
+                $("#package-list").append(perm);
+            }
+            else {
+                $("#package-list").prepend(perm);
+            }
         }, 'json').always(function() {
             $("#uuid").val("");
         });

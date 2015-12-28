@@ -131,6 +131,9 @@ def admin_permissions_load(ids):
 def admin_permissions_add():
     userid = request.form['id']
     uuid = request.form['uuid']
+    is_global = request.form['type'] == 'global'
+    if is_global:
+        userid = -1
     cur = conn.cursor()
     cur.execute('INSERT INTO access (package, userid) VALUES (%s, %s) RETURNING id', (uuid, userid))
     row = cur.fetchone()
