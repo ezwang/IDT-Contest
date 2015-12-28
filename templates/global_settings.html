@@ -2,8 +2,11 @@
 {% block title %}Global Settings - Package Manager{% endblock %}
 {% block head %}
     {{ super() }}
+    <link href='/css/bootstrap-switch.min.css' rel='stylesheet' type='text/css' />
+    <script src='/js/bootstrap-switch.min.js'></script>
     <link href='/css/index.css' rel='stylesheet' type='text/css' />
     <script src='/js/index.js'></script>
+    <script>$(document).ready(function() { $('input[type="checkbox"]').bootstrapSwitch(); });</script>
 {% endblock %}
 {% block content %}
 <form action="/global_settings/reset" method="POST">
@@ -20,5 +23,18 @@
             </span>
         </div>
     </fieldset>
+</form>
+<form action="/global_settings/config" method="POST">
+    <h3>Configuration Variables</h3>
+    <hr />
+    <h5>Allow Registration</h5>
+    <p>Allow users to create an account on the login page.</p>
+    <input type="checkbox" {{ "checked" if config["allow_registration"] }} />
+    <hr />
+    <h5>New Packages</h5>
+    <p>Mark new packages as public automatically. All users will be able to view these packages, including users that are not logged in.</p>
+    <input type="checkbox" {{ "checked" if config["new_package_public"] }} />
+    <hr />
+    <input type="submit" class="btn btn-primary" value="Save Changes" />
 </form>
 {% endblock %}

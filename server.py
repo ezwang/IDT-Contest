@@ -76,7 +76,7 @@ def global_settings():
         return redirect('/')
     if session['type'] == 0:
         return abort(401)
-    return render_template('global_settings.html')
+    return render_template('global_settings.html', config = config)
 
 @app.route('/global_settings/reset', methods=['POST'])
 def global_settings_reset():
