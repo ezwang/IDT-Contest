@@ -301,6 +301,8 @@ def login():
 
 @app.route('/getpackage/<uuid>')
 def getexistingpackage(uuid):
+    if not uuidpattern.match(uuid):
+        return jsonify(**{'error':'Invalid UUID format!'})
     if not checkaccess(uuid):
         return abort(401)
     cur = conn.cursor()

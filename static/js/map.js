@@ -14,7 +14,7 @@ function addPackage(uuid, name, delivered, dLat, dLon) {
     }), marker:new google.maps.Marker({
         map:map,
         title:name
-    }),delivered:delivered, destination:new google.maps.LatLng(dLat, dLon)};
+    }),delivered:delivered, destination:new google.maps.LatLng(dLat, dLon), unloaded:false};
     $("#list").append("<li data-id='" + uuid + "'><i class='fa-li fa fa-archive'></i> <span class='name'>" + name + "</span><span class='opt'><i class='p-rename fa fa-pencil'></i></span></li>");
     if (delivered) {
         setDelivered(uuid);
@@ -27,6 +27,10 @@ function addPackage(uuid, name, delivered, dLat, dLon) {
 var trackingUUID = false;
 
 function onMarkerClick(uuid) {
+    if (packages[uuid].unloaded) {
+        loadPoints(uuid);
+        packages[uuid].unloaded = false;
+    }
     map.panTo(packages[uuid].marker.getPosition());
     map.setZoom(12);
     trackingUUID = uuid;
@@ -80,6 +84,14 @@ function setDelivered(uuid) {
     }
 }
 
+function loadPoints(uuid) {
+    $.getJSON('/getpackage/' + uuid, function(data) {
+        $.each(data.data, function(k, v) {
+            addPoint(uuid, v[0], v[1]);
+        });
+    });
+}
+
 var map;
 var socket;
 function initMap() {
@@ -98,11 +110,12 @@ function initMap() {
             var uuid = v[0];
             var dest = v[3].substring(1, v[3].length-1).split(',');
             addPackage(uuid, v[1], v[2], parseFloat(dest[0]), parseFloat(dest[1]));
-            $.getJSON('/getpackage/' + v[0], function(data) {
-                $.each(data.data, function(k, v) {
-                    addPoint(uuid, v[0], v[1]);
-                });
-            });
+            if (v[2]) {
+                packages[uuid].unloaded = true;
+            }
+            else {
+                loadPoints(uuid);
+            }
         });
     });
     socket = io.connect('//' + document.domain + ':' + location.port);
