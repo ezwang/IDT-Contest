@@ -42,6 +42,9 @@ function updateInfoBox() {
     $("#packageinfo #pname").text(packages[trackingUUID].name);
     $("#packageinfo #puuid").text(trackingUUID);
     $("#packageinfo #pstatus").text(packages[trackingUUID].delivered ? 'Delivered' : 'In Transit');
+    if (window.innerWidth <= 480) {
+        scale_sidebar();
+    }
 }
 
 function addPoint(uuid, lat, lon) {
@@ -144,6 +147,14 @@ function package_visible(uuid, show) {
     }
 }
 
+function scale_sidebar() {
+    var val = $(window).height()-$("#member").height()-$("#search").height()-90;
+    if (window.innerWidth <= 480) {
+        val -= $("#packageinfo").height() + 30;
+    }
+    $("#packagelist .message").css("max-height", val);
+}
+
 $(document).ready(function() {
     if (!$("#userid").text()) {
         $("#guest").show();
@@ -189,13 +200,6 @@ $(document).ready(function() {
         }
         package_delete(uuid);
     });
-    function scale_sidebar() {
-        var val = $(window).height()-$("#member").height()-$("#search").height()-90;
-        if (window.innerWidth <= 480) {
-            val -= $("#packageinfo").height() + 30;
-        }
-        $("#packagelist .message").css("max-height", val);
-    }
     $(window).resize(function() {
         scale_sidebar();
     });
