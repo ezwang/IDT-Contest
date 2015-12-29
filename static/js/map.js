@@ -2,6 +2,7 @@ var packages = {};
 // TODO: better check for mobile devices
 var mobile = window.innerWidth <= 480;
 var is_admin = false;
+var default_zoom = mobile ? 1 : 2;
 
 function addPackage(uuid, name, delivered, dLat, dLon) {
     if (uuid in packages) {
@@ -99,8 +100,8 @@ var map;
 var socket;
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 20, lng: 0},
-        zoom: 2,
+        center: {lat: 0, lng: 0},
+        zoom: default_zoom,
         streetViewControl: false,
         mapTypeControl: false,
         zoomControl: !mobile
@@ -188,8 +189,8 @@ $(document).ready(function() {
         $("#member").show();
     }
     function escapeOut() {
-        map.panTo(new google.maps.LatLng(20, 0));
-        map.setZoom(2);
+        map.panTo(new google.maps.LatLng(0, 0));
+        map.setZoom(default_zoom);
         trackingUUID = false;
         updateInfoBox();
     }
