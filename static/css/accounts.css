@@ -73,3 +73,7 @@
     border:1px solid #ccc;
     background-color:white;
 }
+input.tt-input, input.tt-hint
+{
+    font-family:monospace;
+}

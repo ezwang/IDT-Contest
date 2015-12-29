@@ -54,6 +54,13 @@ $(document).ready(function() {
         else {
             $("#perm-type").val("user").prop("disabled", false);
         }
+        if ($("#users tr.selected").length > 0) {
+            $("#permissions-user-name").text(table.row($("#users tr.selected")).data()["username"]);
+            $("#permissions-user-info").show();
+        }
+        else {
+            $("#permissions-user-info").hide();
+        }
         perm_table_update();
     });
     $("#uuid").keypress(function(e) {
@@ -175,7 +182,12 @@ $(document).ready(function() {
             minLength:1
         }, {
             name:'uuids',
-            source:substringMatcher(uuids)
+            source:substringMatcher(uuids),
+            templates: {
+                suggestion: function(data) {
+                    return '<span style="font-family:monospace">' + data + '</span>';
+                }
+            }
         });
     });
 });
