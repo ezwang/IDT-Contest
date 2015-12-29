@@ -11,6 +11,7 @@
 {% endblock %}
 {% block content %}
 <span style='display:none' id="userid">{{ id }}</span>
+<span style='display:none' id="is_admin">{{ is_admin }}</span>
 <div id="sidebar">
     <div id="packagelist" class="box"><span class="title">Packages</span><span class="message"><ul class="fa-ul" id="list"></ul></span></div>
     <div id="guest" class="box">
@@ -18,7 +19,7 @@
     <div id="member" class="box"><span class="title" style="font-weight:normal">Hello, <b id="username">{{ username }}</b>!</span>
         <span class="message">
             <ul class="fa-ul">
-                {% if type > 0 %}
+                {% if is_admin %}
                 <li><i class="fa-li fa fa-globe"></i> <a href="/global_settings">Application Settings</a></li>
                 <li><i class="fa-li fa fa-users"></i> <a href="/accounts">Account Management</a></li>
                 {% endif %}

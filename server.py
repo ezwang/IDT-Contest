@@ -263,7 +263,10 @@ def map():
 
 @app.route('/map/delete_package/<uuid>')
 def deletepackage(uuid):
-    # TODO: auth check here
+    if not 'id' in session:
+        return redirect('/')
+    if session['type'] == 0:
+        return jsonify(**{'error':'Access denied!'})
     cur = conn.cursor()
     cur.execute('DELETE FROM packages WHERE id = %s', (uuid,))
     cur.execute('DELETE FROM steps WHERE id = %s', (uuid,))
@@ -273,7 +276,10 @@ def deletepackage(uuid):
 
 @app.route('/map/rename_package/<uuid>/<name>')
 def renamepackage(uuid, name):
-    # TODO: auth check here
+    if not 'id' in session:
+        return redirect('/')
+    if session['type'] == 0:
+        return jsonify(**{'error':'Access denied!'})
     cur = conn.cursor()
     cur.execute('UPDATE packages SET name = %s WHERE id = %s', (name, uuid))
     conn.commit()

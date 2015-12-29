@@ -1,6 +1,7 @@
 var packages = {};
 // TODO: better check for mobile devices
 var mobile = window.innerWidth <= 480;
+var is_admin = false;
 
 function addPackage(uuid, name, delivered, dLat, dLon) {
     if (uuid in packages) {
@@ -15,7 +16,7 @@ function addPackage(uuid, name, delivered, dLat, dLon) {
         map:map,
         title:name
     }),delivered:delivered, destination:new google.maps.LatLng(dLat, dLon), unloaded:false};
-    $("#list").append("<li data-id='" + uuid + "'><i class='fa-li fa fa-archive'></i> <span class='name'>" + name + "</span><span class='opt'><i class='p-rename fa fa-pencil'></i></span></li>");
+    $("#list").append("<li data-id='" + uuid + "'><i class='fa-li fa fa-archive'></i> <span class='name'>" + name + "</span>" + (is_admin ? "<span class='opt'><i class='p-rename fa fa-pencil'></i></span>" : "") + "</li>");
     if (delivered) {
         setDelivered(uuid);
     }
@@ -76,7 +77,9 @@ function setDelivered(uuid) {
         packages[uuid].delivered = true;
         packages[uuid].marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
         $("#list li[data-id='" + uuid + "'] i").addClass('fa-check').removeClass('fa-archive');
-        $("#list li[data-id='" + uuid + "'] .opt").append("<i class='p-delete fa fa-times'></i>");
+        if (is_admin) {
+            $("#list li[data-id='" + uuid + "'] .opt").append("<i class='p-delete fa fa-times'></i>");
+        }
         packages[uuid].marker.setPosition(packages[uuid].destination);
     }
     else {
@@ -172,6 +175,9 @@ function scale_sidebar() {
 }
 
 $(document).ready(function() {
+    if ($("#is_admin").text() == "True") {
+        is_admin = true;
+    }
     if (!$("#userid").text()) {
         $("#guest").show();
     }
