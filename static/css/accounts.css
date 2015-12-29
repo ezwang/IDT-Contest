@@ -61,3 +61,15 @@
     content:'No Packages';
     color:#aaa;
 }
+.twitter-typeahead
+{
+    width:100%;
+    display:block !important;
+}
+.tt-menu
+{
+    padding:10px;
+    top:40px !important;
+    border:1px solid #ccc;
+    background-color:white;
+}

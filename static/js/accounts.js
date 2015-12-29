@@ -83,7 +83,7 @@ $(document).ready(function() {
                 $("#package-list").prepend(perm);
             }
         }, 'json').always(function() {
-            $("#uuid").val("");
+            $("#uuid").typeahead('val', '');
         });
     });
     $("#package-list").on("click", ".fa-times", function() {
@@ -147,4 +147,35 @@ $(document).ready(function() {
             $("#btn-delete").text("Delete Accounts");
         }
     }
+    var substringMatcher = function(strs) {
+        return function findMatches(q, cb) {
+            var matches, substringRegex;
+
+            matches = [];
+
+            substrRegex = new RegExp(q, 'i');
+
+            $.each(strs, function(i, str) {
+                if (substrRegex.test(str)) {
+                    matches.push(str);
+                }
+            });
+
+            cb(matches);
+        };
+    };
+    $.getJSON('/getpackages', function(data) {
+        var uuids = [];
+        $.each(data.data, function(k, v) {
+            uuids.push(v[0]);
+        });
+        $("#uuid").typeahead({
+            hint:true,
+            highlight:true,
+            minLength:1
+        }, {
+            name:'uuids',
+            source:substringMatcher(uuids)
+        });
+    });
 });
