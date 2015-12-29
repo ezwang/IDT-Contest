@@ -259,13 +259,14 @@ def map():
         type = session['type']
     else:
         type = -1
-    return render_template('map.html', mapskey = config["api"]["googlemaps"] if config["api"]["googlemaps"] else "", id = session['id'] if 'id' in session else '', username = session['username'] if 'username' in session else '', type = type)
+    return render_template('map.html', mapskey = config["api"]["googlemaps"] if config["api"]["googlemaps"] else "", id = session['id'] if 'id' in session else '', username = session['username'] if 'username' in session else '', can_edit = config["allow_user_edit"])
 
 @app.route('/map/delete_package/<uuid>')
 def deletepackage(uuid):
     if not 'id' in session:
         return redirect('/')
-    if session['type'] == 0:
+    # TODO: check if user actually has access to package
+    if session['type'] == 0 and not config["allow_user_edit"]:
         return jsonify(**{'error':'Access denied!'})
     cur = conn.cursor()
     cur.execute('DELETE FROM packages WHERE id = %s', (uuid,))
@@ -278,7 +279,8 @@ def deletepackage(uuid):
 def renamepackage(uuid, name):
     if not 'id' in session:
         return redirect('/')
-    if session['type'] == 0:
+    # TODO: check if user actually has access to package
+    if session['type'] == 0 and not config["allow_user_edit"]:
         return jsonify(**{'error':'Access denied!'})
     cur = conn.cursor()
     cur.execute('UPDATE packages SET name = %s WHERE id = %s', (name, uuid))

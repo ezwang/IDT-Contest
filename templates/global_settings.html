@@ -35,5 +35,9 @@
     <h5>New Packages</h5>
     <p>Mark new packages as public automatically. All users will be able to view these packages, including users that are not logged in.</p>
     <input type="checkbox" {{ "checked" if config["new_package_public"] }} disabled />
+    <hr />
+    <h5>User Editing</h5>
+    <p>Allow users to rename and delete packages. Users will only be able to rename and delete packages that they have access to.</p>
+    <input type="checkbox" {{ "checked" if config["allow_user_edit"] }} disabled />
 </form>
 {% endblock %}
