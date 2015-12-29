@@ -189,6 +189,17 @@ $(document).ready(function() {
         }
         package_delete(uuid);
     });
+    function scale_sidebar() {
+        var val = $(window).height()-$("#member").height()-$("#search").height()-90;
+        if (window.innerWidth <= 480) {
+            val -= $("#packageinfo").height() + 30;
+        }
+        $("#packagelist .message").css("max-height", val);
+    }
+    $(window).resize(function() {
+        scale_sidebar();
+    });
+    scale_sidebar();
     $("#search").on('keyup blur paste', function() {
         if (!$(this).val()) {
             $("#list li").each(function(k, v) {
