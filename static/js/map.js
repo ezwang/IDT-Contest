@@ -178,18 +178,24 @@ $(document).ready(function() {
     if ($("#is_admin").text() == "True") {
         is_admin = true;
     }
+    if (mobile) {
+        $("#escapeOutKey").html("<i class='fa fa-search-minus'></i>");
+    }
     if (!$("#userid").text()) {
         $("#guest").show();
     }
     else {
         $("#member").show();
     }
+    function escapeOut() {
+        map.panTo(new google.maps.LatLng(20, 0));
+        map.setZoom(2);
+        trackingUUID = false;
+        updateInfoBox();
+    }
     $(document).keyup(function(e) {
         if (e.keyCode == 27) {
-            map.panTo(new google.maps.LatLng(20, 0));
-            map.setZoom(2);
-            trackingUUID = false;
-            updateInfoBox();
+            escapeOut();
         }
     });
     $(document).keydown(function(e) {
@@ -227,6 +233,9 @@ $(document).ready(function() {
     });
     $("#toggle").click(function() {
         $("#sidebar, #packageinfo, #searchbox").toggle('slide', {direction:'left'}, 500);
+    });
+    $("#zoomout").click(function() {
+        escapeOut();
     });
     scale_sidebar();
     $("#search").on('keyup blur paste', function() {
