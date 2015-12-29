@@ -4,6 +4,8 @@
     {{ super() }}
     <link href='/css/map.css' type='text/css' rel='stylesheet' />
     <script src="/js/socket.io.js"></script>
+    <script src='/js/jquery.effects.core.js'></script>
+    <script src='/js/jquery.effects.slide.js'></script>
     <script src="/js/map.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?{{ "key=" + mapskey + "&" if mapskey else "" }}callback=initMap" async defer></script>
 {% endblock %}
@@ -37,6 +39,9 @@
         <b>ETA:</b> <span id="peta">Unknown</span><br />
         <b style="font-size:12px">UUID:</b> <span id="puuid"></span><br />
     </div>
+</div>
+<div id="mobile">
+    <div id="toggle"><i class="fa fa-eye"></i></div>
 </div>
 <div id="map"></div>
 {% endblock %}

@@ -1,4 +1,6 @@
 var packages = {};
+// TODO: better check for mobile devices
+var mobile = window.innerWidth <= 480;
 
 function addPackage(uuid, name, delivered, dLat, dLon) {
     if (uuid in packages) {
@@ -42,7 +44,7 @@ function updateInfoBox() {
     $("#packageinfo #pname").text(packages[trackingUUID].name);
     $("#packageinfo #puuid").text(trackingUUID);
     $("#packageinfo #pstatus").text(packages[trackingUUID].delivered ? 'Delivered' : 'In Transit');
-    if (window.innerWidth <= 480) {
+    if (mobile) {
         scale_sidebar();
     }
 }
@@ -85,7 +87,8 @@ function initMap() {
         center: {lat: 20, lng: 0},
         zoom: 2,
         streetViewControl: false,
-        mapTypeControl: false
+        mapTypeControl: false,
+        zoomControl: !mobile
     });
     map.addListener('drag', function() {
         trackingUUID = false;
@@ -149,7 +152,7 @@ function package_visible(uuid, show) {
 
 function scale_sidebar() {
     var val = $(window).height()-$("#member").height()-$("#search").height()-90;
-    if (window.innerWidth <= 480) {
+    if (mobile) {
         val -= $("#packageinfo").height() + 30;
     }
     $("#packagelist .message").css("max-height", val);
@@ -202,6 +205,9 @@ $(document).ready(function() {
     });
     $(window).resize(function() {
         scale_sidebar();
+    });
+    $("#toggle").click(function() {
+        $("#sidebar, #packageinfo, #searchbox").toggle('slide', {direction:'left'}, 500);
     });
     scale_sidebar();
     $("#search").on('keyup blur paste', function() {
