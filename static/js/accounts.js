@@ -48,14 +48,19 @@ $(document).ready(function() {
         });
     }
     $("#btn-permissions").click(function(e) {
+        $("#uuid").typeahead('val', '');
         if (!$("#id").val()) {
             $("#perm-type").val("global").prop("disabled", true);
         }
         else {
             $("#perm-type").val("user").prop("disabled", false);
         }
-        if ($("#users tr.selected").length > 0) {
+        if ($("#users tr.selected").length == 1) {
             $("#permissions-user-name").text(table.row($("#users tr.selected")).data()["username"]);
+            $("#permissions-user-info").show();
+        }
+        else if ($("#users tr.selected").length > 0) {
+            // TODO: add support for multiple acc permission editing
             $("#permissions-user-info").show();
         }
         else {
@@ -156,8 +161,14 @@ $(document).ready(function() {
         else {
             $("#username, #type, #email").prop("disabled", true).val("(Multiple Accounts)");
             $("#password").prop("disabled", true).val("");
-            $("#btn-permissions, #btn-create, #btn-modify").prop("disabled", true);
-            $("#btn-delete").prop("disabled", false);
+            $("#btn-create, #btn-modify").prop("disabled", true);
+            $("#btn-permissions, #btn-delete").prop("disabled", false);
+            $.each($("#users tr.selected"), function(k, v) {
+                if (table.row(this).data()["type"] > 0) {
+                    $("#btn-permissions").prop("disabled", true);
+                    return false;
+                }
+            });
             $("#btn-delete").text("Delete Accounts");
         }
     }

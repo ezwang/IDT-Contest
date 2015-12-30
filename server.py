@@ -123,9 +123,9 @@ def admin_permissions_load(ids):
         return redirect('/')
     if session['type'] == 0:
         return abort(401)
-    userid = int(ids)
+    userid = [int(x.strip()) for x in ids.split(',')]
     cur = conn.cursor()
-    cur.execute('SELECT package,(userid < 0),id FROM access WHERE userid = %s OR userid < 0 ORDER BY userid DESC', (userid,))
+    cur.execute('SELECT package,(userid < 0),id FROM access WHERE userid IN %s OR userid < 0 ORDER BY userid DESC', (tuple(userid),))
     conn.commit()
     return jsonify(**{"packages":[x for x in cur]})
 
