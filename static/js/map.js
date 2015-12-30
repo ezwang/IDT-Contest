@@ -29,23 +29,33 @@ function addPackage(uuid, name, delivered, dLat, dLon) {
 var trackingUUID = false;
 
 function onMarkerClick(uuid) {
-    if (!uuid) {
-	if (packages[trackingUUID].polyline.getPath().getLength() == 0) {
-	    window.setTimeout("onMarkerClick()", 100);
-	    return;
-    	}	
-	else
-	    uuid = trackingUUID;
-    }
+    trackingUUID = uuid;
     if (packages[uuid].unloaded) {
-	loadPoints(uuid);
+        loadPoints(uuid);
         packages[uuid].unloaded = false;
-	trackingUUID = uuid;
-	window.setTimeout("onMarkerClick()", 100);
+        updateDistanceCalculations();
     }
     map.panTo(packages[uuid].marker.getPosition());
     map.setZoom(12);
     updateInfoBox();
+}
+
+function updateDistanceCalculations() {
+    $("#packageinfo #peta").text("Loading...");
+    if (packages[trackingUUID].polyline.getPath().getLength() == 0) {
+        setTimeout(updateDistanceCalculations, 100);
+        return;
+    }
+    var total_dist = 0;
+    var path = packages[trackingUUID].polyline.getPath();
+    for (var i=1; i<path.getLength(); i++) {
+        var lat1 = path.getAt(i-1).lat(), lng1 = path.getAt(i-1).lng();
+        var lat2 = path.getAt(i).lat(), lng2 = path.getAt(i).lng();
+        // TODO: account for elevation in kilometers
+        total_dist += 2 * 6371 * Math.asin(Math.sqrt(Math.pow(Math.sin((lat2-lat1)/2), 2) + Math.cos(lat1)*Math.cos(lat2)*Math.pow(Math.sin((lng2-lng1)/2), 2)));
+    }
+    // TODO: change to eta, not just dist
+    $("#packageinfo #peta").text(Math.round(total_dist) + " km");
 }
 
 function updateInfoBox() {
@@ -59,17 +69,6 @@ function updateInfoBox() {
     $("#packageinfo #pname").text(packages[trackingUUID].name);
     $("#packageinfo #puuid").text(trackingUUID);
     $("#packageinfo #pstatus").text(packages[trackingUUID].delivered ? 'Delivered' : 'In Transit');
-    var total_dist = 0;
-    var path = packages[trackingUUID].polyline.getPath();
-    for (var i=1; i<path.getLength(); i++) {
-	var lat1 = path.getAt(i-1).lat(), lng1 = path.getAt(i-1).lng();
-	var lat2 = path.getAt(i).lat(), lng2 = path.getAt(i).lng();
-	// TODO: account for elevation
-	// in kilometers
-    	total_dist += 2 * 6371 * Math.asin(Math.sqrt(Math.pow(Math.sin((lat2-lat1)/2), 2) + Math.cos(lat1)*Math.cos(lat2)*Math.pow(Math.sin((lng2-lng1)/2), 2)));
-    }
-    // TODO: change to eta, not just dist
-    $("#packageinfo #peta").text(Math.round(total_dist) + " km");
     if (mobile) {
         scale_sidebar();
     }
