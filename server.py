@@ -163,7 +163,7 @@ def admin_delete_account():
         cur.execute('DELETE FROM users WHERE id = %s', (x,))
         cur.execute('DELETE FROM access WHERE userid = %s', (x,))
     conn.commit()
-    return jsonify(**{'success':'Account deleted!'})
+    return jsonify(**{'success':str(len(ids)) + ' account(s) deleted!'})
 
 @app.route('/accounts/modify_account', methods=['POST'])
 def admin_modify_account():
@@ -177,7 +177,7 @@ def admin_modify_account():
     acc_type = int(request.form['type'])
     cur = conn.cursor()
     cur.execute('UPDATE users SET username = %s, email = %s, type = %s WHERE id = %s', (username, email, acc_type, userid))
-    if 'password' in request.form:
+    if 'password' in request.form and len(request.form['password'] > 0):
         cur.execute('UPDATE users SET password = %s WHERE id = %s', (generate_password_hash(request.form['password']), userid))
     conn.commit()
     return jsonify(**{'success':'Account modified!'})
@@ -191,8 +191,7 @@ def admin_add_account():
     username = request.form['username']
     if len(username) == 0:
         return jsonify(**{'error':'Please enter a username for the new account!'})
-    email = request.form['email']
-    # TODO: set password for new user
+    email = request.form['email'] if 'email' in request.form else ''
     password = request.form['password'] if 'password' in request.form else ''
     acc_type = int(request.form['type'])
     cur = conn.cursor()
