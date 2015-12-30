@@ -60,7 +60,7 @@ $(document).ready(function() {
             $("#permissions-user-info").show();
         }
         else if ($("#users tr.selected").length > 0) {
-            $("#permissions-user-name").html("<span style='font-weight:normal'> the <b>" + $("#users tr.selected").length + "</b> users selected.<br />If you add a permission, it will apply to all users that are selected</span>");
+            $("#permissions-user-name").html("<span style='font-weight:normal'> one of the <b>" + $("#users tr.selected").length + "</b> users selected.<br />If you add a permission, it will apply to all users that are selected</span>");
             $("#permissions-user-info").show();
         }
         else {
