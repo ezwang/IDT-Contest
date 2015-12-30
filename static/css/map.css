@@ -140,6 +140,13 @@ body
     line-height:60px;
     font-size:30px;
     box-shadow: 0 0 4px rgba(0,0,0,.14),0 4px 8px rgba(0,0,0,.28);
+    transition: box-shadow .2s;
+}
+#toggle:hover, #zoomout:hover {
+    box-shadow: 0 0 6px rgba(0, 0, 0, .28), 0 6px 12px rgba(0, 0, 0, .42);
+}
+#toggle:active, #zoomout:active {
+    box-shadow: 0 0 5px rgba(0, 0, 0, .42), 0 4px 10px rgba(0, 0, 0, .56);
 }
 #toggle
 {
