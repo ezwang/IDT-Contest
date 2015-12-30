@@ -129,8 +129,13 @@ $(document).ready(function() {
         $("#username, #type, #email").prop("disabled", false);
         updateButtons();
     });
+    $("#password-edit").click(function(e) {
+        $("#password").prop("disabled", false).val("").focus();
+        $(this).hide();
+    });
     function updateButtons() {
         var items = $("#users tr.selected").length;
+        $("#password-edit").hide();
         if (items == 0) {
             $("#username, #email, #password").val("");
             $("#btn-permissions, #btn-create, #password").prop("disabled", false);
@@ -138,6 +143,7 @@ $(document).ready(function() {
         }
         else if (items == 1) {
             var row = $("#users tr.selected")[0];
+            $("#password-edit").show();
             $("#btn-create, #password").prop("disabled", true);
             $("#btn-permissions, #btn-modify, #btn-delete").prop("disabled", false);
             if (table.row(row).data()["type"] > 0) {
