@@ -60,7 +60,7 @@ $(document).ready(function() {
             $("#permissions-user-info").show();
         }
         else if ($("#users tr.selected").length > 0) {
-            // TODO: add support for multiple acc permission editing
+            $("#permissions-user-name").html("<span style='font-weight:normal'> the <b>" + $("#users tr.selected").length + "</b> users selected.<br />If you add a permission, it will apply to all users that are selected</span>");
             $("#permissions-user-info").show();
         }
         else {
@@ -87,12 +87,25 @@ $(document).ready(function() {
                 }, 3000);
                 return;
             }
-            var perm = "<div class='package-permission' data-id='" + data.id + "'><span>" + $("#uuid").val() + "</span><i class='fa fa-times pull-right'></i><i class='pull-right fa fa-" + ($("#perm-type").val() == "global" ? "globe" : "user") + "'></i></div>";
-            if ($("#perm-type").val() == "global") {
-                $("#package-list").append(perm);
+            if ($("#users tr.selected").length > 1) {
+                $.each(data.id, function(v) {
+                    var perm = "<div class='package-permission' data-id='" + v + "'><span>" + $("#uuid").val() + "</span><i class='fa fa-times pull-right'></i><i class='pull-right fa fa-" + ($("#perm-type").val() == "global" ? "globe" : "user") + "'></i></div>";
+                    if ($("#perm-type").val() == "global") {
+                        $("#package-list").append(perm);
+                    }
+                    else {
+                        $("#package-list").prepend(perm);
+                    }
+                });
             }
             else {
-                $("#package-list").prepend(perm);
+                var perm = "<div class='package-permission' data-id='" + data.id + "'><span>" + $("#uuid").val() + "</span><i class='fa fa-times pull-right'></i><i class='pull-right fa fa-" + ($("#perm-type").val() == "global" ? "globe" : "user") + "'></i></div>";
+                if ($("#perm-type").val() == "global") {
+                    $("#package-list").append(perm);
+                }
+                else {
+                    $("#package-list").prepend(perm);
+                }
             }
         }, 'json').always(function() {
             $("#uuid").typeahead('val', '');
