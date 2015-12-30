@@ -131,22 +131,27 @@ def admin_permissions_load(ids):
 
 @app.route('/accounts/permissions/add', methods=['POST'])
 def admin_permissions_add():
-    userid = request.form['id']
+    userids = [int(x.strip()) for x in request.form['id'].split(',')]
     uuid = request.form['uuid']
     if not uuidpattern.match(uuid):
         return jsonify(**{'error':'The UUID you entered is not in the correct format!'})
     is_global = request.form['type'] == 'global'
     if is_global:
-        userid = -1
+        userids = [-1]
     cur = conn.cursor()
-    try:
-        cur.execute('INSERT INTO access (package, userid) VALUES (%s, %s) RETURNING id', (uuid, userid))
-    except psycopg2.IntegrityError:
-        conn.rollback()
-        return jsonify(**{'error':'A permission pair already exists with that user and package combination!'})
-    row = cur.fetchone()
-    conn.commit()
-    return jsonify(**{'success':'Package permission added!','id':row[0]})
+    row = []
+    fails = 0
+    for userid in userids:
+        try:
+            cur.execute('INSERT INTO access (package, userid) VALUES (%s, %s) RETURNING id', (uuid, userid))
+            conn.commit()
+        except psycopg2.IntegrityError:
+            conn.rollback()
+            if len(userids) == 1:
+                return jsonify(**{'error':'A permission pair already exists with that user and package combination!'})
+            fails += 1
+        row.append(cur.fetchone())
+    return jsonify(**{'success':'Package permission(s) added!' if fails == 0 else str(len(userids)) + '/' + str(len(userids)-fails) + ' package permissions added!','id':row[0][0] if len(row) == 1 else [x[0] for x in row]})
 
 @app.route('/accounts/permissions/remove/<id>')
 def admin_permissions_remove(id):
