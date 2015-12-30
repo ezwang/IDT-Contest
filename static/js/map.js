@@ -33,17 +33,22 @@ function onMarkerClick(uuid) {
     if (packages[uuid].unloaded) {
         loadPoints(uuid);
         packages[uuid].unloaded = false;
-        updateDistanceCalculations();
+        updateDistanceCalculations(uuid);
     }
     map.panTo(packages[uuid].marker.getPosition());
     map.setZoom(12);
     updateInfoBox();
 }
 
-function updateDistanceCalculations() {
+function updateDistanceCalculations(uuid) {
+    if (uuid != trackingUUID) {
+        return;
+    }
     $("#packageinfo #peta").text("Loading...");
     if (packages[trackingUUID].polyline.getPath().getLength() == 0) {
-        setTimeout(updateDistanceCalculations, 100);
+        setTimeout(function() {
+            updateDistanceCalculations(uuid);
+        }, 100);
         return;
     }
     var total_dist = 0;
