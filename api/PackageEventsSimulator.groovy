@@ -106,8 +106,10 @@ def handleNode(node) {
             def newEvent = new Event();
             newEvent.eventType = START;
             newEvent.track = currentTrack;
+            // make sure the creation event is before the first update by
+            // taking away one second from the event time
             newEvent.updateTime =
-                javax.xml.bind.DatatypeConverter.parseDateTime(body["time"]).getTimeInMillis();
+                (javax.xml.bind.DatatypeConverter.parseDateTime(body["time"]).getTimeInMillis() - 1000);
 
             currentTrack.startTime = newEvent.updateTime;
 
@@ -166,7 +168,9 @@ tracks.each { track ->
     def newEvent = new Event();
     newEvent.eventType = DELIVERY;
     newEvent.track = track;
-    newEvent.updateTime = track.endTime;
+    // make sure the delivery event is after the last update by
+    // adding one second to the last event time
+    newEvent.updateTime = track.endTime + 1000;
     newEvent.updateBody = [ delivered:"true" ];
     track.orderedUpdates.push(newEvent);
 
