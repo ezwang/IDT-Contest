@@ -132,13 +132,13 @@ $(document).ready(function() {
     function updateButtons() {
         var items = $("#users tr.selected").length;
         if (items == 0) {
-            $("#username, #email").val("");
-            $("#btn-permissions, #btn-create").prop("disabled", false);
+            $("#username, #email, #password").val("");
+            $("#btn-permissions, #btn-create, #password").prop("disabled", false);
             $("#btn-modify, #btn-delete").prop("disabled", true);
         }
         else if (items == 1) {
             var row = $("#users tr.selected")[0];
-            $("#btn-create").prop("disabled", true);
+            $("#btn-create, #password").prop("disabled", true);
             $("#btn-permissions, #btn-modify, #btn-delete").prop("disabled", false);
             if (table.row(row).data()["type"] > 0) {
                 $("#btn-permissions").prop("disabled", true);
@@ -149,6 +149,7 @@ $(document).ready(function() {
         }
         else {
             $("#username, #type, #email").prop("disabled", true).val("(Multiple Accounts)");
+            $("#password").prop("disabled", true).val("");
             $("#btn-permissions, #btn-create, #btn-modify").prop("disabled", true);
             $("#btn-delete").prop("disabled", false);
             $("#btn-delete").text("Delete Accounts");
