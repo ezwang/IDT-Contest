@@ -33,7 +33,6 @@ function onMarkerClick(uuid) {
     if (packages[uuid].unloaded) {
         loadPoints(uuid);
         packages[uuid].unloaded = false;
-        updateDistanceCalculations(uuid);
     }
     map.panTo(packages[uuid].marker.getPosition());
     map.setZoom(12);
@@ -74,6 +73,7 @@ function updateInfoBox() {
     $("#packageinfo #pname").text(packages[trackingUUID].name);
     $("#packageinfo #puuid").text(trackingUUID);
     $("#packageinfo #pstatus").text(packages[trackingUUID].delivered ? 'Delivered' : 'In Transit');
+    updateDistanceCalculations(trackingUUID);
     if (mobile) {
         scale_sidebar();
     }
