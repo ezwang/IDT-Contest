@@ -73,7 +73,13 @@ function updateInfoBox() {
     $("#packageinfo #pname").text(packages[trackingUUID].name);
     $("#packageinfo #puuid").text(trackingUUID);
     $("#packageinfo #pstatus").text(packages[trackingUUID].delivered ? 'Delivered' : 'In Transit');
-    updateDistanceCalculations(trackingUUID);
+    if (packages[trackingUUID].delivered) {
+        $("#packageinfo #peta-container").hide();
+    }
+    else {
+        $("#packageinfo #peta-container").show();
+        updateDistanceCalculations(trackingUUID);
+    }
     if (mobile) {
         scale_sidebar();
     }
