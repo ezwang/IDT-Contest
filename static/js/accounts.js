@@ -75,16 +75,16 @@ $(document).ready(function() {
     });
     var permtimeoutid = false;
     $("#uuid-add").click(function(e) {
-        if (permtimeoutid) {
-            clearTimeout(permtimeoutid);
-            permtimeoutid = false;
-        }
         $.post("/accounts/permissions/add", ($("#id").val() ? $("#id, #uuid, #perm-type").serialize() : "type=global&id=-1&uuid=" + encodeURIComponent($("#uuid").val())), function(data) {
             if (data.error) {
                 $("#perm-info").text(data.error).slideDown();
+                if (permtimeoutid) {
+                    clearTimeout(permtimeoutid);
+                    permtimeoutid = false;
+                }
                 permtimeoutid = setTimeout(function() {
                     $("#perm-info").slideUp();
-                }, 3000);
+                }, 2000);
                 return;
             }
             if ($("#users tr.selected").length > 1) {

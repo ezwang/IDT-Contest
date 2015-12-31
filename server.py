@@ -144,19 +144,20 @@ def admin_permissions_add():
     for userid in userids:
         try:
             cur.execute('INSERT INTO access (package, userid) VALUES (%s, %s) RETURNING id', (uuid, userid))
+            row.append(cur.fetchone())
             conn.commit()
         except psycopg2.IntegrityError:
             conn.rollback()
             if len(userids) == 1:
                 return jsonify(**{'error':'A permission pair already exists with that user and package combination!'})
             fails += 1
-        row.append(cur.fetchone())
     return jsonify(**{'success':'Package permission(s) added!' if fails == 0 else str(len(userids)) + '/' + str(len(userids)-fails) + ' package permissions added!','id':row[0][0] if len(row) == 1 else [x[0] for x in row]})
 
-@app.route('/accounts/permissions/remove/<id>')
-def admin_permissions_remove(id):
+@app.route('/accounts/permissions/remove/<ids>')
+def admin_permissions_remove(ids):
+    ids = [int(x.strip()) for x in ids.split(',')]
     cur = conn.cursor()
-    cur.execute('DELETE FROM access WHERE id = %s', (id,))
+    cur.execute('DELETE FROM access WHERE id IN %s', (tuple(ids),))
     conn.commit()
     return jsonify(**{'success':'Package permission deleted!'})
 

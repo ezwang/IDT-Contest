@@ -244,6 +244,7 @@ $(document).ready(function() {
         e.stopPropagation();
         var uuid = $(this).parent().parent().attr('data-id');
         var oldname = $(this).parent().parent().find('.name').text();
+        // TODO: prettier rename prompt
         var name = prompt('What should the new name for this package be?\n' + uuid, oldname);
         if (!name || name == oldname) {
             return;
@@ -254,6 +255,7 @@ $(document).ready(function() {
         e.preventDefault();
         e.stopPropagation();
         var uuid = $(this).parent().parent().attr('data-id');
+        // TODO: prettier confirm
         if (!confirm('Are you sure you want to delete this package record?\n' + uuid)) {
             return;
         }
