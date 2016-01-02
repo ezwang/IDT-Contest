@@ -143,8 +143,7 @@ function initMap() {
     $.getJSON('/getpackages', function(data) {
         $.each(data.data, function(k, v) {
             var uuid = v[0];
-            var dest = v[3].substring(1, v[3].length-1).split(',');
-            addPackage(uuid, v[1], v[2], parseFloat(dest[0]), parseFloat(dest[1]));
+            addPackage(uuid, v[1], v[2], v[3], v[4]);
             if (v[2]) {
                 packages[uuid].unloaded = true;
             }

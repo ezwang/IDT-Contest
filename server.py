@@ -321,8 +321,8 @@ def getexistingpackage(uuid):
     if not checkaccess(uuid):
         return abort(401)
     cur = conn.cursor()
-    cur.execute('SELECT pos,ele FROM steps WHERE id = %s ORDER BY time DESC', (uuid,))
-    return jsonify(**{'data':[[d for d in x[0][1:-1].split(",")] + [x[1]] for x in cur]})
+    cur.execute('SELECT lat, lng, ele FROM steps WHERE id = %s ORDER BY time', (uuid,))
+    return jsonify(**{'data':[x for x in cur]})
 
 @app.route('/logout')
 def logout():
@@ -357,11 +357,11 @@ def getexistingdata():
     cur = conn.cursor()
     if 'id' in session:
         if session['type'] > 0:
-            cur.execute('SELECT id,name,delivered,destination FROM packages')
+            cur.execute('SELECT id,name,delivered,lat,lng FROM packages')
         else:
-            cur.execute('SELECT id,name,delivered,destination FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND (access.userid = %s or access.userid < 0))', (session['id'],))
+            cur.execute('SELECT id,name,delivered,lat,lng FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND (access.userid = %s or access.userid < 0))', (session['id'],))
     else:
-        cur.execute('SELECT id,name,delivered,destination FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND access.userid < 0)')
+        cur.execute('SELECT id,name,delivered,lat,lng FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND access.userid < 0)')
     conn.commit()
     return jsonify(**{'data':[x for x in cur]})
 
@@ -376,7 +376,7 @@ def tracknewpackage():
     dLat = float(request.args.get('destinationLat'))
     dLon = float(request.args.get('destinationLon'))
     cur = conn.cursor()
-    cur.execute('INSERT INTO packages (id, name, destination, delivered) VALUES (%s, %s, \'(%s, %s)\', false)', (uuid, name, dLat, dLon))
+    cur.execute('INSERT INTO packages (id, name, lat, lng, delivered) VALUES (%s, %s, %s, %s, false)', (uuid, name, dLat, dLon))
     if config["new_package_public"]:
         cur.execute('INSERT INTO access (userid, package) VALUES (-1, %s)',(uuid,))
         for client in clients:
@@ -410,7 +410,7 @@ def packagetrackupdate(uuid):
         ele = float(content['ele'])
         time = content['time']
         cur = conn.cursor()
-        cur.execute('INSERT INTO steps (id, pos, ele, time) VALUES (%s, \'(%s, %s)\', %s, %s)', (uuid, lat, lon, ele, time))
+        cur.execute('INSERT INTO steps (id, lat, lng, ele, time) VALUES (%s, %s, %s, %s, %s)', (uuid, lat, lon, ele, time))
         conn.commit()
         socketio.emit('plot', {'uuid':uuid,'lat':lat,'lon':lon,'ele':ele}, room='admin')
         socketio.emit('plot', {'uuid':uuid,'lat':lat,'lon':lon,'ele':ele}, room=uuid)

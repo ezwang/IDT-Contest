@@ -30,10 +30,10 @@ print "[*] Adding 'user' user with password 'user'..."
 cur.execute('INSERT INTO users (username, password, type) VALUES (%s, %s, 0)', ('user', generate_password_hash('user')))
 conn.commit()
 print "[*] Creating package table..."
-cur.execute('CREATE TABLE IF NOT EXISTS packages (id UUID, name TEXT, destination POINT, delivered BOOLEAN, PRIMARY KEY (id))')
+cur.execute('CREATE TABLE IF NOT EXISTS packages (id UUID, name TEXT, lat DOUBLE PRECISION, lng DOUBLE PRECISION, delivered BOOLEAN, PRIMARY KEY (id))')
 conn.commit()
 print '[*] Creating package steps table...'
-cur.execute('CREATE TABLE IF NOT EXISTS steps (id UUID, pos POINT, ele DOUBLE PRECISION, time TIMESTAMP)')
+cur.execute('CREATE TABLE IF NOT EXISTS steps (id UUID, lat DOUBLE PRECISION, lng DOUBLE PRECISION, ele DOUBLE PRECISION, time TIMESTAMP)')
 conn.commit()
 print '[*] Tasks completed successfully!'
 conn.close()
