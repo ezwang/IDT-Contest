@@ -85,10 +85,11 @@ function updateInfoBox() {
     }
 }
 
-function addPoint(uuid, lat, lon) {
+function addPoint(uuid, lat, lon, ele) {
     if (uuid in packages) {
         var path = packages[uuid].polyline.getPath();
         var pos = new google.maps.LatLng(lat,lon);
+        pos.ele = ele;
         path.push(pos);
         if (!packages[uuid].delivered) {
             packages[uuid].marker.setPosition(pos);
@@ -121,7 +122,7 @@ function setDelivered(uuid) {
 function loadPoints(uuid) {
     $.getJSON('/getpackage/' + uuid, function(data) {
         $.each(data.data, function(k, v) {
-            addPoint(uuid, v[0], v[1]);
+            addPoint(uuid, v[0], v[1], v[2]);
         });
     });
 }
@@ -160,7 +161,7 @@ function initMap() {
         setDelivered(data.uuid);
     });
     socket.on('plot', function(data) {
-        addPoint(data.uuid, data.lat, data.lon);
+        addPoint(data.uuid, data.lat, data.lon, data.ele);
     });
 }
 

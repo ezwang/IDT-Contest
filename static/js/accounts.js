@@ -187,6 +187,10 @@ $(document).ready(function() {
     }
     var substringMatcher = function(strs) {
         return function findMatches(q, cb) {
+            if (q == '') {
+                cb(strs);
+                return;
+            }
             var matches, substringRegex;
 
             matches = [];
@@ -210,13 +214,13 @@ $(document).ready(function() {
         $("#uuid").typeahead({
             hint:true,
             highlight:true,
-            minLength:1
+            minLength:0
         }, {
             name:'uuids',
             source:substringMatcher(uuids),
             templates: {
                 suggestion: function(data) {
-                    return '<span style="font-family:monospace">' + data + '</span>';
+                    return '<div style="font-family:monospace">' + data + '</div>';
                 }
             }
         });

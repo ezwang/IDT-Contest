@@ -81,3 +81,7 @@ input.tt-input, input.tt-hint
 {
     background-color:#B0BED9;
 }
+.tt-cursor
+{
+    background-color:#ccc;
+}
