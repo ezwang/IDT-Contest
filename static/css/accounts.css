@@ -77,10 +77,6 @@ input.tt-input, input.tt-hint
 {
     font-family:monospace;
 }
-#package-list .selected
-{
-    background-color:#B0BED9;
-}
 .tt-cursor
 {
     background-color:#ccc;

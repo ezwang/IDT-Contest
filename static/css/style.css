@@ -49,3 +49,7 @@ form h3, .form-box h3
 {
     float:right;
 }
+.selected
+{
+    background-color:#B0BED9;
+}
