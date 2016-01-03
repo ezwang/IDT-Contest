@@ -321,7 +321,7 @@ def getexistingpackage(uuid):
     if not checkaccess(uuid):
         return abort(401)
     cur = conn.cursor()
-    cur.execute('SELECT lat, lng, ele FROM steps WHERE id = %s ORDER BY time', (uuid,))
+    cur.execute('SELECT lat, lng, ele, time FROM steps WHERE id = %s ORDER BY time', (uuid,))
     return jsonify(**{'data':[x for x in cur]})
 
 @app.route('/logout')
@@ -412,8 +412,8 @@ def packagetrackupdate(uuid):
         cur = conn.cursor()
         cur.execute('INSERT INTO steps (id, lat, lng, ele, time) VALUES (%s, %s, %s, %s, %s)', (uuid, lat, lon, ele, time))
         conn.commit()
-        socketio.emit('plot', {'uuid':uuid,'lat':lat,'lon':lon,'ele':ele}, room='admin')
-        socketio.emit('plot', {'uuid':uuid,'lat':lat,'lon':lon,'ele':ele}, room=uuid)
+        socketio.emit('plot', {'uuid':uuid,'lat':lat,'lon':lon,'ele':ele,'time':time}, room='admin')
+        socketio.emit('plot', {'uuid':uuid,'lat':lat,'lon':lon,'ele':ele,'time':time}, room=uuid)
     return jsonify(**{"ackUUID":"[" + uuid + "]"})
 
 clients = []
