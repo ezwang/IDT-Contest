@@ -16,7 +16,7 @@ function addPackage(uuid, name, delivered, dLat, dLon) {
     }), marker:new google.maps.Marker({
         map:map,
         title:name
-    }),delivered:delivered, destination:new google.maps.LatLng(dLat, dLon), unloaded:false};
+    }),delivered:delivered, destination:new google.maps.LatLng(dLat, dLon), unloaded:false, speedData:{coords1:null, coords2:null, time1:null, time2:null}};
     $("#list").append("<li data-id='" + uuid + "'><i class='fa-li fa fa-archive'></i> <span class='name'>" + name + "</span>" + (is_admin ? "<span class='opt'><i class='p-rename fa fa-pencil'></i></span>" : "") + "</li>");
     if (delivered) {
         setDelivered(uuid);
@@ -39,6 +39,10 @@ function onMarkerClick(uuid) {
     updateInfoBox();
 }
 
+function distance(lat1, lng1, lat2, lng2) { 
+    return 2 * 6371 * Math.asin(Math.sqrt(Math.pow(Math.sin((lat2-lat1)/2), 2) + Math.cos(lat1)*Math.cos(lat2)*Math.pow(Math.sin((lng2-lng1)/2), 2)));
+}
+
 function updateDistanceCalculations(uuid) {
     if (uuid != trackingUUID) {
         return;
@@ -56,10 +60,21 @@ function updateDistanceCalculations(uuid) {
         var lat1 = path.getAt(i-1).lat(), lng1 = path.getAt(i-1).lng();
         var lat2 = path.getAt(i).lat(), lng2 = path.getAt(i).lng();
         // TODO: account for elevation in kilometers
-        total_dist += 2 * 6371 * Math.asin(Math.sqrt(Math.pow(Math.sin((lat2-lat1)/2), 2) + Math.cos(lat1)*Math.cos(lat2)*Math.pow(Math.sin((lng2-lng1)/2), 2)));
+        total_dist += distance(lat1, lng1, lat2, lng2);
     }
     // TODO: change to eta, not just dist
-    $("#packageinfo #peta").text(Math.round(total_dist) + " km");
+    $("#packageinfo #peta").text(Math.round(total_dist) + " km " + Math.round(speed(uuid))+ " km/h");
+}
+
+function speed(uuid) {
+    if (uuid in packages) {
+        console.log(packages[uuid].speedData);
+        if (!packages[uuid].speedData.time2)
+            return null
+        console.log(distance(packages[uuid].speedData.coords1[0], packages[uuid].speedData.coords1[1], packages[uuid].speedData.coords2[0], packages[uuid].speedData.coords2[1]));
+        console.log(packages[uuid].speedData.time2 - packages[uuid].speedData.time1);
+        return distance(packages[uuid].speedData.coords1[0], packages[uuid].speedData.coords1[1], packages[uuid].speedData.coords2[0], packages[uuid].speedData.coords2[1]) / (packages[uuid].speedData.time2 - packages[uuid].speedData.time1) * 60 * 60;
+    } 
 }
 
 function updateInfoBox() {
@@ -85,7 +100,7 @@ function updateInfoBox() {
     }
 }
 
-function addPoint(uuid, lat, lon, ele) {
+function addPoint(uuid, lat, lon, ele, time) {
     if (uuid in packages) {
         var path = packages[uuid].polyline.getPath();
         var pos = new google.maps.LatLng(lat,lon);
@@ -93,6 +108,10 @@ function addPoint(uuid, lat, lon, ele) {
         path.push(pos);
         if (!packages[uuid].delivered) {
             packages[uuid].marker.setPosition(pos);
+            packages[uuid].speedData.coords1 = packages[uuid].speedData.coords2;
+            packages[uuid].speedData.coords2 = [lat, lon];
+            packages[uuid].speedData.time1 = packages[uuid].speedData.time2;
+            packages[uuid].speedData.time2 = time;
             if (uuid == trackingUUID) {
                 map.panTo(pos);
                 updateInfoBox();
@@ -122,7 +141,7 @@ function setDelivered(uuid) {
 function loadPoints(uuid) {
     $.getJSON('/getpackage/' + uuid, function(data) {
         $.each(data.data, function(k, v) {
-            addPoint(uuid, v[0], v[1], v[2]);
+            addPoint(uuid, v[0], v[1], v[2], Date.parse(v[3])/1000);
         });
     });
 }
