@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}Forbidden - Package Manager{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link href='/css/index.css' rel='stylesheet' type='text/css' />
+    <script src='/js/index.js'></script>
+{% endblock %}
+{% block content %}
+<div style="color:white;text-align:center">
+    <h1>403 Forbidden</h1>
+    <p>You are not allowed to access this resource.<br />This resource may require administrator privileges or you are not logged in.</p>
+</div>
+{% endblock %}
