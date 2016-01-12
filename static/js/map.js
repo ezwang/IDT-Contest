@@ -206,6 +206,9 @@ function package_rename(uuid, name) {
 }
 
 function package_visible(uuid, show) {
+    if ($("#list li[data-id='" + uuid + "']").is(":visible") == show) {
+        return;
+    }
     packages[uuid].marker.setVisible(show);
     packages[uuid].polyline.setVisible(show);
     if (show) {
@@ -274,7 +277,7 @@ $(document).ready(function() {
         e.preventDefault();
         e.stopPropagation();
         var uuid = $(this).parent().parent().attr('data-id');
-        // TODO: prettier confirm
+        // TODO: prettier confirm, or undo function
         if (!confirm('Are you sure you want to delete this package record?\n' + uuid)) {
             return;
         }
@@ -298,11 +301,11 @@ $(document).ready(function() {
         }
         else {
             $("#list li").each(function(k, v) {
-                if ($(this).attr('data-id').indexOf($("#search").val()) <= -1 && $(this).text().indexOf($("#search").val()) <= -1) {
-                    package_visible($(this).attr('data-id'), false);
+                if ($(this).attr('data-id').indexOf($("#search").val()) > -1 || $(this).text().indexOf($("#search").val()) > -1) {
+                    package_visible($(this).attr('data-id'), true);
                 }
                 else {
-                    package_visible($(this).attr('data-id'), true);
+                    package_visible($(this).attr('data-id'), false);
                 }
             });
         }
