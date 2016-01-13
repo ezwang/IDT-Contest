@@ -85,7 +85,7 @@ def global_settings():
     if not 'id' in session:
         return redirect('/')
     if session['type'] == 0:
-        return abort(401)
+        return abort(403)
     return render_template('global_settings.html', config = config)
 
 @app.route('/global_settings/reset', methods=['POST'])
@@ -93,7 +93,7 @@ def global_settings_reset():
     if not 'id' in session:
         return redirect('/')
     if session['type'] == 0:
-        return abort(401)
+        return abort(403)
     password = request.form['password']
     cur = conn.cursor()
     cur.execute('SELECT password FROM users WHERE id = %s', (session['id'],))
@@ -112,7 +112,7 @@ def accounts():
     if not 'id' in session:
         return redirect('/')
     if session['type'] == 0:
-        return abort(401)
+        return abort(403)
     return render_template('accounts.html')
 
 @app.route('/accounts/userdata')
@@ -120,7 +120,7 @@ def user_data():
     if not 'id' in session:
         return redirect('/')
     if session['type'] == 0:
-        return abort(401)
+        return abort(403)
     cur = conn.cursor()
     cur.execute('SELECT id, username, email, type FROM users')
     conn.commit()
@@ -131,7 +131,7 @@ def admin_permissions_load(ids):
     if not 'id' in session:
         return redirect('/')
     if session['type'] == 0:
-        return abort(401)
+        return abort(403)
     userid = [int(x.strip()) for x in ids.split(',')]
     cur = conn.cursor()
     cur.execute('SELECT package,(userid < 0),id FROM access WHERE userid IN %s OR userid < 0 ORDER BY userid DESC', (tuple(userid),))
@@ -185,7 +185,7 @@ def admin_modify_account():
     if not 'id' in session:
         return redirect('/')
     if session['type'] == 0:
-        return abort(401)
+        return abort(403)
     userid = request.form['id']
     username = request.form['username']
     email = request.form['email']
@@ -202,7 +202,7 @@ def admin_add_account():
     if not 'id' in session:
         return redirect('/')
     if session['type'] == 0:
-        return abort(401)
+        return abort(403)
     username = request.form['username']
     if len(username) == 0:
         return jsonify(**{'error':'Please enter a username for the new account!'})
@@ -333,7 +333,7 @@ def getexistingpackage(uuid):
     if not uuidpattern.match(uuid):
         return jsonify(**{'error':'Invalid UUID format!'})
     if not checkaccess(uuid):
-        return abort(401)
+        return abort(403)
     cur = conn.cursor()
     cur.execute('SELECT lat, lng, ele, time FROM steps WHERE id = %s ORDER BY time', (uuid,))
     return jsonify(**{'data':[x for x in cur]})
