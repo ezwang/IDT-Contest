@@ -4,6 +4,18 @@ var mobile = window.innerWidth <= 480;
 var is_admin = false;
 var default_zoom = mobile ? 1 : 2;
 
+function escapeHtml(text) {
+    var map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
 function addPackage(uuid, name, delivered, dLat, dLon) {
     if (uuid in packages) {
         console.warn('The package with UUID ' + uuid + ' was initalized multiple times!');
@@ -17,7 +29,7 @@ function addPackage(uuid, name, delivered, dLat, dLon) {
         map:map,
         title:name
     }),delivered:delivered, destination:new google.maps.LatLng(dLat, dLon), unloaded:false, speedData:{coords1:null, coords2:null, time1:null, time2:null}};
-    $("#list").append("<li data-id='" + uuid + "'><i class='fa-li fa fa-archive'></i> <span class='name'>" + name + "</span>" + (is_admin ? "<span class='opt'><i class='p-rename fa fa-pencil'></i></span>" : "") + "</li>");
+    $("#list").append("<li data-id='" + uuid + "'><i class='fa-li fa fa-archive'></i> <span class='name'>" + escapeHtml(name) + "</span>" + (is_admin ? "<span class='opt'><i class='p-rename fa fa-pencil'></i></span>" : "") + "</li>");
     if (delivered) {
         setDelivered(uuid);
     }
@@ -132,6 +144,9 @@ function setDelivered(uuid) {
             $("#list li[data-id='" + uuid + "'] .opt").append("<i class='p-delete fa fa-times'></i>");
         }
         packages[uuid].marker.setPosition(packages[uuid].destination);
+        if (uuid == trackingUUID) {
+            updateInfoBox();
+        }
     }
     else {
         console.warn('Package with UUID ' + uuid + 'was not initalized!');
@@ -178,35 +193,53 @@ function initMap() {
     socket.on('packagedelivered', function(data) {
         setDelivered(data.uuid);
     });
+    socket.on('deletepackage', function(data) {
+        package_delete(data.uuid, true);
+    });
+    socket.on('renamepackage', function(data) {
+        package_rename(data.uuid, data.name, true);
+    });
     socket.on('plot', function(data) {
         addPoint(data.uuid, data.lat, data.lon, data.ele);
     });
 }
 
-function package_delete(uuid) {
+function package_delete(uuid, client_only) {
+    client_only = client_only || false;
+    if (!(uuid in packages)) {
+        return;
+    }
     $("#list li[data-id='" + uuid + "']").remove();
     packages[uuid].marker.setMap(null);
     packages[uuid].polyline.setMap(null);
     delete packages[uuid];
-    $.get("/map/delete_package/" + uuid, function(data) {});
+    if (!client_only) {
+        $.get("/map/delete_package/" + uuid, function(data) {});
+    }
     if (trackingUUID == uuid) {
         trackingUUID = false;
         updateInfoBox();
     }
 }
 
-function package_rename(uuid, name) {
+function package_rename(uuid, name, client_only) {
+    client_only = client_only || false;
+    if (!(uuid in packages)) {
+        return;
+    }
     $("#list li[data-id='" + uuid + "'] .name").text(name);
     packages[uuid].name = name;
     packages[uuid].marker.setTitle(name);
-    $.get("/map/rename_package/" + uuid + "/" + encodeURIComponent(name), function(data) {});
+    if (!client_only) {
+        $.post("/map/rename_package/" + uuid, "name=" + encodeURIComponent(name), function(data) {});
+    }
     if (trackingUUID == uuid) {
         updateInfoBox();
     }
 }
 
 function package_visible(uuid, show) {
-    if ($("#list li[data-id='" + uuid + "']").is(":visible") == show) {
+    if ($("#list li[data-id='" + uuid + "']").is(":visible") == show || !(uuid in packages)) {
         return;
     }
     packages[uuid].marker.setVisible(show);

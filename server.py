@@ -288,18 +288,23 @@ def deletepackage(uuid):
     cur.execute('DELETE FROM steps WHERE id = %s', (uuid,))
     cur.execute('DELETE FROM access WHERE package = %s', (uuid,))
     conn.commit()
+    socketio.emit('deletepackage', {'uuid':uuid}, room='admin')
+    socketio.emit('deletepackage', {'uuid':uuid}, room=uuid)
     return jsonify(**{'ackUUID':'[' + uuid + ']'})
 
-@app.route('/map/rename_package/<uuid>/<name>')
-def renamepackage(uuid, name):
+@app.route('/map/rename_package/<uuid>', methods=["POST"])
+def renamepackage(uuid):
     if not 'id' in session:
         return redirect('/')
     # TODO: check if user actually has access to package
     if session['type'] == 0 and not config["allow_user_edit"]:
         return jsonify(**{'error':'Access denied!'})
+    name = request.form["name"]
     cur = conn.cursor()
     cur.execute('UPDATE packages SET name = %s WHERE id = %s', (name, uuid))
     conn.commit()
+    socketio.emit('renamepackage', {'uuid':uuid,'name':name}, room='admin')
+    socketio.emit('renamepackage', {'uuid':uuid,'name':name}, room=uuid)
     return jsonify(**{'ackUUID':'[' + uuid + ']'})
 
 @app.route('/login', methods=["POST"])
