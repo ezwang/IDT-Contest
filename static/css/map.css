@@ -51,7 +51,8 @@ body
 {
     display:block;
     background-color:#ccc;
-    padding:5px;
+    padding:3px;
+    padding-left:5px;
     font-weight:bold;
 }
 #list
