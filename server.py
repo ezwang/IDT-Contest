@@ -78,7 +78,7 @@ def register_submit():
 def settings():
     if not 'id' in session:
         return redirect('/')
-    return render_template('settings.html', email = getemail(session['id']).replace('"', '\\"'), username = session['username'], type = 'Administrator' if session['type'] > 0 else 'Normal User')
+    return render_template('settings.html', email = getemail(session['id']).replace('"', '\\"'), username = session['username'], type = 'Administrator' if session['type'] > 0 else 'Normal User', allow_deletion = config['allow_deletion'])
 
 @app.route('/global_settings')
 def global_settings():
@@ -246,6 +246,8 @@ def changepassword():
 def delete_account():
     if not 'id' in session:
         return redirect('/')
+    if not config['allow_deletion']:
+        return abort(403)
     password = request.form['password']
     cur = conn.cursor()
     cur.execute('SELECT password FROM users WHERE id = %s', (session['id'],))

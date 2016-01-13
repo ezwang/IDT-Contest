@@ -52,6 +52,7 @@
     </fieldset>
     <input type="submit" value="Change Email" class="btn btn-success" />
 </form>
+{% if allow_deletion %}
 <form action="/settings/delete_account" method="POST">
     <h3>Delete Account</h3>
     <hr />
@@ -65,4 +66,5 @@
     </fieldset>
     <input type="submit" value="Delete Account" class="btn btn-danger" />
 </form>
+{% endif %}
 {% endblock %}

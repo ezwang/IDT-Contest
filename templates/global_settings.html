@@ -32,6 +32,10 @@
     <p>Allow users to create an account on the login page.</p>
     <input type="checkbox" {{ "checked" if config["allow_registration"] }} disabled />
     <hr />
+    <h5>Allow Deletion</h5>
+    <p>Allow users to delete their accounts. This setting does not affect the account management page.</p>
+    <input type="checkbox" {{ "checked" if config["allow_deletion"] }} disabled />
+    <hr />
     <h5>New Packages</h5>
     <p>Mark new packages as public automatically. All users will be able to view these packages, including users that are not logged in.</p>
     <input type="checkbox" {{ "checked" if config["new_package_public"] }} disabled />
