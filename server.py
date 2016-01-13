@@ -370,11 +370,11 @@ def getexistingdata():
     cur = conn.cursor()
     if 'id' in session:
         if session['type'] > 0:
-            cur.execute('SELECT id,name,delivered,lat,lng FROM packages')
+            cur.execute('SELECT id,name,delivered,lat,lng FROM packages ORDER BY name')
         else:
-            cur.execute('SELECT id,name,delivered,lat,lng FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND (access.userid = %s or access.userid < 0))', (session['id'],))
+            cur.execute('SELECT id,name,delivered,lat,lng FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND (access.userid = %s or access.userid < 0)) ORDER BY name', (session['id'],))
     else:
-        cur.execute('SELECT id,name,delivered,lat,lng FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND access.userid < 0)')
+        cur.execute('SELECT id,name,delivered,lat,lng FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND access.userid < 0) ORDER BY name')
     conn.commit()
     return jsonify(**{'data':[x for x in cur]})
 

@@ -236,6 +236,9 @@ function package_rename(uuid, name, client_only) {
     if (trackingUUID == uuid) {
         updateInfoBox();
     }
+    $("#list").children().detach().sort(function(a, b) {
+        return $(a).text().localeCompare($(b).text());
+    }).appendTo($("#list"));
 }
 
 function package_visible(uuid, show) {
