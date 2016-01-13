@@ -104,6 +104,7 @@ def global_settings_reset():
         return jsonify(**{'error':'Wrong password!'})
     cur.execute('TRUNCATE TABLE packages, access, steps')
     conn.commit()
+    socketio.emit('refresh')
     return jsonify(**{'success':'All package records deleted!'})
 
 @app.route('/accounts')

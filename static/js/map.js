@@ -199,6 +199,9 @@ function initMap() {
     socket.on('renamepackage', function(data) {
         package_rename(data.uuid, data.name, true);
     });
+    socket.on('refresh', function(data) {
+        location.reload();
+    });
     socket.on('plot', function(data) {
         addPoint(data.uuid, data.lat, data.lon, data.ele);
     });
