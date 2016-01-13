@@ -81,3 +81,7 @@ input.tt-input, input.tt-hint
 {
     background-color:#ccc;
 }
+#user-btn button
+{
+    margin-top:5px;
+}
