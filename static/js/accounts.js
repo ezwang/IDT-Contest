@@ -3,11 +3,18 @@ $(document).ready(function() {
         "ajax": "/accounts/userdata",
         "autoWidth": false,
         "aoColumns": [
+            {"mData": function() { return ""; }},
             {"mData": "username"},
             {"mData": "email"},
             {"mData": "type"}
         ],
         "columnDefs": [
+            {
+                "orderable": false,
+                "width": "8px",
+                "className": 'select-checkbox',
+                "targets": 0
+            },
             {
                 "render": function(data, type, row) {
                     if (data > 0) {
@@ -19,7 +26,8 @@ $(document).ready(function() {
                 },
                 "targets": -1
             }
-        ]
+        ],
+        "order": [[1, "asc"]]
     });
     $("#btn-create").click(function(e) {
         $.post("/accounts/add_account", $("#user-form :input").serialize(), function(data) {
@@ -143,8 +151,12 @@ $(document).ready(function() {
             ids.push(table.row(this).data()["id"]);
         });
         $("#id").val(ids.join());
-        $("#btn-delete").text("Delete Account");
-        $("#username, #type, #email").prop("disabled", false);
+        updateButtons();
+    });
+    $("#users tbody").on("click", ".select-checkbox", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).parent().toggleClass("selected");
         updateButtons();
     });
     $("#password-edit").click(function(e) {
@@ -152,6 +164,8 @@ $(document).ready(function() {
         $(this).hide();
     });
     function updateButtons() {
+        $("#btn-delete").text("Delete Account");
+        $("#username, #type, #email").prop("disabled", false);
         var items = $("#users tr.selected").length;
         $("#password-edit").hide();
         if (items == 0) {

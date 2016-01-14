@@ -9,7 +9,7 @@
     border: 1px solid #ccc;
     border-radius: .25rem;
 }
-#users tbody tr td:empty:after
+#users tbody tr td:empty:not(.select-checkbox):after
 {
     content:"None";
     color:#aaa;
@@ -84,4 +84,32 @@ input.tt-input, input.tt-hint
 #user-btn button
 {
     margin-top:5px;
+}
+table.dataTable td.select-checkbox {
+    position: relative;
+}
+table.dataTable td.select-checkbox:before,
+table.dataTable td.select-checkbox:after {
+    display: block;
+    position: absolute;
+    top: 1.2em;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    box-sizing: border-box
+}
+table.dataTable td.select-checkbox:before {
+    content: ' ';
+    margin-top: -6px;
+    margin-left: -6px;
+    border: 1px solid black;
+    border-radius: 3px;
+    cursor:pointer
+}
+table.dataTable tr.selected td.select-checkbox:after {
+    content: '\2714';
+    margin-top: -13px;
+    margin-left: -4px;
+    text-align: center;
+    text-shadow: 1px 1px #B0BED9, -1px -1px #B0BED9, 1px -1px #B0BED9, -1px 1px #B0BED9
 }
