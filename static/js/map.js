@@ -1,3 +1,5 @@
+jQuery.timeago.settings.allowFuture = true;
+
 var packages = {};
 // TODO: better check for mobile devices
 var mobile = window.innerWidth <= 480;
@@ -79,7 +81,9 @@ function updateDistanceCalculations(uuid) {
     var currentSpeed = speed(uuid);
     var lastPoint = path.getAt(path.getLength()-1);
     var dist_left = distance(packages[trackingUUID].destination.lat(), packages[trackingUUID].destination.lng(), lastPoint.lat(), lastPoint.lng());
-    $("#packageinfo #peta").text(Math.round(total_dist_traveled) + " km traveled, " + Math.round(currentSpeed) + " km/h, " + Math.round(dist_left) + " km left, " + Math.round(dist_left*60*60/currentSpeed) + " seconds left");
+    var finDate = new Date(packages[trackingUUID].speedData.time2*1000);
+    finDate.setSeconds(dist_left*60*60/currentSpeed);
+    $("#packageinfo #peta").text(/*Math.round(total_dist_traveled) + " km traveled, " + Math.round(currentSpeed) + " km/h, " + Math.round(dist_left) + " km left, " + */jQuery.timeago(finDate));
 }
 
 function speed(uuid) {
