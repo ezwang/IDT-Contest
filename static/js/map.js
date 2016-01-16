@@ -68,18 +68,25 @@ function distance(lat1, lng1, lat2, lng2) {
     return 2 * 6371 * Math.asin(Math.sqrt(Math.pow(Math.sin((lat2-lat1)/2), 2) + Math.cos(lat1)*Math.cos(lat2)*Math.pow(Math.sin((lng2-lng1)/2), 2)));
 }
 
-function checkLand(lat, lng) {
-    // TODO: make this async
-    var result = null;
-    $.ajax({
-        url: "/island?lat=" + lat + "&lng=" + lng,
-        type: "GET",
-        async:false,
-        success: function(data) {
-            result = data;
-        }
+function checkLand(lat, lng, callback) {
+    var img = $("<img />")[0];
+    img.crossOrigin='anonymous';
+
+    var mapUrl = "https://maps.googleapis.com/maps/api/staticmap?center=" + lat + "," + lng + "&zoom=24&size=10x10&sensor=false&visual_refresh=true&style=feature:water|color:0x00FF00&style=element:labels|visibility:off&style=feature:transit|visibility:off&style=feature:poi|visibility:off&style=feature:road|visibility:off&style=feature:administrative|visibility:off";
+    $(img).attr("src", mapUrl);
+
+    $(img).load(function() {
+        var canvas = $('<canvas/>')[0];
+        canvas.width = 5;
+        canvas.height = 5;
+        canvas.getContext('2d').drawImage(img, 0, 0, 5, 5);
+
+        var pixelData = canvas.getContext('2d').getImageData(1, 1, 1, 1).data;
+        callback(pixelData[1] < 250);
     });
-    return result == "true";
+    $(img).error(function() {
+        $("#packageinfo #pmethod").addClass("fa-exclamation-triangle");
+    });
 }
 
 function updateDistanceCalculations(uuid) {
@@ -106,23 +113,27 @@ function updateDistanceCalculations(uuid) {
     var currentSpeed = speed(uuid);
     var lastPoint = path.getAt(path.getLength()-1);
     $("#packageinfo #pspeed").text(Math.round(currentSpeed * 100)/100 + " km/h");
-    $("#packageinfo #pmethod").removeClass().addClass("fa");
-    if (lastPoint.ele > 9000) {
+    $("#packageinfo #pmethod").removeClass("fa-plane fa-bicycle fa-truck fa-ship fa-rocket fa-exclamation-triangle").addClass("fa");
+    if (lastPoint.ele > 60000) {
+        $("#packageinfo #pmethod").addClass("fa-rocket");
+    }
+    else if (lastPoint.ele > 9000) {
         $("#packageinfo #pmethod").addClass("fa-plane");
     }
     else {
-        var land = checkLand(lastPoint.lat(), lastPoint.lng());
-        if (land) {
-            if (currentSpeed < 20) {
-                $("#packageinfo #pmethod").addClass("fa-bicycle");
+        checkLand(lastPoint.lat(), lastPoint.lng(), function(land) {
+            if (land) {
+                if (currentSpeed < 20) {
+                    $("#packageinfo #pmethod").addClass("fa-bicycle");
+                }
+                else {
+                    $("#packageinfo #pmethod").addClass("fa-truck");
+                }
             }
             else {
-                $("#packageinfo #pmethod").addClass("fa-truck");
+                $("#packageinfo #pmethod").addClass("fa-ship");
             }
-        }
-        else {
-            $("#packageinfo #pmethod").addClass("fa-ship");
-        }
+        });
     }
     if (currentSpeed > 0) {
         var dist_left = distance(packages[trackingUUID].destination.lat(), packages[trackingUUID].destination.lng(), lastPoint.lat(), lastPoint.lng());
