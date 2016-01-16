@@ -43,6 +43,13 @@ def getemail(usrid):
     row = cur.fetchone()
     return row[0] if not row[0] == None else ""
 
+@app.route('/island')
+def island():
+    # TODO: implement this
+    lat = request.args.get('lat')
+    lng = request.args.get('lng')
+    return 'true'
+
 @app.route('/register')
 def register():
     if not config["allow_registration"]:

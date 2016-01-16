@@ -68,6 +68,20 @@ function distance(lat1, lng1, lat2, lng2) {
     return 2 * 6371 * Math.asin(Math.sqrt(Math.pow(Math.sin((lat2-lat1)/2), 2) + Math.cos(lat1)*Math.cos(lat2)*Math.pow(Math.sin((lng2-lng1)/2), 2)));
 }
 
+function checkLand(lat, lng) {
+    // TODO: make this async
+    var result = null;
+    $.ajax({
+        url: "/island?lat=" + lat + "&lng=" + lng,
+        type: "GET",
+        async:false,
+        success: function(data) {
+            result = data;
+        }
+    });
+    return result == "true";
+}
+
 function updateDistanceCalculations(uuid) {
     if (uuid != trackingUUID) {
         return;
@@ -88,13 +102,37 @@ function updateDistanceCalculations(uuid) {
         // TODO: account for elevation in kilometers
         total_dist_traveled += distance(lat1, lng1, lat2, lng2);
     }
-    // TODO: change to eta, not just dist
+    // TODO: better eta
     var currentSpeed = speed(uuid);
     var lastPoint = path.getAt(path.getLength()-1);
-    var dist_left = distance(packages[trackingUUID].destination.lat(), packages[trackingUUID].destination.lng(), lastPoint.lat(), lastPoint.lng());
-    var finDate = new Date(packages[trackingUUID].speedData.time2*1000);
-    finDate.setSeconds(dist_left*60*60/currentSpeed);
-    $("#packageinfo #peta").text(/*Math.round(total_dist_traveled) + " km traveled, " + Math.round(currentSpeed) + " km/h, " + Math.round(dist_left) + " km left, " + */jQuery.timeago(finDate));
+    $("#packageinfo #pspeed").text(Math.round(currentSpeed * 100)/100 + " km/h");
+    $("#packageinfo #pmethod").removeClass().addClass("fa");
+    if (lastPoint.ele > 9000) {
+        $("#packageinfo #pmethod").addClass("fa-plane");
+    }
+    else {
+        var land = checkLand(lastPoint.lat(), lastPoint.lng());
+        if (land) {
+            if (currentSpeed < 20) {
+                $("#packageinfo #pmethod").addClass("fa-bicycle");
+            }
+            else {
+                $("#packageinfo #pmethod").addClass("fa-truck");
+            }
+        }
+        else {
+            $("#packageinfo #pmethod").addClass("fa-ship");
+        }
+    }
+    if (currentSpeed > 0) {
+        var dist_left = distance(packages[trackingUUID].destination.lat(), packages[trackingUUID].destination.lng(), lastPoint.lat(), lastPoint.lng());
+        var finDate = new Date(packages[trackingUUID].speedData.time2*1000);
+        finDate.setSeconds(dist_left*60*60/currentSpeed);
+        $("#packageinfo #peta").text(/*Math.round(total_dist_traveled) + " km traveled, " + Math.round(currentSpeed) + " km/h, " + Math.round(dist_left) + " km left, " + */jQuery.timeago(finDate));
+    }
+    else {
+        $("#packageinfo #peta").text("Unknown");
+    }
 }
 
 function speed(uuid) {
@@ -118,10 +156,10 @@ function updateInfoBox() {
     $("#packageinfo #puuid").text(trackingUUID);
     $("#packageinfo #pstatus").text(packages[trackingUUID].delivered ? 'Delivered' : 'In Transit');
     if (packages[trackingUUID].delivered) {
-        $("#packageinfo #peta-container").hide();
+        $("#packageinfo #peta-container, #pspeed-container").hide();
     }
     else {
-        $("#packageinfo #peta-container").show();
+        $("#packageinfo #peta-container, #pspeed-container").show();
         updateDistanceCalculations(trackingUUID);
     }
     if (mobile) {
