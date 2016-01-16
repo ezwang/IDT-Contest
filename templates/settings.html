@@ -3,7 +3,11 @@
 {% block head %}
     {{ super() }}
     <link href='/css/index.css' rel='stylesheet' type='text/css' />
+    <link href='/css/settings.css' rel='stylesheet' type='text/css' />
+    <script src='/js/bootstrap-slider.js'></script>
+    <script src='/js/jquery.cookie.js'></script>
     <script src='/js/index.js'></script>
+    <script src='/js/settings.js'></script>
 {% endblock %}
 {% block content %}
 <div class="form-box">
@@ -11,6 +15,23 @@
     <hr />
     <b>Username:</b> {{ username }}<br />
     <b>Account Type:</b> {{ type }}<br />
+</div>
+<div class="form-box">
+    <h3>Map Settings</h3>
+    <hr />
+    <h5>Display Style</h5>
+    <div id="s_type" class="btn-group" style="margin:10px;margin-bottom:15px">
+        <button class="btn btn-primary">Roadmap</button>
+        <button class="btn btn-secondary">Satellite</button>
+        <button class="btn btn-secondary">Hybrid</button>
+        <button class="btn btn-secondary">Terrain</button>
+    </div>
+    <h5>Zoom Amount</h5>
+    <div class="range">
+        <i class="fa fa-search-minus"></i>
+        <input id="s_zoom" min="1" max="24" value="12" type="range" />
+        <i class="fa fa-search-plus"></i>
+    </div>
 </div>
 <form action="/settings/change_password" method="POST">
     <h3>Change Password</h3>

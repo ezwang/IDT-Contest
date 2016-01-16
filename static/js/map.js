@@ -6,6 +6,9 @@ var mobile = window.innerWidth <= 480;
 var is_admin = false;
 var default_zoom = mobile ? 1 : 2;
 
+var s_zoom_amount = parseInt($.cookie('s_zoom')) || 12;
+var s_map_type = $.cookie('s_type') || "roadmap";
+
 function escapeHtml(text) {
     var map = {
         '&': '&amp;',
@@ -57,7 +60,7 @@ function onMarkerClick(uuid) {
         packages[uuid].unloaded = false;
     }
     map.panTo(packages[uuid].marker.getPosition());
-    map.setZoom(12);
+    map.setZoom(s_zoom_amount);
     updateInfoBox();
 }
 
@@ -184,7 +187,8 @@ function initMap() {
         zoom: default_zoom,
         streetViewControl: false,
         mapTypeControl: false,
-        zoomControl: !mobile
+        zoomControl: !mobile,
+        mapTypeId: s_map_type
     });
     map.addListener('drag', function() {
         trackingUUID = false;
