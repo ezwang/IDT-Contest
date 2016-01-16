@@ -31,8 +31,14 @@ $(document).ready(function() {
     });
     $("#btn-create").click(function(e) {
         $.post("/accounts/add_account", $("#user-form :input").serialize(), function(data) {
-            // TODO: update data table more efficiently
-            table.ajax.reload(updateButtons);
+            if (data.error) {
+                // TODO: display error message in more attractive manner
+                alert(data.error);
+            }
+            else {
+                // TODO: update data table more efficiently
+                table.ajax.reload(updateButtons);
+            }
         }, 'json');
     });
     $("#btn-modify").click(function(e) {
