@@ -91,7 +91,7 @@ function updateDistanceCalculations(uuid) {
     // TODO: better eta
     var currentSpeed = speed(uuid);
     var lastPoint = path.getAt(path.getLength()-1);
-    $("#packageinfo #pspeed").text(Math.round(currentSpeed * 100)/100 + " km/h");
+    $("#packageinfo #pspeed").text(Math.round(currentSpeed) + " km/h");
     $("#packageinfo #pmethod").html("");
     if (lastPoint.ele > 60000) {
         $("#packageinfo #pmethod").append("<i class='fa fa-rocket'></i>");
@@ -121,7 +121,7 @@ function updateDistanceCalculations(uuid) {
 
 function speed(uuid) {
     if (uuid in packages) {
-        if (!packages[uuid].speedData.time2) {
+        if (!packages[uuid].speedData.time2 || !packages[uuid].speedData.coords2) {
             return 0;
         }
         return distance(packages[uuid].speedData.coords1[0], packages[uuid].speedData.coords1[1], packages[uuid].speedData.coords2[0], packages[uuid].speedData.coords2[1]) / (packages[uuid].speedData.time2 - packages[uuid].speedData.time1) * 60 * 60;
@@ -168,10 +168,29 @@ function addPoint(uuid, lat, lon, ele, time) {
                 map.panTo(pos);
                 updateInfoBox();
             }
+            // TODO: move this to the initial load instead of on every point
+            if (Math.abs(time - new Date().getTime()/1000) > 3600*24*30) {
+                addPackageDeleteButton(uuid);
+            }
+            else {
+                addPackageDeleteButton(uuid, true);
+            }
         }
     }
     else {
         console.warn('Package with UUID ' + uuid + ' was not initalized!');
+    }
+}
+
+function addPackageDeleteButton(uuid, remove) {
+    remove = remove || false;
+    if (remove) {
+        $("#list li[data-id='" + uuid + "'] .opt .p-delete").remove();
+    }
+    else if (is_admin) {
+        if ($("#list li[data-id='" + uuid + "']").has(".p-delete").length == 0) {
+            $("#list li[data-id='" + uuid + "'] .opt").append("<i class='p-delete fa fa-times'></i>");
+        }
     }
 }
 
@@ -180,9 +199,7 @@ function setDelivered(uuid) {
         packages[uuid].delivered = true;
         packages[uuid].marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
         $("#list li[data-id='" + uuid + "'] i").addClass('fa-check').removeClass('fa-archive');
-        if (is_admin) {
-            $("#list li[data-id='" + uuid + "'] .opt").append("<i class='p-delete fa fa-times'></i>");
-        }
+        addPackageDeleteButton(uuid);
         packages[uuid].marker.setPosition(packages[uuid].destination);
         if (uuid == trackingUUID) {
             updateInfoBox();
@@ -359,7 +376,11 @@ $(document).ready(function() {
         e.stopPropagation();
         var uuid = $(this).parent().parent().attr('data-id');
         // TODO: prettier confirm, or undo function
-        if (!confirm('Are you sure you want to delete this package record?\n' + uuid)) {
+        var additional = '';
+        if (!packages[uuid].delivered) {
+            additional = 'This package has not been delivered, but the last update was over a month ago.\n';
+        }
+        if (!confirm('Are you sure you want to delete this package record?\n' + additional + uuid)) {
             return;
         }
         package_delete(uuid);
