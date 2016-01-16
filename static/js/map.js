@@ -275,7 +275,7 @@ function package_visible(uuid, show) {
 }
 
 function scale_sidebar() {
-    var val = $(window).height()-$("#member").height()-$("#search").height()-90;
+    var val = $(window).height()-$("#member").height()-$("#logo_padding").height()-$("#search").height()-90;
     if (mobile) {
         val -= $("#packageinfo").height() + 30;
     }
