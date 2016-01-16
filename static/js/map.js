@@ -280,7 +280,7 @@ function package_visible(uuid, show) {
 
 function scale_sidebar() {
     var val = $(window).height()-$("#member").height()-$("#logo_padding").height()-$("#search").height()-90;
-    if (mobile) {
+    if (window.innerWidth <= 480) {
         val -= $("#packageinfo").height() + 30;
     }
     $("#packagelist .message").css("max-height", val);
