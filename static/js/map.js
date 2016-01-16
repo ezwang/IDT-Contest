@@ -38,6 +38,14 @@ function addPackage(uuid, name, delivered, dLat, dLon) {
     packages[uuid].marker.addListener('click', function() {
         onMarkerClick(uuid);
     });
+    updatePackageCount();
+}
+
+function updatePackageCount() {
+    $("#package_count").text(" (" + $("#list li").length + " total)");
+    if ($("#list").children("li:hidden").length > 0) {
+        $("#package_count").text(" (" + $("#list li:visible").length + " visible, " + $("#list li").length + " total)");
+    }
 }
 
 var trackingUUID = false;
@@ -230,6 +238,7 @@ function package_delete(uuid, client_only) {
         trackingUUID = false;
         updateInfoBox();
     }
+    updatePackageCount();
 }
 
 function package_rename(uuid, name, client_only) {
@@ -355,5 +364,6 @@ $(document).ready(function() {
                 }
             });
         }
+        updatePackageCount();
     });
 });

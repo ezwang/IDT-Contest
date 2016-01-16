@@ -168,3 +168,8 @@ body
         display:block;
     }
 }
+#package_count
+{
+    font-weight:normal;
+    font-size:13px;
+}
