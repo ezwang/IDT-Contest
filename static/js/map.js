@@ -104,20 +104,23 @@ function updateDistanceCalculations(uuid) {
     var lastPoint = path.getAt(path.getLength()-1);
     $("#packageinfo #pspeed").text(Math.round(currentSpeed) + " km/h");
     $("#packageinfo #pmethod").html("");
-    if (lastPoint.ele > 60000) {
-        $("#packageinfo #pmethod").append("<i class='fa fa-rocket'></i>");
+    if (lastPoint.ele > 70000) {
+        $("#packageinfo #pmethod").append("<i title='Rocket' class='fa fa-rocket'></i>");
     }
     else if (lastPoint.ele > 9000) {
-        $("#packageinfo #pmethod").append("<i class='fa fa-plane'></i>");
+        $("#packageinfo #pmethod").append("<i title='Plane' class='fa fa-plane'></i>");
     }
     else {
-        if (currentSpeed < 20) {
-            $("#packageinfo #pmethod").append("<i class='fa fa-bicycle'></i>");
+        if (currentSpeed < 5) {
+            $("#packageinfo #pmethod").append("<i title='Walk' class='fa fa-male'></i>");
+        }
+        else if (currentSpeed < 20) {
+            $("#packageinfo #pmethod").append("<i title='Bicycle' class='fa fa-bicycle'></i>");
         }
         else {
-            $("#packageinfo #pmethod").append("<i class='fa fa-truck'></i>");
+            $("#packageinfo #pmethod").append("<i title='Truck' class='fa fa-truck'></i>");
         }
-        $("#packageinfo #pmethod").append(" / <i class='fa fa-ship'></i>");
+        $("#packageinfo #pmethod").append(" / <i title='Boat' class='fa fa-ship'></i>");
     }
     if (currentSpeed > 0) {
         var dist_left = distance(packages[trackingUUID].destination.lat(), packages[trackingUUID].destination.lng(), lastPoint.lat(), lastPoint.lng());
