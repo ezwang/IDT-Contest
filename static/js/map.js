@@ -392,11 +392,13 @@ $(document).ready(function() {
         var oldname = $(this).attr('data-old');
         if (e.keyCode == 27) {
             $("#list li[data-id='" + uuid + "'] .name").text(oldname);
+            $("#list li[data-id='" + uuid + "'] .p-rename").addClass("fa-pencil").removeClass("fa-check");
             e.preventDefault();
             e.stopPropagation();
         }
         if (e.keyCode == 13) {
             var newname = $("#list li[data-id='" + uuid + "'] .name input").val();
+            $("#list li[data-id='" + uuid + "'] .p-rename").addClass("fa-pencil").removeClass("fa-check");
             if (newname && newname != oldname) {
                 package_rename(uuid, newname);
             }
@@ -416,6 +418,7 @@ $(document).ready(function() {
         if ($("#list li[data-id='" + uuid + "'] .name .rename-prompt").length > 0) {
             var oldname = $("#list li[data-id='" + uuid + "'] .name input").attr('data-old');
             var newname = $("#list li[data-id='" + uuid + "'] .name input").val();
+            $(this).addClass("fa-pencil").removeClass("fa-check");
             if (newname && newname != oldname) {
                 package_rename(uuid, newname);
             }
@@ -424,6 +427,7 @@ $(document).ready(function() {
             }
             return;
         }
+        $(this).addClass("fa-check").removeClass("fa-pencil");
         var oldname = $(this).parent().parent().find('.name').text();
         $("#list li[data-id='" + uuid + "'] .name").html("<input class='rename-prompt' type='text' />");
         $("#list li[data-id='" + uuid + "'] .name input").val(oldname).attr('data-old', oldname).focus().select();
@@ -434,6 +438,7 @@ $(document).ready(function() {
         var uuid = $(this).parent().parent().attr('data-id');
         if ($("#list li[data-id='" + uuid + "'] .name .rename-prompt").length > 0) {
             var oldname = $("#list li[data-id='" + uuid + "'] .name input").attr('data-old');
+            $("#list li[data-id='" + uuid + "'] .p-rename").addClass("fa-pencil").removeClass("fa-check");
             $("#list li[data-id='" + uuid + "'] .name").text(oldname);
             return;
         }
