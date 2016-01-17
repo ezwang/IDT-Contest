@@ -212,7 +212,7 @@ function setDelivered(uuid) {
     if (uuid in packages) {
         packages[uuid].delivered = true;
         packages[uuid].marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
-        $("#list li[data-id='" + uuid + "'] i").addClass('fa-check').removeClass('fa-archive');
+        $("#list li[data-id='" + uuid + "']>i").addClass('fa-check').removeClass('fa-archive');
         addPackageDeleteButton(uuid);
         packages[uuid].marker.setPosition(packages[uuid].destination);
         if (uuid == trackingUUID) {
@@ -387,22 +387,56 @@ $(document).ready(function() {
         e.preventDefault();
         onMarkerClick($(this).attr("data-id"));
     });
+    $("#list").on("keyup", ".rename-prompt", function(e) {
+        var uuid = $(this).parent().parent().attr('data-id');
+        var oldname = $(this).attr('data-old');
+        if (e.keyCode == 27) {
+            $("#list li[data-id='" + uuid + "'] .name").text(oldname);
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        if (e.keyCode == 13) {
+            var newname = $("#list li[data-id='" + uuid + "'] .name input").val();
+            if (newname && newname != oldname) {
+                package_rename(uuid, newname);
+            }
+            else {
+                $("#list li[data-id='" + uuid + "'] .name").text(oldname);
+            }
+        }
+    });
+    $("#list").on("click", ".rename-prompt", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    });
     $("#list").on("click", ".p-rename", function(e) {
         e.preventDefault();
         e.stopPropagation();
         var uuid = $(this).parent().parent().attr('data-id');
-        var oldname = $(this).parent().parent().find('.name').text();
-        // TODO: prettier rename prompt
-        var name = prompt('What should the new name for this package be?\n' + uuid, oldname);
-        if (!name || name == oldname) {
+        if ($("#list li[data-id='" + uuid + "'] .name .rename-prompt").length > 0) {
+            var oldname = $("#list li[data-id='" + uuid + "'] .name input").attr('data-old');
+            var newname = $("#list li[data-id='" + uuid + "'] .name input").val();
+            if (newname && newname != oldname) {
+                package_rename(uuid, newname);
+            }
+            else {
+                $("#list li[data-id='" + uuid + "'] .name").text(oldname);
+            }
             return;
         }
-        package_rename(uuid, name);
+        var oldname = $(this).parent().parent().find('.name').text();
+        $("#list li[data-id='" + uuid + "'] .name").html("<input class='rename-prompt' type='text' />");
+        $("#list li[data-id='" + uuid + "'] .name input").val(oldname).attr('data-old', oldname).focus().select();
     });
     $("#list").on("click", ".p-delete", function(e) {
         e.preventDefault();
         e.stopPropagation();
         var uuid = $(this).parent().parent().attr('data-id');
+        if ($("#list li[data-id='" + uuid + "'] .name .rename-prompt").length > 0) {
+            var oldname = $("#list li[data-id='" + uuid + "'] .name input").attr('data-old');
+            $("#list li[data-id='" + uuid + "'] .name").text(oldname);
+            return;
+        }
         // TODO: prettier confirm, or undo function
         var additional = '';
         if (!packages[uuid].delivered) {
