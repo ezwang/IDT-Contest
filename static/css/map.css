@@ -168,24 +168,6 @@ body
         display:block;
     }
 }
-@media screen and (orientation:landscape) {
-    #packageinfo
-    {
-        width:250px;
-    }
-    #mobile
-    {
-        display:block;
-    }
-    #member ul
-    {
-        font-size:12px;
-    }
-    .title
-    {
-        font-size:14px;
-    }
-}
 #package_count
 {
     font-weight:normal;
