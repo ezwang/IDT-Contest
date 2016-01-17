@@ -152,11 +152,6 @@ $(document).ready(function() {
                 $(this).addClass("selected");
             }
         }
-        var ids = [];
-        $.each($("#users tr.selected"), function(k, v) {
-            ids.push(table.row(this).data()["id"]);
-        });
-        $("#id").val(ids.join());
         updateButtons();
     });
     $("#users tbody").on("click", ".select-checkbox", function(e) {
@@ -170,6 +165,11 @@ $(document).ready(function() {
         $(this).hide();
     });
     function updateButtons() {
+        var ids = [];
+        $.each($("#users tr.selected"), function(k, v) {
+            ids.push(table.row(this).data()["id"]);
+        });
+        $("#id").val(ids.join());
         $("#btn-delete").text("Delete Account");
         $("#username, #type, #email").prop("disabled", false);
         var items = $("#users tr.selected").length;

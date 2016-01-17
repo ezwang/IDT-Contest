@@ -4,6 +4,7 @@ var packages = {};
 // TODO: better check for mobile devices
 var mobile = window.innerWidth <= 480;
 var is_admin = false;
+var can_edit = false;
 var default_zoom = mobile ? 1 : 2;
 
 var s_zoom_amount = parseInt($.cookie('s_zoom')) || 12;
@@ -21,7 +22,17 @@ function escapeHtml(text) {
     return text.replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
-function addPackage(uuid, name, delivered, dLat, dLon) {
+function canAccess(uuid) {
+    if (is_admin) {
+        return true;
+    }
+    if (!can_edit) {
+        return false;
+    }
+    return packages[uuid].global;
+}
+
+function addPackage(uuid, name, delivered, dLat, dLon, global) {
     if (uuid in packages) {
         console.warn('The package with UUID ' + uuid + ' was initalized multiple times!');
     }
@@ -33,8 +44,8 @@ function addPackage(uuid, name, delivered, dLat, dLon) {
     }), marker:new google.maps.Marker({
         map:map,
         title:name
-    }),delivered:delivered, destination:new google.maps.LatLng(dLat, dLon), unloaded:false, speedData:{coords1:null, coords2:null, time1:null, time2:null}};
-    $("#list").append("<li data-id='" + uuid + "'><i class='fa-li fa fa-archive'></i> <span class='name'>" + escapeHtml(name) + "</span>" + (is_admin ? "<span class='opt'><i class='p-rename fa fa-pencil'></i></span>" : "") + "</li>");
+    }),delivered:delivered, destination:new google.maps.LatLng(dLat, dLon), unloaded:false, speedData:{coords1:null, coords2:null, time1:null, time2:null}, global:global};
+    $("#list").append("<li data-id='" + uuid + "'><i class='fa-li fa fa-archive'></i> <span class='name'>" + escapeHtml(name) + "</span>" + (canAccess(uuid) ? "<span class='opt'><i class='p-rename fa fa-pencil'></i></span>" : "") + "</li>");
     if (delivered) {
         setDelivered(uuid);
     }
@@ -187,7 +198,7 @@ function addPackageDeleteButton(uuid, remove) {
     if (remove) {
         $("#list li[data-id='" + uuid + "'] .opt .p-delete").remove();
     }
-    else if (is_admin) {
+    else if (canAccess(uuid)) {
         if ($("#list li[data-id='" + uuid + "']").has(".p-delete").length == 0) {
             $("#list li[data-id='" + uuid + "'] .opt").append("<i class='p-delete fa fa-times'></i>");
         }
@@ -235,7 +246,8 @@ function initMap() {
     $.getJSON('/getpackages', function(data) {
         $.each(data.data, function(k, v) {
             var uuid = v[0];
-            addPackage(uuid, v[1], v[2], v[3], v[4]);
+            // TODO: return package permissions
+            addPackage(uuid, v[1], v[2], v[3], v[4], v[5]);
             if (v[2]) {
                 packages[uuid].unloaded = true;
             }
@@ -246,7 +258,7 @@ function initMap() {
     });
     socket = io.connect('//' + document.domain + ':' + location.port);
     socket.on('newpackage', function(data) {
-        addPackage(data.uuid, data.name, false, data.dest[0], data.dest[1]);
+        addPackage(data.uuid, data.name, false, data.dest[0], data.dest[1], data.global);
     });
     socket.on('packagedelivered', function(data) {
         setDelivered(data.uuid);
@@ -275,7 +287,12 @@ function package_delete(uuid, client_only) {
     packages[uuid].polyline.setMap(null);
     delete packages[uuid];
     if (!client_only) {
-        $.get("/map/delete_package/" + uuid, function(data) {});
+        $.getJSON("/map/delete_package/" + uuid, function(data) {
+            if (data.error) {
+                // TODO: better error message
+                alert(data.error);
+            }
+        });
     }
     if (trackingUUID == uuid) {
         trackingUUID = false;
@@ -293,7 +310,12 @@ function package_rename(uuid, name, client_only) {
     packages[uuid].name = name;
     packages[uuid].marker.setTitle(name);
     if (!client_only) {
-        $.post("/map/rename_package/" + uuid, "name=" + encodeURIComponent(name), function(data) {});
+        $.post("/map/rename_package/" + uuid, "name=" + encodeURIComponent(name), function(data) {
+            if (data.error) {
+                // TODO: better error message
+                alert(data.error);
+            }
+        }, 'json');
     }
     if (trackingUUID == uuid) {
         updateInfoBox();
@@ -328,6 +350,9 @@ function scale_sidebar() {
 $(document).ready(function() {
     if ($("#is_admin").text() == "True") {
         is_admin = true;
+    }
+    if ($("#can_edit").text() == "True") {
+        can_edit = true;
     }
     if (mobile) {
         $("#escapeOutKey").html("<i class='fa fa-search-minus'></i>");

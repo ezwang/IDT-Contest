@@ -283,10 +283,14 @@ def map():
 def deletepackage(uuid):
     if not 'id' in session:
         return redirect('/')
-    # TODO: check if user actually has access to package
     if session['type'] == 0 and not config["allow_user_edit"]:
         return jsonify(**{'error':'Access denied!'})
     cur = conn.cursor()
+    if session['type'] == 0:
+        cur.execute('SELECT COUNT(*) FROM access WHERE package = %s AND userid = %s', (uuid,session['id']))
+        result = cur.fetchone()
+        if result[0] == 0:
+            return jsonify(**{'error':'Access denied!'})
     cur.execute('DELETE FROM packages WHERE id = %s', (uuid,))
     cur.execute('DELETE FROM steps WHERE id = %s', (uuid,))
     cur.execute('DELETE FROM access WHERE package = %s', (uuid,))
@@ -299,11 +303,17 @@ def deletepackage(uuid):
 def renamepackage(uuid):
     if not 'id' in session:
         return redirect('/')
-    # TODO: check if user actually has access to package
     if session['type'] == 0 and not config["allow_user_edit"]:
         return jsonify(**{'error':'Access denied!'})
     name = request.form["name"]
+    if len(name) == 0:
+        return jsonify(**{'error':'You must enter a name for this package!'})
     cur = conn.cursor()
+    if session['type'] == 0:
+        cur.execute('SELECT COUNT(*) FROM access WHERE package = %s AND userid = %s', (uuid,session['id']))
+        result = cur.fetchone()
+        if result[0] == 0:
+            return jsonify(**{'error':'Access denied!'})
     cur.execute('UPDATE packages SET name = %s WHERE id = %s', (name, uuid))
     conn.commit()
     socketio.emit('renamepackage', {'uuid':uuid,'name':name}, room='admin')
@@ -373,11 +383,14 @@ def getexistingdata():
     cur = conn.cursor()
     if 'id' in session:
         if session['type'] > 0:
-            cur.execute('SELECT id,name,delivered,lat,lng FROM packages ORDER BY name')
+            cur.execute('SELECT id,name,delivered,lat,lng,1 FROM packages ORDER BY name')
         else:
-            cur.execute('SELECT id,name,delivered,lat,lng FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND (access.userid = %s or access.userid < 0)) ORDER BY name', (session['id'],))
+            # TODO: make this SQL statement better
+            cur.execute('(SELECT id,name,delivered,lat,lng,1 FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND access.userid = %s)) UNION (SELECT id,name,delivered,lat,lng,0 FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND access.userid < 0) AND NOT EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND access.userid = %s)) ORDER BY name', (session['id'],session['id']))
+            conn.commit()
+            return jsonify(**{'data':[x for x in cur]})
     else:
-        cur.execute('SELECT id,name,delivered,lat,lng FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND access.userid < 0) ORDER BY name')
+        cur.execute('SELECT id,name,delivered,lat,lng,0 FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND access.userid < 0) ORDER BY name')
     conn.commit()
     return jsonify(**{'data':[x for x in cur]})
 
@@ -398,8 +411,8 @@ def tracknewpackage():
         for client in clients:
             socketio.server.enter_room(client, uuid, namespace='/')
     conn.commit()
-    socketio.emit('newpackage', {'name':name,'uuid':uuid,'dest':[dLat,dLon]}, room='admin')
-    socketio.emit('newpackage', {'name':name,'uuid':uuid,'dest':[dLat,dLon]}, room=uuid)
+    socketio.emit('newpackage', {'name':name,'uuid':uuid,'dest':[dLat,dLon],'global':config['new_package_public']}, room='admin')
+    socketio.emit('newpackage', {'name':name,'uuid':uuid,'dest':[dLat,dLon],'global':config['new_package_public']}, room=uuid)
     return jsonify(**{"ackUUID":"[" + uuid + "]"})
 
 import re

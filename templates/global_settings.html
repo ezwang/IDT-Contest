@@ -41,7 +41,7 @@
     <input type="checkbox" {{ "checked" if config["new_package_public"] }} disabled />
     <hr />
     <h5>User Editing</h5>
-    <p>Allow users to rename and delete packages. Users will only be able to rename and delete packages that they have access to.</p>
+    <p>Allow users to rename and delete packages. Users will only be able to rename and delete packages that they have access to. Users will not be able to edit packages that are marked as global but not as user.</p>
     <input type="checkbox" {{ "checked" if config["allow_user_edit"] }} disabled />
 </form>
 {% endblock %}
