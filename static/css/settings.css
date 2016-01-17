@@ -9,3 +9,8 @@
 .range {
     display:table;width:100%
 }
+@media only screen and (max-width:480px) {
+    #s_type .btn {
+        font-size:12px;
+    }
+}
