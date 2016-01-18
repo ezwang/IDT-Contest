@@ -121,10 +121,15 @@ function updateDistanceCalculations(uuid) {
         else if (currentSpeed < 20) {
             $("#packageinfo #pmethod").append("<i title='Bicycle' class='fa fa-bicycle'></i>");
         }
-        else {
+        else if (currentSpeed < 2000) {
             $("#packageinfo #pmethod").append("<i title='Truck' class='fa fa-truck'></i>");
         }
-        $("#packageinfo #pmethod").append(" / <i title='Boat' class='fa fa-ship'></i>");
+        else {
+            $("#packageinfo #pmethod").append("<i title='Unknown' class='fa fa-question'>");
+        }
+        if (currentSpeed < 2000) {
+            $("#packageinfo #pmethod").append(" / <i title='Boat' class='fa fa-ship'></i>");
+        }
     }
     if (currentSpeed > 0) {
         var dist_left = distance(packages[trackingUUID].destination.lat(), packages[trackingUUID].destination.lng(), lastPoint.lat(), lastPoint.lng());
