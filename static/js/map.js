@@ -57,8 +57,12 @@ function addPackage(uuid, name, delivered, dLat, dLon, global) {
 
 function updatePackageCount() {
     $("#package_count").text(" (" + $("#list li").length + " total)");
+    $("#list").removeClass("noresults");
     if ($("#list").children("li:hidden").length > 0) {
         $("#package_count").text(" (" + $("#list li:visible").length + " visible, " + $("#list li").length + " total)");
+        if ($("#list li:visible").length == 0) {
+            $("#list").addClass("noresults");
+        }
     }
 }
 
@@ -329,7 +333,7 @@ function package_rename(uuid, name, client_only) {
 }
 
 function package_visible(uuid, show) {
-    if ($("#list li[data-id='" + uuid + "']").is(":visible") == show || !(uuid in packages)) {
+    if (!(uuid in packages) || $("#list li[data-id='" + uuid + "']").is(":visible") == show) {
         return;
     }
     packages[uuid].marker.setVisible(show);

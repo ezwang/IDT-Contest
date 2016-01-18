@@ -70,6 +70,11 @@ body
     content:"No Packages";
     color:#aaa;
 }
+#list.noresults:not(:empty):after
+{
+    content:"No Results";
+    color:#aaa;
+}
 #list li:hover
 {
     background-color:#ddd;

@@ -16,7 +16,12 @@
 <span style='display:none' id="is_admin">{% if is_admin and logged_in %}True{% else %}False{% endif %}</span>
 <span style='display:none' id="can_edit">{% if can_edit and logged_in %}True{% else %}False{% endif %}</span>
 <div id="sidebar">
-    <div id="packagelist" class="box"><span class="title">Packages<span id="package_count"></span></span><span class="message"><ul class="fa-ul" id="list"></ul></span></div>
+    <div id="packagelist" class="box">
+        <span class="title">Packages<span id="package_count"></span></span>
+        <span class="message">
+            <ul class="fa-ul" id="list"></ul>
+        </span>
+    </div>
     <div id="guest" class="box">
         <span class="title">You are not logged in!</span><span class="message">You will only be able to see packages marked as public.<br />Click <a href="/">here</a> to login.</span></div>
     <div id="member" class="box"><span class="title" style="font-weight:normal">Hello, <b id="username">{{ username }}</b>!</span>
