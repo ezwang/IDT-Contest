@@ -72,7 +72,7 @@ def register_submit():
         conn.rollback()
         return jsonify(**{'error':'Username is already taken!'})
     conn.commit()
-    return jsonify(**{'success':'Account created! Click here to <a href="/">login</a>.'})
+    return jsonify(**{'success':'Account created! Redirecting to login page...', 'delayed_redirect':'/'})
 
 @app.route('/settings')
 def settings():
@@ -261,7 +261,7 @@ def delete_account():
     cur.execute('DELETE FROM users WHERE id = %s', (session['id'],))
     conn.commit()
     session.clear()
-    return jsonify(**{'success':'Your account has been deleted!','redirect':'/'})
+    return jsonify(**{'success':'Your account has been deleted!','delayed_redirect':'/'})
 
 @app.route('/settings/change_email', methods=["POST"])
 def changeemail():

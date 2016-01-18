@@ -19,6 +19,11 @@ $(document).ready(function() {
                 window.location.href = data.redirect;
                 return;
             }
+            if (data.delayed_redirect) {
+                setTimeout(function() {
+                    window.location.href = data.delayed_redirect;
+                }, 1000);
+            }
             if (data.success) {
                 a.find('.form-info').html(data.success).addClass('alert-success').removeClass('alert-danger').slideDown('fast');
             }
