@@ -188,6 +188,8 @@ def admin_modify_account():
         return abort(403)
     userid = request.form['id']
     username = request.form['username']
+    if len(username) == 0:
+        return jsonify(**{'error':'You must enter a username!'})
     email = request.form['email']
     acc_type = int(request.form['type'])
     cur = conn.cursor()

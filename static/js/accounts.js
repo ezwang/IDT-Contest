@@ -44,13 +44,25 @@ $(document).ready(function() {
     $("#btn-modify").click(function(e) {
         $.post("/accounts/modify_account", $("#user-form :input").serialize(), function(data) {
             // TODO: update data table more efficiently
-            table.ajax.reload(updateButtons);
+            if (data.error) {
+                // TODO: prettier alert format
+                alert(data.error);
+            }
+            else {
+                table.ajax.reload(updateButtons);
+            }
         }, 'json');
     });
     $("#btn-delete").click(function(e) {
         $.post("/accounts/delete_account", $("#user-form :input").serialize(), function(data) {
             // TODO: update data table more efficiently
-            table.ajax.reload(updateButtons);
+            if (data.error) {
+                // TODO: prettier alert format
+                alert(data.error);
+            }
+            else {
+                table.ajax.reload(updateButtons);
+            }
         }, 'json');
     });
     function perm_table_update() {
