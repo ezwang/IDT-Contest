@@ -432,6 +432,13 @@ $(document).ready(function() {
         $("#list li[data-id='" + uuid + "'] .name").html("<input class='rename-prompt' type='text' />");
         $("#list li[data-id='" + uuid + "'] .name input").val(oldname).attr('data-old', oldname).focus().select();
     });
+    $("#deleteModal-confirm").click(function(e) {
+        if ($("#deleteModal-prompt").is(":checked")) {
+            $.cookie("s_nodeleteconfirm", true);
+        }
+        package_delete($("#deleteModal-uuid").text());
+        $("#deleteModal").modal('hide');
+    });
     $("#list").on("click", ".p-delete", function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -442,15 +449,15 @@ $(document).ready(function() {
             $("#list li[data-id='" + uuid + "'] .name").text(oldname);
             return;
         }
-        // TODO: prettier confirm, or undo function
-        var additional = '';
-        if (!packages[uuid].delivered) {
-            additional = 'This package has not been delivered, but the last update was over a month ago.\n';
+        if ($.cookie("s_nodeleteconfirm") != "true") {
+            $("#deleteModal-delivered").toggle(!packages[uuid].delivered);
+            $("#deleteModal-name").text($("#list li[data-id='" + uuid + "'] .name").text());
+            $("#deleteModal-uuid").text(uuid);
+            $("#deleteModal").modal('show');
         }
-        if (!confirm('Are you sure you want to delete this package record?\n' + additional + uuid)) {
-            return;
+        else {
+            package_delete(uuid);
         }
-        package_delete(uuid);
     });
     $(window).resize(function() {
         scale_sidebar();

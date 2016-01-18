@@ -18,4 +18,12 @@ $(document).ready(function() {
         $.cookie("s_zoom", s_zoom);
         update();
     });
+    if ($.cookie('s_nodeleteconfirm') == 'true') {
+        $("#s_deleteconfirm_container").show();
+    }
+    $("#s_deleteconfirm").click(function(e) {
+        e.preventDefault();
+        $.cookie('s_nodeleteconfirm', false);
+        $("#s_deleteconfirm_container").slideUp();
+    });
 });
