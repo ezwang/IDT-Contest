@@ -35,6 +35,10 @@ def root():
         return redirect('/map')
     return render_template('index.html')
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 def getemail(usrid):
     cur = conn.cursor()
     cur.execute('SELECT email FROM users WHERE id = %s', (usrid,))
@@ -367,7 +371,6 @@ def checkaccess(uuid):
             return True
     if uuid in globalaccess:
         return True
-    print uuid
     return False
 
 def refreshaccess():
