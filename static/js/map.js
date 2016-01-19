@@ -352,9 +352,18 @@ function package_visible(uuid, show) {
 }
 
 function scale_sidebar() {
-    var val = $(window).height()-$("#member").height()-$("#logo_padding").height()-$("#search").height()-90;
+    var val = $(window).height()-$("#member").height()-$("#logo_padding").height()-$("#search").height() - 85 - $("#packagelist .title").height();
+    // put package info on left if mobile device
     if (window.innerWidth <= 480) {
-        val -= $("#packageinfo").height() + 30;
+        val -= $("#packageinfo").height() + 15;
+        // compensate for onscreen keyboard height on mobile
+        if ($(".rename-prompt:focus").length > 0) {
+            val += $("#member").height() + $("#packageinfo").height();
+            $("#packageinfo, #member").hide();
+        }
+        else {
+            $("#packageinfo, #member").show();
+        }
     }
     $("#packagelist .message").css("max-height", val);
 }
