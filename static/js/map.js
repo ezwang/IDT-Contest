@@ -352,10 +352,10 @@ function package_visible(uuid, show) {
 }
 
 function scale_sidebar() {
-    var val = $(window).height()-$("#member").height()-$("#logo_padding").height()-$("#search").height() - 85 - $("#packagelist .title").height();
+    var val = $(window).height()-$("#member").height()-$("#logo_padding").height()-$("#search").height() - 65 - $("#packagelist .title").height();
     // put package info on left if mobile device
     if (window.innerWidth <= 480) {
-        val -= $("#packageinfo").height() + 15;
+        val -= $("#packageinfo").height() + 30;
         // compensate for onscreen keyboard height on mobile
         if ($(".rename-prompt:focus").length > 0) {
             val += $("#member").height() + $("#packageinfo").height();
