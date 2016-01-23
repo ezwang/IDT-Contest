@@ -103,6 +103,7 @@ if sudo bash -c 'type "initctl" > /dev/null 2>&1'; then
 elif sudo bash -c 'type "update-rc.d" > /dev/null 2>&1'; then
     echo '[*] Adding script to init.d and creating startup links...'
     sudo cp packagemanager /etc/init.d/packagemanager
+    sudo chmod +x /etc/init.d/packagemanager
     sudo update-rc.d packagemanager defaults
 else
     echo '[*] No service manager detected, running server...'
