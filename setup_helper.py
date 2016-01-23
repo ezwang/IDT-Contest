@@ -69,10 +69,13 @@ def setup_database(config):
     while True:
         resp = getpass.getpass('[*] Password: ')
         conf = getpass.getpass('[*] Confirm password: ')
+        if len(resp) == 0:
+            print "[!] Please enter a password!"
+            continue
         if resp == conf:
             break
         else:
-            print("[!] Password doesn't match confirm!")
+            print "[!] Password doesn't match confirm!"
     cur.execute('INSERT INTO users (username, password, type) VALUES (%s, %s, 1)', ('admin', generate_password_hash(resp)))
     conn.commit()
     print "[*] User created!"
