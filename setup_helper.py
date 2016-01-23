@@ -29,10 +29,15 @@ def generate_flask_secret(config):
 def prompt_database_credentials(config):
     print("[*] You will now be prompted for your database credentials.")
     print("[*] Press enter to select the default.")
-    for x in ["dbname", "host", "pass", "user"]:
+    for x in ["dbname", "host", "user"]:
         val = raw_input("What is your " + x + "? [Default: " + config["database"][x] + "] ")
         if len(val) > 0:
             config["database"][x] = val
+    while True:
+        val = getpass.getpass('What is your password? ')
+        if len(val) > 0:
+            config["database"]["pass"] = val
+            break
 
 def setup_database(config):
     print "[*] Connecting to database..."
@@ -50,6 +55,7 @@ def setup_database(config):
     cur.execute('CREATE TABLE IF NOT EXISTS access (id SERIAL, userid INTEGER, package UUID, CONSTRAINT u_constraint UNIQUE (userid, package))')
     conn.commit()
     print "[*] Adding 'admin' user..."
+    print "The password you enter below will be used for logging in to the website."
     while True:
         resp = getpass.getpass('Enter a password for the new user: ')
         conf = getpass.getpass('Confirm password: ')
@@ -74,5 +80,11 @@ if __name__ == '__main__':
     generate_flask_secret(config)
     if len(sys.argv) > 1 and sys.argv[1] == "prompt":
         prompt_database_credentials(config)
+    else:
+        config["database"]["host"] = "localhost"
+        config["database"]["dbname"] = "pmdb"
+        config["database"]["user"] = "pmuser"
+        print('Enter the password you entered earlier for the database user.')
+        config["database"]["pass"] = getpass.getpass("Password: ")
     save_config(config)
     setup_database(config)
