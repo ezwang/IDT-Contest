@@ -30,7 +30,10 @@
         </fieldset>
         <fieldset class="form-group" style="position:relative">
             <input type="password" id="password" name="password" class="form-control" placeholder="Password" />
-            <button id="password-edit" class="btn btn-warning btn-sm" style="position:absolute;z-index:1;top:3px;left:5px;display:none">Edit Password</button>
+            <span id="password-opt" style="position:absolute;z-index:1;top:3px;left:5px;display:none">
+                <button id="password-edit" class="btn btn-warning btn-sm">Change Password</button>
+                <button id="password-generate" class="btn btn-success btn-sm">Generate Password</button>
+            </span>
         </fieldset>
         <fieldset class="form-group">
             <select class="form-control" id="type" name="type">

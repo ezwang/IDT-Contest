@@ -202,7 +202,7 @@ def admin_modify_account():
     acc_type = int(request.form['type'])
     cur = conn.cursor()
     cur.execute('UPDATE users SET username = %s, email = %s, type = %s WHERE id = %s', (username, email, acc_type, userid))
-    if 'password' in request.form and len(request.form['password'] > 0):
+    if 'password' in request.form and len(request.form['password']) > 0:
         cur.execute('UPDATE users SET password = %s WHERE id = %s', (generate_password_hash(request.form['password']), userid))
     conn.commit()
     return jsonify(**{'success':'Account modified!'})

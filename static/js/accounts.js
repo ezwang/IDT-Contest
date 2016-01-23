@@ -25,6 +25,12 @@ $(document).ready(function() {
                     }
                 },
                 "targets": -1
+            },
+            {
+                "render": function(data, type, row) {
+                    return $("<div />").text(data).html();
+                },
+                "targets": [1, 2]
             }
         ],
         "order": [[1, "asc"]]
@@ -51,6 +57,7 @@ $(document).ready(function() {
             else {
                 table.ajax.reload(updateButtons);
             }
+            // TODO: display success notification
         }, 'json');
     });
     $("#btn-delete").click(function(e) {
@@ -174,7 +181,12 @@ $(document).ready(function() {
     });
     $("#password-edit").click(function(e) {
         $("#password").prop("disabled", false).val("").focus();
-        $(this).hide();
+        $("#password-opt").hide();
+    });
+    $("#password-generate").click(function(e) {
+        // TODO: generate and show random password
+        $("#password").prop("disabled", false).val("").focus();
+        $("#password-opt").hide();
     });
     function updateButtons() {
         var ids = [];
@@ -185,7 +197,7 @@ $(document).ready(function() {
         $("#btn-delete").text("Delete Account");
         $("#username, #type, #email").prop("disabled", false);
         var items = $("#users tr.selected").length;
-        $("#password-edit").hide();
+        $("#password-opt").hide();
         if (items == 0) {
             $("#username, #email, #password").val("");
             $("#btn-permissions, #btn-create, #password").prop("disabled", false);
@@ -193,7 +205,7 @@ $(document).ready(function() {
         }
         else if (items == 1) {
             var row = $("#users tr.selected")[0];
-            $("#password-edit").show();
+            $("#password-opt").show();
             $("#btn-create, #password").prop("disabled", true);
             $("#btn-permissions, #btn-modify, #btn-delete").prop("disabled", false);
             if (table.row(row).data()["type"] > 0) {

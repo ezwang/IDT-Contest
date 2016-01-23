@@ -504,8 +504,9 @@ $(document).ready(function() {
             });
         }
         else {
+            var term = $("#search").val().toLowerCase();
             $("#list li").each(function(k, v) {
-                if ($(this).attr('data-id').indexOf($("#search").val()) > -1 || $(this).text().indexOf($("#search").val()) > -1) {
+                if ($(this).attr('data-id').indexOf(term) > -1 || $(this).text().toLowerCase().indexOf(term) > -1) {
                     package_visible($(this).attr('data-id'), true);
                 }
                 else {
