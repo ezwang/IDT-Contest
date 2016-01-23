@@ -1,16 +1,16 @@
 {
-    "flasksecret": "t8vkr5m2ce&$83=5aut_hnoznhff)5xm53_4(qpksql8thn#uu",
-    "new_package_public":true,
-    "allow_registration":true,
-    "allow_deletion":true,
-    "allow_user_edit":true,
-    "database": {
-        "host": "pellefant.db.elephantsql.com",
-        "user": "mkkidnum",
-        "pass": "wiZq1MPK2RsMXAkH1DFrhCl9HxI5_sxm",
-        "dbname": "mkkidnum"
-    },
+    "allow_deletion": true, 
+    "allow_registration": true, 
+    "allow_user_edit": true, 
     "api": {
         "googlemaps": ""
-    }
+    }, 
+    "database": {
+        "dbname": "mkkidnum", 
+        "host": "pellefant.db.elephantsql.com", 
+        "pass": "wiZq1MPK2RsMXAkH1DFrhCl9HxI5_sxm", 
+        "user": "mkkidnum"
+    }, 
+    "flasksecret": "t8vkr5m2ce&$83=5aut_hnoznhff)5xm53_4(qpksql8thn#uu", 
+    "new_package_public": true
 }

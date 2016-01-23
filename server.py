@@ -14,6 +14,10 @@ socketio = SocketIO(app)
 with open('config.json') as data:
     config = json.load(data)
 
+def save_config(config):
+    with open('config.json', 'w') as data:
+        data.write(json.dumps(config, indent=4, sort_keys=True))
+
 app.secret_key = config['flasksecret']
 conn = psycopg2.connect("dbname='" + config["database"]["dbname"] + "' user='" + config["database"]["user"] + "' host='" + config["database"]["host"] + "' password='" + config["database"]["pass"] + "'")
 
