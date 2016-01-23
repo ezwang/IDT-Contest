@@ -34,10 +34,14 @@ def prompt_database_credentials(config):
         if len(val) > 0:
             config["database"][x[0]] = val
     while True:
-        val = getpass.getpass('[*] What is your password? ')
+        val = getpass.getpass('[*] What is your password? [Default: Previous Value] ')
         if len(val) > 0:
             config["database"]["pass"] = val
             break
+        if len(config["database"]["pass"]) > 0:
+            break
+        else:
+            print '[*] No previous value!'
 
 def setup_database(config):
     print "[*] Connecting to database..."

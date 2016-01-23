@@ -95,13 +95,13 @@ sudo cp -R . /opt/packagemanager
 
 echo '[*] Installing server handler...'
 
-if type "initctl" > /dev/null; then
+if type "initctl" > /dev/null 2>&1; then
     echo '[*] Upstart detected, registering service...'
     sudo cp packagemanager.conf /etc/init/packagemanager.conf
     sudo start packagemanager
 else
     echo '[*] No service manager detected, running server...'
-    echp '[!] You will need to manually register run.sh to execute on boot.'
+    echo '[!] You will need to manually register run.sh to execute on boot.'
     /opt/packagemanager/run.sh &
 fi
 
