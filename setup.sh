@@ -7,10 +7,14 @@ echo '''
 | Install Script             |
 +============================+
 
-[*] This script has been tested on Ubuntu 14.04 LTS.
-[*] This script should work for Debian based systems.
-[*] You may be prompted for root access during the installation process.
+[*] This script has been tested on Ubuntu 14.04 LTS and Debian 8.3.
+[*] This script should work for most Debian based systems.
 '''
+
+if [[ $EUID -ne 0 ]]; then
+    echo '[*] You may be prompted for root access during the installation process.'
+    echo
+fi
 
 if ! type "apt-get" > /dev/null; then
     echo '[!] WARNING: You are not using the apt-get package manager!'
@@ -20,7 +24,7 @@ if ! type "apt-get" > /dev/null; then
 fi
 
 echo '[*] Checking for pip...'
-pip -h > /dev/null 2>&1 || sudo apt-get install python-pip || { echo '[!] Could not install pip!'; exit 1; }
+pip -h > /dev/null 2>&1 || sudo apt-get install -y python-pip || { echo '[!] Could not install pip!'; exit 1; }
 if ! type "dpkg" > /dev/null; then
     echo '[!] WARNING: You may need to manually install the database drivers for your operating system.'
     echo '[!] In Debian based systems, the package is called libpq-dev.'
@@ -47,8 +51,6 @@ then
     echo '[*] Installing postgresql database...'
     sudo apt-get install -y postgresql postgresql-contrib || { echo 'Failed to install the postgresql database!'; exit 1; }
     echo '[*] Creating user account and database...'
-    echo '[*] You will be prompted to enter a new password for the postgresql user account.'
-    echo '[*] Remember the password you enter; you will be prompted for it again later.'
     PASS=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
     # TODO: check if user exists before attempting to create user
     while true; do
@@ -64,17 +66,17 @@ then
     sudo -u postgres psql -c "ALTER USER pmuser WITH PASSWORD '$PASS';"
     sudo -u postgres createdb -O "pmuser" "pmdb" || { echo '[!] Failed to create database!'; exit 1; }
     PG_HBA_PATH=$(sudo -u postgres psql -t -P format=unaligned -c 'show hba_file')
-    if sudo grep -q -P '^host[ \t]+all[ \t]+all[ \t]+127\.0\.0\.1\/32[ \t]+(md5|password)[ \t]?$' "$PG_HBA_PATH"; then
+    if [ -n "$PG_HBA_PATH" ] && sudo grep -q -P '^host[ \t]+all[ \t]+all[ \t]+127\.0\.0\.1\/32[ \t]+(md5|password)[ \t]?$' "$PG_HBA_PATH"; then
         echo '[*] pg_hba.conf already configured, skipping...'
     else
-        echo '[*] You must update the postgresql configuration to allow for password based authentication.'
-        echo '[*] Add the following line in your pg_hba.conf or postgresql.conf (depends on version of postgresql installed).'
-        echo "[*] This file is located at $PG_HBA_PATH."
+        echo '[*] This script will attempt to update the postgresql configuration to allow for password based authentication.'
+        echo '[*] It will add the following line in your pg_hba.conf.'
+        echo "[*] The file is located at $PG_HBA_PATH."
         echo
         echo 'host all all 127.0.0.1/32 md5'
         echo
-        echo '[*] After you have added this line, press the [Enter] key.'
-        read -p "$*"
+        echo "host\tall\tall\t127.0.0.1/32\tmd5" | sudo tee -a $PG_HBA_PATH
+        echo '[*] Line added!'
         echo '[*] Restarting postgres server...'
         sudo /etc/init.d/postgresql restart || { echo '[!] Failed to restart server. You may have to do this manually. Press [Enter] when you are finished.'; read -p "$*"; }
     fi
@@ -82,9 +84,27 @@ then
 else
     python setup_helper.py prompt || exit 1
 fi
+
+echo '[*] Copying files to /opt...'
+if [ -d "/opt/packagemanager" ]; then
+    echo '[*] Old installation exists, deleting...'
+    sudo rm -rf /opt/packagemanager
+fi
+sudo mkdir /opt/packagemanager
+sudo cp -R . /opt/packagemanager
+
 echo '[*] Installing server handler...'
-# TODO: add handler for server to start on boot
-./server.py & # temporary
+
+if type "initctl" > /dev/null; then
+    echo '[*] Upstart detected, registering service...'
+    sudo cp packagemanager.conf /etc/init/packagemanager.conf
+    sudo start packagemanager
+else
+    echo '[*] No service manager detected, running server...'
+    echp '[!] You will need to manually register run.sh to execute on boot.'
+    /opt/packagemanager/run.sh &
+fi
+
 echo '[*] Installation completed!'
 echo '[*] Opening user manual page...'
 xdg-open http://localhost:8080/about &>/dev/null
