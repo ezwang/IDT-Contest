@@ -351,8 +351,16 @@ function package_visible(uuid, show) {
     }
 }
 
+var mobile_keyboard_hide = false;
+
 function scale_sidebar() {
-    var val = $(window).height()-$("#member").height()-$("#logo_padding").height()-$("#search").height() - 65 - $("#packagelist .title").height();
+    var val = $(window).height()-$("#logo_padding").height()-$("#search").height() - 65 - $("#packagelist .title").height();
+    if ($("#guest").is(":visible")) {
+        val -= $("#guest").height();
+    }
+    else {
+        val -= $("#member").height();
+    }
     // put package info on left if mobile device
     if (window.innerWidth <= 480) {
         val -= $("#packageinfo").height() + 30;
@@ -360,9 +368,11 @@ function scale_sidebar() {
         if ($(".rename-prompt:focus").length > 0) {
             val += $("#member").height() + $("#packageinfo").height();
             $("#packageinfo, #member").hide();
+            mobile_keyboard_hide = true;
         }
-        else {
+        else if (mobile_keyboard_hide) {
             $("#packageinfo, #member").show();
+            mobile_keyboard_hide = false;
         }
     }
     $("#packagelist .message").css("max-height", val);
