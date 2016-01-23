@@ -2,3 +2,52 @@
 {
     padding:15px;
 }
+#container
+{
+    position:relative;
+}
+nav
+{
+    z-index:2;
+}
+#sidebar
+{
+    background-color:#eee;
+    padding-left:15px;
+    padding-right:15px;
+    position:fixed;
+    top:0px;
+    left:0px;
+    height:100%;
+    width:215px;
+}
+#sidebar a:hover, #sidebar a:focus
+{
+    text-decoration:none;
+}
+#sidebar a
+{
+    color:#555;
+}
+#info
+{
+    margin-left:215px;
+}
+#sidebar-title
+{
+    display:block;
+    padding-top:15px;
+    padding-bottom:25px;
+    font-size:1.25rem;
+    color:#777;
+}
+@media screen and (max-width:480px) {
+    #sidebar
+    {
+        display:none;
+    }
+    #info
+    {
+        margin-left:0px;
+    }
+}
