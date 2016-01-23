@@ -1,0 +1,30 @@
+#!/bin/sh
+
+PIDFILE=/var/run/packagemanager.pid
+
+case "$1" in
+    start)
+        PID=`/opt/packagemanager/run.sh > /dev/null 2>&1 & echo $!`
+        if [ -z $PID ]; then
+            echo 'Fail'
+        else
+            echo $PID > $PIDFILE
+            echo 'OK'
+        fi
+        ;;
+    stop)
+        if [ -f $PIDFILE ]; then
+            kill `cat $PIDFILE`
+            rm -f $PIDFILE
+            echo 'OK'
+        else
+            echo 'Not Running'
+        fi
+        ;;
+    *)
+        echo "Usage: /etc/init.d/packagemanager {start|stop}"
+        exit 1
+        ;;
+esac
+
+exit 0

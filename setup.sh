@@ -94,11 +94,16 @@ sudo mkdir /opt/packagemanager
 sudo cp -R . /opt/packagemanager
 
 echo '[*] Installing server handler...'
+echo '[*] This process will start Package Manager when the server boots.'
 
 if type "initctl" > /dev/null 2>&1; then
     echo '[*] Upstart detected, registering service...'
     sudo cp packagemanager.conf /etc/init/packagemanager.conf
     sudo start packagemanager
+elif type "update-rc.d" > /dev/null 2>&1; then
+    echo '[*] Adding script to init.d and creating startup links...'
+    sudo cp packagemanager /etc/init.d/packagemanager
+    sudo update-rc.d packagemanager defaults
 else
     echo '[*] No service manager detected, running server...'
     echo '[!] You will need to manually register run.sh to execute on boot.'
