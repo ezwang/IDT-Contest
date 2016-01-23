@@ -96,11 +96,11 @@ sudo cp -R . /opt/packagemanager
 echo '[*] Installing server handler...'
 echo '[*] This process will start Package Manager when the server boots.'
 
-if type "initctl" > /dev/null 2>&1; then
+if sudo bash -c 'type "initctl" > /dev/null 2>&1'; then
     echo '[*] Upstart detected, registering service...'
     sudo cp packagemanager.conf /etc/init/packagemanager.conf
     sudo start packagemanager
-elif type "update-rc.d" > /dev/null 2>&1; then
+elif sudo bash -c 'type "update-rc.d" > /dev/null 2>&1'; then
     echo '[*] Adding script to init.d and creating startup links...'
     sudo cp packagemanager /etc/init.d/packagemanager
     sudo update-rc.d packagemanager defaults
