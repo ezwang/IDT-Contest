@@ -29,12 +29,12 @@ def generate_flask_secret(config):
 def prompt_database_credentials(config):
     print("[*] You will now be prompted for your database credentials.")
     print("[*] Press enter to select the default.")
-    for x in ["dbname", "host", "user"]:
-        val = raw_input("What is your " + x + "? [Default: " + config["database"][x] + "] ")
+    for x in [("dbname", "database name"), ("host", "host"), ("user", "username")]:
+        val = raw_input("[*] What is your " + x[1] + "? [Default: " + config["database"][x[0]] + "] ")
         if len(val) > 0:
-            config["database"][x] = val
+            config["database"][x[0]] = val
     while True:
-        val = getpass.getpass('What is your password? ')
+        val = getpass.getpass('[*] What is your password? ')
         if len(val) > 0:
             config["database"]["pass"] = val
             break
@@ -76,15 +76,23 @@ def setup_database(config):
     conn.close()
 
 if __name__ == '__main__':
-    config = load_config()
-    generate_flask_secret(config)
-    if len(sys.argv) > 1 and sys.argv[1] == "prompt":
-        prompt_database_credentials(config)
+    if len(sys.argv) > 1:
+        config = load_config()
+        generate_flask_secret(config)
+        if sys.argv[1] == "prompt":
+            prompt_database_credentials(config)
+        elif sys.argv[1] == "created":
+            config["database"]["host"] = "localhost"
+            config["database"]["dbname"] = "pmdb"
+            config["database"]["user"] = "pmuser"
+            if len(sys.argv) > 2:
+                config["database"]["pass"] = sys.argv[2]
+            else:
+                print('[*] Enter the password you entered earlier for the database user.')
+                config["database"]["pass"] = getpass.getpass("[*] Password: ")
     else:
-        config["database"]["host"] = "localhost"
-        config["database"]["dbname"] = "pmdb"
-        config["database"]["user"] = "pmuser"
-        print('[*] Enter the password you entered earlier for the database user.')
-        config["database"]["pass"] = getpass.getpass("[*] Password: ")
+        print 'This script should not be run directly!'
+        print 'Run the setup script to install the application.'
+        exit()
     save_config(config)
     setup_database(config)
