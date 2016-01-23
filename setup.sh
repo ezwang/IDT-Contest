@@ -50,6 +50,7 @@ then
     echo '[*] You will be prompted to enter a new password for the postgresql user account.'
     echo '[*] Remember the password you enter; you will be prompted for it again later.'
     PASS=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+    # TODO: check if user exists before attempting to create user
     while true; do
         sudo -u postgres createuser -D -A "pmuser" && break
         echo '[!] Error while creating new user!'
@@ -62,17 +63,21 @@ then
     echo '[*] Attempting to set password for new user...'
     sudo -u postgres psql -c "ALTER USER pmuser WITH PASSWORD '$PASS';"
     sudo -u postgres createdb -O "pmuser" "pmdb" || { echo '[!] Failed to create database!'; exit 1; }
-    echo '[*] You must update the postgresql configuration to allow for password based authentication.'
-    echo '[*] Add the following line in your pg_hba.conf or postgresql.conf (depends on version of postgresql installed).'
-    echo '[*] If both files exist, edit the pg_hba.conf file.'
-    echo '[*] This file is usually located in /etc/postgresql/<version>/main folder.'
-    echo
-    echo 'host all all 127.0.0.1/32 password'
-    echo
-    echo '[*] After you have added this line, press the [Enter] key.'
-    read -p "$*"
-    echo '[*] Restarting postgres server...'
-    sudo /etc/init.d/postgresql restart || { echo '[!] Failed to restart server. You may have to do this manually. Press [Enter] when you are finished.'; read -p "$*"; }
+    PG_HBA_PATH=$(sudo -u postgres psql -t -P format=unaligned -c 'show hba_file')
+    if sudo grep -q -P '^host[ \t]+all[ \t]+all[ \t]+127\.0\.0\.1\/32[ \t]+(md5|password)[ \t]?$' "$PG_HBA_PATH"; then
+        echo '[*] pg_hba.conf already configured, skipping...'
+    else
+        echo '[*] You must update the postgresql configuration to allow for password based authentication.'
+        echo '[*] Add the following line in your pg_hba.conf or postgresql.conf (depends on version of postgresql installed).'
+        echo "[*] This file is located at $PG_HBA_PATH."
+        echo
+        echo 'host all all 127.0.0.1/32 md5'
+        echo
+        echo '[*] After you have added this line, press the [Enter] key.'
+        read -p "$*"
+        echo '[*] Restarting postgres server...'
+        sudo /etc/init.d/postgresql restart || { echo '[!] Failed to restart server. You may have to do this manually. Press [Enter] when you are finished.'; read -p "$*"; }
+    fi
     python setup_helper.py created $PASS || exit 1
 else
     python setup_helper.py prompt || exit 1

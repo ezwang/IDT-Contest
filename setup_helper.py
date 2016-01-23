@@ -28,7 +28,7 @@ def generate_flask_secret(config):
 
 def prompt_database_credentials(config):
     print "[*] You will now be prompted for your database credentials."
-    print "[*] Press enter to select the default."
+    print "[*] Press enter to select the default shown."
     for x in [("dbname", "database name"), ("host", "host"), ("user", "username")]:
         val = raw_input("[*] What is your " + x[1] + "? [Default: " + config["database"][x[0]] + "] ")
         if len(val) > 0:
@@ -54,10 +54,16 @@ def setup_database(config):
     print "[*] Creating access table..."
     cur.execute('CREATE TABLE IF NOT EXISTS access (id SERIAL, userid INTEGER, package UUID, CONSTRAINT u_constraint UNIQUE (userid, package))')
     conn.commit()
+    print "[*] Creating package table..."
+    cur.execute('CREATE TABLE IF NOT EXISTS packages (id UUID, name TEXT, lat DOUBLE PRECISION, lng DOUBLE PRECISION, delivered BOOLEAN, PRIMARY KEY (id))')
+    conn.commit()
+    print "[*] Creating package steps table..."
+    cur.execute('CREATE TABLE IF NOT EXISTS steps (id UUID, lat DOUBLE PRECISION, lng DOUBLE PRECISION, ele DOUBLE PRECISION, time TIMESTAMP)')
+    conn.commit()
     print "[*] Adding 'admin' user..."
     print "[*] The password you enter below will be used for logging in to the website."
     while True:
-        resp = getpass.getpass('[*] Enter a password for the new user: ')
+        resp = getpass.getpass('[*] Password: ')
         conf = getpass.getpass('[*] Confirm password: ')
         if resp == conf:
             break
@@ -67,12 +73,6 @@ def setup_database(config):
     conn.commit()
     print "[*] User created!"
     print "[*] Use the username 'admin' and the password you created to login to the website."
-    print "[*] Creating package table..."
-    cur.execute('CREATE TABLE IF NOT EXISTS packages (id UUID, name TEXT, lat DOUBLE PRECISION, lng DOUBLE PRECISION, delivered BOOLEAN, PRIMARY KEY (id))')
-    conn.commit()
-    print "[*] Creating package steps table..."
-    cur.execute('CREATE TABLE IF NOT EXISTS steps (id UUID, lat DOUBLE PRECISION, lng DOUBLE PRECISION, ele DOUBLE PRECISION, time TIMESTAMP)')
-    conn.commit()
     conn.close()
 
 if __name__ == '__main__':
