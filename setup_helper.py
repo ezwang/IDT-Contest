@@ -27,8 +27,8 @@ def generate_flask_secret(config):
     config["flasksecret"] = ''.join(r.choice(string.printable) for _ in range(50))
 
 def prompt_database_credentials(config):
-    print("[*] You will now be prompted for your database credentials.")
-    print("[*] Press enter to select the default.")
+    print "[*] You will now be prompted for your database credentials."
+    print "[*] Press enter to select the default."
     for x in [("dbname", "database name"), ("host", "host"), ("user", "username")]:
         val = raw_input("[*] What is your " + x[1] + "? [Default: " + config["database"][x[0]] + "] ")
         if len(val) > 0:
@@ -44,7 +44,7 @@ def setup_database(config):
     conn = psycopg2.connect("dbname='" + config["database"]["dbname"] + "' user='" + config["database"]["user"] + "' host='" + config["database"]["host"] + "' password='" + config["database"]["pass"] + "'")
     cur = conn.cursor()
 
-    print('[*] Deleting previous tables...')
+    print "[*] Deleting previous tables..."
     cur.execute('DROP TABLE IF EXISTS users, packages, steps, access')
     conn.commit()
 
@@ -70,7 +70,7 @@ def setup_database(config):
     print "[*] Creating package table..."
     cur.execute('CREATE TABLE IF NOT EXISTS packages (id UUID, name TEXT, lat DOUBLE PRECISION, lng DOUBLE PRECISION, delivered BOOLEAN, PRIMARY KEY (id))')
     conn.commit()
-    print '[*] Creating package steps table...'
+    print "[*] Creating package steps table..."
     cur.execute('CREATE TABLE IF NOT EXISTS steps (id UUID, lat DOUBLE PRECISION, lng DOUBLE PRECISION, ele DOUBLE PRECISION, time TIMESTAMP)')
     conn.commit()
     conn.close()
@@ -94,5 +94,5 @@ if __name__ == '__main__':
         print 'This script should not be run directly!'
         print 'Run the setup script to install the application.'
         exit()
-    save_config(config)
     setup_database(config)
+    save_config(config)
