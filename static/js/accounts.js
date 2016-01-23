@@ -183,9 +183,18 @@ $(document).ready(function() {
         $("#password").prop("disabled", false).val("").focus();
         $("#password-opt").hide();
     });
+    function generateRandomPassword(length) {
+        // TODO: this could be made more secure
+        var chars = "abcdefghijklmnopqrstuvwxyz!@#$%^&*()-+ABCDEFGHIJKLMNOP1234567890";
+        var pass = "";
+        for (var x = 0; x < length; x++) {
+            var i = Math.floor(Math.random() * chars.length);
+            pass += chars.charAt(i);
+        }
+        return pass;
+    }
     $("#password-generate").click(function(e) {
-        // TODO: generate and show random password
-        $("#password").prop("disabled", false).val("").focus();
+        $("#password").prop("disabled", false).attr("type", "text").val(generateRandomPassword(16)).focus();
         $("#password-opt").hide();
     });
     function updateButtons() {
@@ -197,6 +206,7 @@ $(document).ready(function() {
         $("#btn-delete").text("Delete Account");
         $("#username, #type, #email").prop("disabled", false);
         var items = $("#users tr.selected").length;
+        $("#password").attr("type", "password");
         $("#password-opt").hide();
         if (items == 0) {
             $("#username, #email, #password").val("");
