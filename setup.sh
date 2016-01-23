@@ -1,82 +1,85 @@
 #!/bin/bash
 
-echo '''Package Manager
-TJHSST Team 1
-Install Script
+echo '''
++============================+
+| Package Manager            |
+| TJHSST Team 1              |
+| Install Script             |
++============================+
 
-This script has been tested on Ubuntu 14.04 LTS.
-This script should work for Debian based systems.
-You may be prompted for root access during the installation process.
+[*] This script has been tested on Ubuntu 14.04 LTS.
+[*] This script should work for Debian based systems.
+[*] You may be prompted for root access during the installation process.
 '''
 
 if ! type "apt-get" > /dev/null; then
-    echo 'WARNING: You are not using the apt-get package manager!'
-    echo 'Some parts of this script require the package manager.'
-    echo 'You may have to use the manual install process.'
+    echo '[!] WARNING: You are not using the apt-get package manager!'
+    echo '[!] Some parts of this script require the package manager.'
+    echo '[!] You may have to use the manual install process.'
     echo
 fi
 
-echo 'Checking for pip...'
-pip -h > /dev/null 2>&1 || sudo apt-get install python-pip || { echo 'Could not install pip!'; exit 1; }
+echo '[*] Checking for pip...'
+pip -h > /dev/null 2>&1 || sudo apt-get install python-pip || { echo '[!] Could not install pip!'; exit 1; }
 if ! type "dpkg" > /dev/null; then
-    echo 'WARNING: You may need to manually install the database drivers for your operating system.'
-    echo 'In Debian based systems, the package is called libpq-dev.'
-    echo 'Press the [ENTER] key after you have installed the necessary postgresql drivers.'
+    echo '[!] WARNING: You may need to manually install the database drivers for your operating system.'
+    echo '[!] In Debian based systems, the package is called libpq-dev.'
+    echo '[!] Press the [ENTER] key after you have installed the necessary postgresql drivers.'
     read -p "$*"
 else
     if ! dpkg --get-selections | grep -q "^libpq-dev[[:space:]]*install$" >/dev/null; then
-        echo 'Installing database drivers...'
-        sudo apt-get install -y libpq-dev python-dev || { echo 'Unable to install postgresql drivers!'; exit 1; }
+        echo '[*] Installing database drivers...'
+        sudo apt-get install -y libpq-dev python-dev || { echo '[!] Unable to install postgresql drivers!'; exit 1; }
     fi
 fi
 pip -q install virtualenv
 if [ ! -d "venv" ]; then
-    echo 'Creating virtual environment...'
-    virtualenv venv || { echo 'Failed to create virtual environment!'; exit 1; }
+    echo '[*] Creating virtual environment...'
+    virtualenv venv || { echo '[!] Failed to create virtual environment!'; exit 1; }
 fi
-echo 'Entering virtual environment..'
-source venv/bin/activate || { echo 'Failed to enter virtual environment!'; exit 1; }
-pip -q install -r requirements.txt || { echo 'Failed to install pip packages!'; exit 1; }
-echo 'If you do not already have a database set up, this script will install one for you.'
-read -p "Do you already have a postgresql database? [y/N] " -r
+echo '[*] Entering virtual environment..'
+source venv/bin/activate || { echo '[!] Failed to enter virtual environment!'; exit 1; }
+pip -q install -r requirements.txt || { echo '[!] Failed to install pip packages!'; exit 1; }
+echo '[*] If you do not already have a database set up, this script will install one for you.'
+read -p "[*] Do you already have a postgresql database? [y/N] " -r
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
-    echo 'Installing postgresql database...'
+    echo '[*] Installing postgresql database...'
     sudo apt-get install -y postgresql postgresql-contrib || { echo 'Failed to install the postgresql database!'; exit 1; }
-    echo 'Creating user account and database...'
-    echo 'You will be prompted to enter a new password for the postgresql user account.'
-    echo 'Remember the password you enter; you will be prompted for it again later.'
+    echo '[*] Creating user account and database...'
+    echo '[*] You will be prompted to enter a new password for the postgresql user account.'
+    echo '[*] Remember the password you enter; you will be prompted for it again later.'
     while true; do
         echo '--- START PSQL'
         sudo -u postgres createuser -D -A -P "pmuser" && break
         echo '--- END PSQL'
-        echo 'Error while creating new user!'
-        echo 'This issue may be caused by another user with the same name in the database.'
-        echo 'Attempting to delete old user...'
-        sudo -u postgres dropdb "pmdb" && echo 'Old database deleted...'
-        sudo -u postgres dropuser "pmuser" || { echo 'Failed to delete user!'; exit 1; }
-        echo 'User deleted, attempting to create account again...'
+        echo '[!] Error while creating new user!'
+        echo '[*] This issue may be caused by another user with the same name in the database.'
+        echo '[*] Attempting to delete old user...'
+        sudo -u postgres dropdb "pmdb" && echo '[*] Old database deleted...'
+        sudo -u postgres dropuser "pmuser" || { echo '[!] Failed to delete user!'; exit 1; }
+        echo '[*] User deleted, attempting to create account again...'
     done
     echo '--- END PSQL'
-    sudo -u postgres createdb -O "pmuser" "pmdb" || { echo 'Failed to create database! Press [Enter] if you want to continue the installation.'; read -p "$*"; }
-    echo 'You must update the postgresql configuration to allow for password based authentication.'
-    echo 'Add the following line in your pg_hba.conf or postgresql.conf (depends on version of postgresql installed).'
-    echo 'If both files exist, edit the pg_hba.conf file.'
-    echo 'This file is usually located in /etc/postgresql/<version>/main folder.'
+    sudo -u postgres createdb -O "pmuser" "pmdb" || { echo '[!] Failed to create database!'; exit 1; }
+    echo '[*] You must update the postgresql configuration to allow for password based authentication.'
+    echo '[*] Add the following line in your pg_hba.conf or postgresql.conf (depends on version of postgresql installed).'
+    echo '[*] If both files exist, edit the pg_hba.conf file.'
+    echo '[*] This file is usually located in /etc/postgresql/<version>/main folder.'
     echo
     echo 'host all all 127.0.0.1/32 password'
     echo
-    echo 'After you have added this line, press the [Enter] key.'
+    echo '[*] After you have added this line, press the [Enter] key.'
     read -p "$*"
-    echo 'Restarting postgres server...'
-    sudo /etc/init.d/postgresql restart || { echo 'Failed to restart server. You may have to do this manually. Press [Enter] when you are finished.'; read -p "$*"; }
+    echo '[*] Restarting postgres server...'
+    sudo /etc/init.d/postgresql restart || { echo '[!] Failed to restart server. You may have to do this manually. Press [Enter] when you are finished.'; read -p "$*"; }
     python setup_helper.py || exit 1
 else
     python setup_helper.py prompt || exit 1
 fi
-echo 'Installing server handler...'
+echo '[*] Installing server handler...'
 # TODO: add handler for server to start on boot
 ./server.py & # temporary
-echo 'Installation completed!'
-echo 'Opening user manual page...'
+echo '[*] Installation completed!'
+echo '[*] Opening user manual page...'
 xdg-open http://localhost:8080/about &>/dev/null

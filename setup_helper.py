@@ -55,14 +55,14 @@ def setup_database(config):
     cur.execute('CREATE TABLE IF NOT EXISTS access (id SERIAL, userid INTEGER, package UUID, CONSTRAINT u_constraint UNIQUE (userid, package))')
     conn.commit()
     print "[*] Adding 'admin' user..."
-    print "The password you enter below will be used for logging in to the website."
+    print "[*] The password you enter below will be used for logging in to the website."
     while True:
-        resp = getpass.getpass('Enter a password for the new user: ')
-        conf = getpass.getpass('Confirm password: ')
+        resp = getpass.getpass('[*] Enter a password for the new user: ')
+        conf = getpass.getpass('[*] Confirm password: ')
         if resp == conf:
             break
         else:
-            print("Password doesn't match confirm!")
+            print("[!] Password doesn't match confirm!")
     cur.execute('INSERT INTO users (username, password, type) VALUES (%s, %s, 1)', ('admin', generate_password_hash(resp)))
     conn.commit()
     print "[*] User created!"
@@ -84,7 +84,7 @@ if __name__ == '__main__':
         config["database"]["host"] = "localhost"
         config["database"]["dbname"] = "pmdb"
         config["database"]["user"] = "pmuser"
-        print('Enter the password you entered earlier for the database user.')
-        config["database"]["pass"] = getpass.getpass("Password: ")
+        print('[*] Enter the password you entered earlier for the database user.')
+        config["database"]["pass"] = getpass.getpass("[*] Password: ")
     save_config(config)
     setup_database(config)
