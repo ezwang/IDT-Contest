@@ -1,9 +1,14 @@
+@font-face {
+    font-family:"Open Sans";
+    src:url(/fonts/OpenSans.ttf);
+}
 #content
 {
     padding:15px;
 }
 #container
 {
+    font-family:"Open Sans";
     position:relative;
 }
 nav
@@ -37,7 +42,6 @@ nav
 {
     display:block;
     padding-top:15px;
-    padding-bottom:25px;
     font-size:1.25rem;
     color:#777;
 }
