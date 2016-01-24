@@ -1,10 +1,15 @@
 #!/bin/sh
 
 PIDFILE=/var/run/packagemanager.pid
+LOGFILE=/var/log/packagemanager.log
 
 case "$1" in
     start)
-        PID=`/opt/packagemanager/run.sh > /dev/null 2>&1 & echo $!`
+        if [ -f $PIDFILE ] && ps `cat $PIDFILE`; then
+            echo 'Already Running'
+            exit 1
+        fi
+        PID=`/opt/packagemanager/run.sh > /var/log/packagemanager.log 2>&1 & echo $!`
         if [ -z $PID ]; then
             echo 'Fail'
         else
@@ -21,8 +26,14 @@ case "$1" in
             echo 'Not Running'
         fi
         ;;
+    status)
+        if [ -f $PIDFILE ] && ps `cat $PIDFILE`; then
+            echo 'Running'
+        else
+            echo 'Not Running'
+        fi
     *)
-        echo "Usage: /etc/init.d/packagemanager {start|stop}"
+        echo "Usage: /etc/init.d/packagemanager {start|stop|status}"
         exit 1
         ;;
 esac

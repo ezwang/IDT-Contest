@@ -101,7 +101,6 @@ if sudo bash -c 'type "initctl" > /dev/null 2>&1'; then
     sudo cp packagemanager.conf /etc/init/packagemanager.conf
     sudo start packagemanager
 elif sudo bash -c 'type "update-rc.d" > /dev/null 2>&1'; then
-    # TODO: broken on Debian
     echo '[*] Adding script to init.d and creating startup links...'
     sudo cp packagemanager /etc/init.d/packagemanager
     sudo chmod +x /etc/init.d/packagemanager
