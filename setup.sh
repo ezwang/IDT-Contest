@@ -105,6 +105,7 @@ elif sudo bash -c 'type "update-rc.d" > /dev/null 2>&1'; then
     sudo cp packagemanager /etc/init.d/packagemanager
     sudo chmod +x /etc/init.d/packagemanager
     sudo update-rc.d packagemanager defaults
+    sudo /etc/init.d/packagemanager start
 else
     echo '[*] No service manager detected, running server...'
     echo '[!] You will need to manually register run.sh to execute on boot.'

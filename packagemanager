@@ -14,7 +14,7 @@ LOGFILE=/var/log/packagemanager.log
 
 case "$1" in
     start)
-        if [ -f $PIDFILE ] && ps `cat $PIDFILE`; then
+        if [ -f $PIDFILE ] && ps `cat $PIDFILE` > /dev/null; then
             echo 'Already Running'
             exit 1
         fi
@@ -36,7 +36,7 @@ case "$1" in
         fi
         ;;
     status)
-        if [ -f $PIDFILE ] && ps `cat $PIDFILE`; then
+        if [ -f $PIDFILE ] && ps `cat $PIDFILE` > /dev/null; then
             echo 'Running'
         else
             echo 'Not Running'
