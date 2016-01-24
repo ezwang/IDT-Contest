@@ -12,6 +12,11 @@
 PIDFILE=/var/run/packagemanager.pid
 LOGFILE=/var/log/packagemanager.log
 
+if [[ $EUID -ne 0 ]]; then
+    echo 'This script requires root permissions!'
+    exit 1
+fi
+
 case "$1" in
     start)
         if [ -f $PIDFILE ] && ps `cat $PIDFILE` > /dev/null; then
