@@ -23,7 +23,7 @@ case "$1" in
             echo 'Already Running'
             exit 1
         fi
-        PID=`/opt/packagemanager/run.sh > /var/log/packagemanager.log 2>&1 & echo $!`
+        PID=`cd /opt/packagemanager/;/opt/packagemanager/run.sh > /var/log/packagemanager.log 2>&1 & echo $!`
         if [ -z $PID ]; then
             echo 'Fail'
         else
