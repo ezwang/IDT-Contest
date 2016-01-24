@@ -504,14 +504,33 @@ $(document).ready(function() {
             });
         }
         else {
-            var term = $("#search").val().toLowerCase();
+            var term = $("#search").val().toLowerCase().split(",");
+            var sort_delivered = false;
+            var sort_transit = false;
+            $.each(term, function(k, v) {
+                if (v.indexOf("delivered") > -1) {
+                    sort_delivered = true;
+                }
+                if (v.indexOf("transit") > -1) {
+                    sort_transit = true;
+                }
+            });
             $("#list li").each(function(k, v) {
-                if ($(this).attr('data-id').indexOf(term) > -1 || $(this).text().toLowerCase().indexOf(term) > -1) {
-                    package_visible($(this).attr('data-id'), true);
+                var is_visible = false;
+                $.each(term, function(k, v) {
+                    if ($(this).attr('data-id').indexOf(term) > -1 || $(this).text().toLowerCase().indexOf(term) > -1) {
+                        is_visible = true;
+                        return false;
+                    }
+                });
+                var delivered = packages[$(this).attr('data-id')].delivered;
+                if (sort_delivered && delivered) {
+                    is_visible = true;
                 }
-                else {
-                    package_visible($(this).attr('data-id'), false);
+                if (sort_transit && !delivered) {
+                    is_visible = true;
                 }
+                package_visible($(this).attr('data-id'), is_visible);
             });
         }
         updatePackageCount();
