@@ -48,21 +48,33 @@ def setup_database(config):
     conn = psycopg2.connect("dbname='" + config["database"]["dbname"] + "' user='" + config["database"]["user"] + "' host='" + config["database"]["host"] + "' password='" + config["database"]["pass"] + "'")
     cur = conn.cursor()
 
+    cur.execute("SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name=%s)", ('packages',))
+    table_exists = cur.fetchone()[0]
+    conn.commit()
+
+    if table_exists:
+        print "[!] Warning: There are existing tables in the database."
+        ans = raw_input("[!] Do you want to overwrite these tables? [y/N] ")
+        if ans.lower() != "y":
+            print "[*] Skipping table creation process..."
+            conn.close()
+            return
+
     print "[*] Deleting previous tables..."
     cur.execute('DROP TABLE IF EXISTS users, packages, steps, access')
     conn.commit()
 
     print "[*] Creating user table..."
-    cur.execute('CREATE TABLE IF NOT EXISTS users (id SERIAL, username TEXT UNIQUE, password TEXT, email TEXT, type INTEGER)')
+    cur.execute('CREATE TABLE users (id SERIAL, username TEXT UNIQUE, password TEXT, email TEXT, type INTEGER)')
     conn.commit()
     print "[*] Creating access table..."
-    cur.execute('CREATE TABLE IF NOT EXISTS access (id SERIAL, userid INTEGER, package UUID, CONSTRAINT u_constraint UNIQUE (userid, package))')
+    cur.execute('CREATE TABLE access (id SERIAL, userid INTEGER, package UUID, CONSTRAINT u_constraint UNIQUE (userid, package))')
     conn.commit()
     print "[*] Creating package table..."
-    cur.execute('CREATE TABLE IF NOT EXISTS packages (id UUID, name TEXT, lat DOUBLE PRECISION, lng DOUBLE PRECISION, delivered BOOLEAN, PRIMARY KEY (id))')
+    cur.execute('CREATE TABLE packages (id UUID, name TEXT, lat DOUBLE PRECISION, lng DOUBLE PRECISION, delivered BOOLEAN, PRIMARY KEY (id))')
     conn.commit()
     print "[*] Creating package steps table..."
-    cur.execute('CREATE TABLE IF NOT EXISTS steps (id UUID, lat DOUBLE PRECISION, lng DOUBLE PRECISION, ele DOUBLE PRECISION, time TIMESTAMP)')
+    cur.execute('CREATE TABLE steps (id UUID, lat DOUBLE PRECISION, lng DOUBLE PRECISION, ele DOUBLE PRECISION, time TIMESTAMP)')
     conn.commit()
     print "[*] Adding 'admin' user..."
     print "[*] The password you enter below will be used for logging in to the website."

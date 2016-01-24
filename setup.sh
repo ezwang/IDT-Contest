@@ -63,7 +63,7 @@ then
         echo '[*] User deleted, attempting to create account again...'
     done
     echo '[*] Attempting to set password for new user...'
-    sudo -u postgres psql -c "ALTER USER pmuser WITH PASSWORD '$PASS';"
+    sudo -u postgres psql -c "ALTER USER pmuser WITH PASSWORD '$PASS';" || { echo '[!] Failed to set password for new user!'; exit 1; }
     sudo -u postgres createdb -O "pmuser" "pmdb" || { echo '[!] Failed to create database!'; exit 1; }
     PG_HBA_PATH=$(sudo -u postgres psql -t -P format=unaligned -c 'show hba_file')
     if [ -n "$PG_HBA_PATH" ] && sudo grep -q -P '^host[ \t]+all[ \t]+all[ \t]+127\.0\.0\.1\/32[ \t]+(md5|password)[ \t]?$' "$PG_HBA_PATH"; then
