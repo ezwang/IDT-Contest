@@ -88,10 +88,10 @@ fi
 echo '[*] Copying files to /opt...'
 if [ -d "/opt/packagemanager" ]; then
     echo '[*] Old installation exists, deleting...'
-    sudo rm -rf /opt/packagemanager
+    sudo rm -rf /opt/packagemanager || echo '[!] Warning: Failed to delete old installation.'
 fi
-sudo mkdir /opt/packagemanager
-sudo cp -R . /opt/packagemanager
+sudo mkdir /opt/packagemanager || { echo '[!] Failed to create directory in opt!'; exit 1; }
+sudo cp -R . /opt/packagemanager || { echo '[!] Failed to copy files into new directory!'; exit 1; }
 
 echo '[*] Installing server handler...'
 echo '[*] This process will start Package Manager when the server boots.'
