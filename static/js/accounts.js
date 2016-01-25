@@ -82,6 +82,7 @@ $(document).ready(function() {
     }
     $("#btn-permissions").click(function(e) {
         $("#uuid").typeahead('val', '');
+        $("#bulk-uuid").val('');
         if (!$("#id").val()) {
             $("#perm-type").val("global").prop("disabled", true);
         }
@@ -106,9 +107,20 @@ $(document).ready(function() {
             $("#uuid-add").click();
         }
     });
+    $("#permissions-bulk-edit").on("click", function(e) {
+        e.preventDefault();
+        $("#permissions-bulk-edit-info, #single-permission-editing, #bulk-permission-editing").toggle();
+    });
+    $("#bulk-uuid-add").click(function(e) {
+        e.preventDefault();
+        var uuids = $("#bulk-uuid").val().split("\n");
+        $.each(uuids, function(k, v) {
+            // TODO: implement bulk uuid adding
+        });
+    });
     var permtimeoutid = false;
     $("#uuid-add").click(function(e) {
-        $.post("/accounts/permissions/add", ($("#id").val() ? $("#id, #uuid, #perm-type").serialize() : "type=global&id=-1&uuid=" + encodeURIComponent($("#uuid").val())), function(data) {
+        $.post("/accounts/permissions/add", ($("#perm-type").val() == "user" ? $("#id, #uuid, #perm-type").serialize() : "type=global&id=-1&uuid=" + encodeURIComponent($("#uuid").val())), function(data) {
             if (data.error) {
                 $("#perm-info").text(data.error).slideDown();
                 if (permtimeoutid) {

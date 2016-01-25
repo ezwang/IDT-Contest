@@ -59,9 +59,13 @@
                 <h4 class="modal-title">Edit Package Permissions</h4>
             </div>
             <div class="modal-body">
-                <p>If a package is marked as <i class="fa fa-globe"></i>, then it is visible to everyone.<br /><span id="permissions-user-info">If a package is marked as <i class="fa fa-user"></i>, it is visible to <b id="permissions-user-name"></b>.<br /></span>Administrators can view all packages.</p>
+                <p>If a package is marked as <i class="fa fa-globe"></i>, then it is visible to everyone.<br /><span id="permissions-user-info">If a package is marked as <i class="fa fa-user"></i>, it is visible to <b id="permissions-user-name"></b>.<br /></span>Administrators can view all packages.<br />Click <a id="permissions-bulk-edit" href="#">here</a> to toggle bulk permission editing.<span id="permissions-bulk-edit-info" style="display:none"><br />To insert multiple permissions at once, enter UUIDs separated by newlines.</span></p>
                 <div class="alert alert-danger" id="perm-info" style="display:none"></div>
-                <fieldset class="form-group">
+                <div id="bulk-permission-editing" style="display:none;margin-bottom:15px">
+                    <textarea class="form-control" id="bulk-uuid" style="font-family:monospace;margin-bottom:15px"></textarea>
+                    <button class="btn btn-success" id="bulk-uuid-add">Add Permissions</button>
+                </div>
+                <fieldset id="single-permission-editing" class="form-group">
                     <div class="input-group">
                         <input type="text" class="form-control" id="uuid" name="uuid" placeholder="Package UUID" maxlength="36" />
                         <span class="input-group-addon" style="border-left:0px">
