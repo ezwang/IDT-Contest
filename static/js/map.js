@@ -106,6 +106,8 @@ function updateDistanceCalculations(uuid) {
     // TODO: better eta
     var currentSpeed = speed(uuid);
     var lastPoint = path.getAt(path.getLength()-1);
+    var dist_left = distance(packages[trackingUUID].destination.lat(), packages[trackingUUID].destination.lng(), lastPoint.lat(), lastPoint.lng());
+    $("#packageinfo #pdist").text(Math.round(dist_left) + " km");
     $("#packageinfo #pspeed").text(Math.round(currentSpeed) + " km/h");
     $("#packageinfo #pmethod").html("");
     if (lastPoint.ele > 70000) {
@@ -132,7 +134,6 @@ function updateDistanceCalculations(uuid) {
         }
     }
     if (currentSpeed > 0) {
-        var dist_left = distance(packages[trackingUUID].destination.lat(), packages[trackingUUID].destination.lng(), lastPoint.lat(), lastPoint.lng());
         var finDate = new Date(packages[trackingUUID].speedData.time2*1000);
         finDate.setSeconds(dist_left*60*60/currentSpeed);
         $("#packageinfo #peta").text(/*Math.round(total_dist_traveled) + " km traveled, " + Math.round(currentSpeed) + " km/h, " + Math.round(dist_left) + " km left, " + */jQuery.timeago(finDate));
@@ -163,10 +164,10 @@ function updateInfoBox() {
     $("#packageinfo #puuid").text(trackingUUID);
     $("#packageinfo #pstatus").text(packages[trackingUUID].delivered ? 'Delivered' : 'In Transit');
     if (packages[trackingUUID].delivered) {
-        $("#packageinfo #peta-container, #pspeed-container").hide();
+        $("#packageinfo #peta-container, #pspeed-container, #pdist-container").hide();
     }
     else {
-        $("#packageinfo #peta-container, #pspeed-container").show();
+        $("#packageinfo #peta-container, #pspeed-container, #pdist-container").show();
         updateDistanceCalculations(trackingUUID);
     }
     if (mobile) {
@@ -517,8 +518,9 @@ $(document).ready(function() {
             });
             $("#list li").each(function(k, v) {
                 var is_visible = false;
+                var a = $(this);
                 $.each(term, function(k, v) {
-                    if ($(this).attr('data-id').indexOf(term) > -1 || $(this).text().toLowerCase().indexOf(term) > -1) {
+                    if (a.attr('data-id').indexOf(v) > -1 || a.text().toLowerCase().indexOf(v) > -1) {
                         is_visible = true;
                         return false;
                     }
