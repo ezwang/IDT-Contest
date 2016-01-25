@@ -252,9 +252,12 @@ $(document).ready(function() {
             substrRegex = new RegExp(q, 'i');
 
             $.each(strs, function(i, str) {
-                if (substrRegex.test(str)) {
-                    matches.push(str);
-                }
+                $.each(str, function(i, piece) {
+                    if (substrRegex.test(piece)) {
+                        matches.push(str);
+                        return false;
+                    }
+                });
             });
 
             cb(matches);
@@ -263,7 +266,7 @@ $(document).ready(function() {
     $.getJSON('/getpackages', function(data) {
         var uuids = [];
         $.each(data.data, function(k, v) {
-            uuids.push(v[0]);
+            uuids.push([v[0], v[1]]);
         });
         $("#uuid").typeahead({
             hint:true,
@@ -272,9 +275,12 @@ $(document).ready(function() {
         }, {
             name:'uuids',
             source:substringMatcher(uuids),
+            displayKey: function(data) {
+                return data[0];
+            },
             templates: {
                 suggestion: function(data) {
-                    return '<div style="font-family:monospace">' + data + '</div>';
+                    return '<div>' + data[1] + '<div style="font-family:monospace">' + data[0] + '</div></div>';
                 }
             }
         });

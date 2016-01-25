@@ -77,7 +77,11 @@ input.tt-input, input.tt-hint
 {
     font-family:monospace;
 }
-.tt-cursor
+.tt-suggestion:nth-child(2n)
+{
+    background-color:#eee;
+}
+.tt-suggestion.tt-cursor
 {
     background-color:#ccc;
 }
