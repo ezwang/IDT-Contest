@@ -84,10 +84,10 @@ $(document).ready(function() {
         $("#uuid").typeahead('val', '');
         $("#bulk-uuid").val('');
         if (!$("#id").val()) {
-            $("#perm-type").val("global").prop("disabled", true);
+            $("#perm-type, #bulk-perm-type").val("global").prop("disabled", true);
         }
         else {
-            $("#perm-type").val("user").prop("disabled", false);
+            $("#perm-type, #bulk-perm-type").val("user").prop("disabled", false);
         }
         if ($("#users tr.selected").length == 1) {
             $("#permissions-user-name").text(table.row($("#users tr.selected")).data()["username"]);
@@ -111,14 +111,32 @@ $(document).ready(function() {
         e.preventDefault();
         $("#permissions-bulk-edit-info, #single-permission-editing, #bulk-permission-editing").toggle();
     });
+    var permtimeoutid = false;
     $("#bulk-uuid-add").click(function(e) {
         e.preventDefault();
         var uuids = $("#bulk-uuid").val().split("\n");
+        var errors = 0;
+        var count = uuids.length;
         $.each(uuids, function(k, v) {
-            // TODO: implement bulk uuid adding
+            $.post("/accounts/permissions/add", ($("#bulk-perm-type").val() == "user" ? $("#id, #bulk-perm-type").serialize() : "type=global&id=-1") + "&uuid=" + encodeURIComponent(v), function(data) {
+                if (data.error) {
+                    errors += 1;
+                }
+                count--;
+                if (count <= 0) {
+                    $("#perm-info").text("Bulk insertion complete! " + errors + "/" + uuids.length + " failure(s) during operation.").slideDown();
+                    if (permtimeoutid) {
+                        clearTimeout(permtimeoutid);
+                        permtimeoutid = false;
+                    }
+                    permtimeoutid = setTimeout(function() {
+                        $("#perm-info").slideUp();
+                    }, 2000);
+                    return;
+                }
+            });
         });
     });
-    var permtimeoutid = false;
     $("#uuid-add").click(function(e) {
         $.post("/accounts/permissions/add", ($("#perm-type").val() == "user" ? $("#id, #uuid, #perm-type").serialize() : "type=global&id=-1&uuid=" + encodeURIComponent($("#uuid").val())), function(data) {
             if (data.error) {

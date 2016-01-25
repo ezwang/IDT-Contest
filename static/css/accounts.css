@@ -42,15 +42,24 @@
     color:#888;
     cursor:pointer;
 }
-#perm-type
+#perm-type, #bulk-perm-type
 {
     background-color:transparent;
     border:0px;
     font-family:'FontAwesome';
 }
-#perm-type:focus
+#bulk-perm-type
+{
+    float:right;
+    height:38px;
+}
+#perm-type:focus, #bulk-perm-type:focus
 {
     outline:0;
+}
+#perm-type:disabled, #bulk-perm-type:disabled
+{
+    color:#888;
 }
 .package-permission .fa-times:hover
 {
