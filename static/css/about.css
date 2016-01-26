@@ -45,6 +45,15 @@ nav
     font-size:1.25rem;
     color:#777;
 }
+#sidebar ul
+{
+    list-style-type:none;
+    padding-left:20px;
+}
+#sidebar li ul
+{
+    font-size:0.8em;
+}
 @media screen and (max-width:480px) {
     #sidebar
     {
