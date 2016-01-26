@@ -30,11 +30,11 @@ def prompt_database_credentials(config):
     print "[*] You will now be prompted for your database credentials."
     print "[*] Press enter to select the default shown."
     for x in [("dbname", "database name"), ("host", "host"), ("user", "username")]:
-        val = raw_input("[*] What is your " + x[1] + "? [Default: " + config["database"][x[0]] + "] ")
+        val = raw_input("What is your " + x[1] + "? [Default: " + config["database"][x[0]] + "] ")
         if len(val) > 0:
             config["database"][x[0]] = val
     while True:
-        val = getpass.getpass('[*] What is your password? [Default: Previous Value] ')
+        val = getpass.getpass('What is your password? [Default: Previous Value] ')
         if len(val) > 0:
             config["database"]["pass"] = val
             break
@@ -42,6 +42,27 @@ def prompt_database_credentials(config):
             break
         else:
             print '[*] No previous value!'
+
+def setup_admin_account(cur):
+    print "[*] Adding 'admin' user..."
+    print "[*] The password you enter below will be used for logging in to the website."
+    cur.execute('SELECT username FROM users WHERE username = %s', ('admin',))
+    if cur.rowcount > 0:
+        print '[*] Admin account already exists! Deleting...'
+        cur.execute('DELETE FROM users WHERE username = %s', ('admin',))
+    while True:
+        resp = getpass.getpass('Password: ')
+        conf = getpass.getpass('Confirm password: ')
+        if len(resp) == 0:
+            print "[!] Please enter a password!"
+            continue
+        if resp == conf:
+            break
+        else:
+            print "[!] Password doesn't match confirm!"
+    cur.execute('INSERT INTO users (username, password, type) VALUES (%s, %s, 1)', ('admin', generate_password_hash(resp)))
+    print "[*] User created!"
+    print "[*] Use the username 'admin' and the password you created to login to the website."
 
 def setup_database(config):
     print "[*] Connecting to database..."
@@ -76,22 +97,8 @@ def setup_database(config):
     print "[*] Creating package steps table..."
     cur.execute('CREATE TABLE steps (id UUID, lat DOUBLE PRECISION, lng DOUBLE PRECISION, ele DOUBLE PRECISION, time TIMESTAMP)')
     conn.commit()
-    print "[*] Adding 'admin' user..."
-    print "[*] The password you enter below will be used for logging in to the website."
-    while True:
-        resp = getpass.getpass('[*] Password: ')
-        conf = getpass.getpass('[*] Confirm password: ')
-        if len(resp) == 0:
-            print "[!] Please enter a password!"
-            continue
-        if resp == conf:
-            break
-        else:
-            print "[!] Password doesn't match confirm!"
-    cur.execute('INSERT INTO users (username, password, type) VALUES (%s, %s, 1)', ('admin', generate_password_hash(resp)))
+    setup_admin_account(cur)
     conn.commit()
-    print "[*] User created!"
-    print "[*] Use the username 'admin' and the password you created to login to the website."
     conn.close()
 
 if __name__ == '__main__':
@@ -109,8 +116,14 @@ if __name__ == '__main__':
             else:
                 print('[*] Enter the password you entered earlier for the database user.')
                 config["database"]["pass"] = getpass.getpass("[*] Password: ")
+        elif sys.argv[1].lower() == "recover":
+            conn = psycopg2.connect("dbname='" + config["database"]["dbname"] + "' user='" + config["database"]["user"] + "' host='" + config["database"]["host"] + "' password='" + config["database"]["pass"] + "'")
+            cur = conn.cursor()
+            setup_admin_account(cur)
+            conn.commit()
+            conn.close()
+            exit()
     else:
-        print 'This script should not be run directly!'
         print 'Run the setup script to install the application.'
         exit()
     setup_database(config)

@@ -93,6 +93,8 @@ fi
 sudo mkdir /opt/packagemanager || { echo '[!] Failed to create directory in opt!'; exit 1; }
 sudo cp -R . /opt/packagemanager || { echo '[!] Failed to copy files into new directory!'; exit 1; }
 
+echo '[*] Application has been installed to /opt/packagemanager!'
+
 echo '[*] Installing server handler...'
 echo '[*] This process will start Package Manager when the server boots.'
 
