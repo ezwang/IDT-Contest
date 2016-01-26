@@ -36,7 +36,37 @@
         <p>Duis hendrerit imperdiet lorem ac commodo. Fusce semper nisi enim, a pellentesque dui volutpat a. Quisque consectetur neque eget urna aliquet tincidunt. Phasellus varius eleifend leo ac luctus. Cras eget luctus mi. Fusce eget gravida enim, nec interdum augue. Praesent dignissim sollicitudin diam, sit amet ullamcorper arcu dignissim eu. Vivamus et tortor ut lectus pharetra mattis nec quis lectus. Morbi id varius risus. Integer malesuada purus eget nibh commodo commodo. Donec auctor, erat ac varius lacinia, urna dui mollis sem, a posuere felis purus in justo. Aliquam malesuada vel augue in ultricies. Proin ac quam eu mauris aliquet pulvinar. Suspendisse elementum, elit ac ullamcorper luctus, sapien sem elementum tortor, non tincidunt massa risus in dui. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
         <p>Vestibulum non risus feugiat, rhoncus nunc ornare, ornare nulla. Maecenas varius eleifend lacinia. Vivamus facilisis augue eu cursus ornare. Maecenas porttitor interdum eleifend. Nam tempor vel augue vitae mattis. In ullamcorper condimentum iaculis. Nunc mollis eu mauris ut iaculis. Vestibulum lobortis lectus sed justo sagittis, vitae interdum turpis tincidunt. Praesent quis pretium metus. Aliquam erat volutpat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed at consectetur felis. Phasellus quam nisi, blandit nec hendrerit vel, fringilla sit amet ante. Pellentesque a lectus et turpis dictum mattis vel et dui. Proin consectetur mauris vitae dui imperdiet aliquam. Nunc nec enim sit amet erat condimentum pretium.</p>
         <h2 id="api">API</h2>
-        <p>TODO: Insert tracknewpackage, packagetrackupdate information here.</p>
+        <ul>
+            <li><span class="label label-success">GET</span> /tracknewpackage<br />
+                <b>Request</b><br />
+                <ul>
+                    <li><span class="label label-success">GET</span> <b>name</b> - String - (optional) - The name of the package. If this is not specified, the package will be named "Unnamed Package".</li>
+                    <li><span class="label label-success">GET</span> <b>destinationLat</b> - Decimal - The latitude of the package's destination.</li>
+                    <li><span class="label label-success">GET</span> <b>destinationLon</b> - Decimal - The longitude of the package's destination.</li>
+                    <li><span class="label label-success">GET</span> <b>uuid</b> - UUID - The uuid of the package.</li>
+                </ul>
+                <b>Response</b><br />
+                <ul>
+                    <li><span class="label label-warning">JSON</span> <b>ackUUID</b> - String - The uuid of the new package, surrounded by brackets.</li>
+                    <li><span class="label label-warning">JSON</span> <b>error</b> - String - A short message about why the package could not be added (ex: invalid uuid format).</li>
+                </ul>
+            </li>
+            <li><span class="label label-primary">POST</span> /packagetrackupdate<br />
+                <b>Request</b><br />
+                <ul>
+                    <li><span class="label label-primary">POST</span> <b>delivered</b> - Boolean - If this variable is set to true, all other options are ignored and the package is marked as delivered.</li>
+                    <li><span class="label label-primary">POST</span> <b>lat</b> - Decimal - The current latitude of the package.</li>
+                    <li><span class="label label-primary">POST</span> <b>lon</b> - Decimal - The current longitude of the package.</li>
+                    <li><span class="label label-primary">POST</span> <b>ele</b> - Decimal - The current elevation of the package.</li>
+                    <li><span class="label label-primary">POST</span> <b>time</b> - ISO 8601 Format - The time of the GPS update.</li>
+                </ul>
+                <b>Response</b><br />
+                <ul>
+                    <li><span class="label label-warning">JSON</span> <b>ackUUID</b> - String - The uuid of the new package, surrounded by brackets.</li>
+                    <li><span class="label label-warning">JSON</span> <b>error</b> - String - A short message about why the package could not be added (ex: invalid uuid format).</li>
+                </ul>
+            </li>
+        </ul>
         <h2 id="credits">Credits</h2>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae tortor nisl. Mauris ultrices imperdiet neque, eget imperdiet velit tincidunt quis. Pellentesque non diam tincidunt, hendrerit purus sit amet, sodales elit. Integer rhoncus lacinia hendrerit. Quisque finibus urna eu feugiat molestie. Phasellus augue libero, efficitur vel malesuada eu, volutpat vitae ante. Quisque eu nisi vitae odio interdum volutpat ut quis enim. Etiam at nisi in eros hendrerit efficitur. Nullam consectetur risus non mauris hendrerit iaculis. Sed non blandit sem. Sed nibh justo, scelerisque vel purus imperdiet, cursus consequat augue. Aliquam massa nulla, tincidunt sed suscipit at, ullamcorper in leo. Suspendisse et consequat diam, nec suscipit dui. Proin auctor magna non semper ultrices.</p>
         <p>Integer cursus viverra vulputate. Fusce auctor quis orci quis consequat. Ut vulputate dui sed tristique tempus. In aliquet condimentum tortor sit amet laoreet. Maecenas ut egestas magna. Ut sagittis lorem turpis, vitae pretium turpis laoreet a. Morbi aliquam auctor nisl vitae posuere. Curabitur sit amet lorem ac metus pulvinar consectetur non dapibus sapien. Nam vitae turpis ultricies, lobortis libero vitae, placerat dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nam vel metus faucibus diam fermentum semper non id erat.</p>
