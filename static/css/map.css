@@ -183,3 +183,15 @@ body
     width:100%;
     padding:0;
 }
+.help-link,.help-link:focus
+{
+    float:right;
+    padding:5px;
+    color:#888;
+    text-decoration:none;
+}
+.help-link:hover
+{
+    text-decoration:none;
+    color:#555;
+}
