@@ -92,3 +92,16 @@ nav
     right:5px;
     box-shadow:0px 0px 20px #666;
 }
+#browser-info
+{
+    margin-bottom:15px;
+    text-align:center;
+}
+#browser-logos td
+{
+    padding:10px;
+}
+#browser-logos img
+{
+    width:64px;
+}

@@ -11,11 +11,20 @@
         <hr />
         <b>Table of Contents</b>
         <ul>
-            <li><a href="#user">User Guide</a></li>
+            <li><a href="#user">User Guide</a>
+                <ul>
+                    <li><a href="#user-compatibility">Compatibility</a></li>
+                    <li><a href="#user-getting-started">Getting Started</a></li>
+                    <li><a href="#user-search">Package Search</a></li>
+                    <li><a href="#user-info">Information Box</a></li>
+                </ul>
+            </li>
             <li>
                 <a href="#admin">Admin Guide</a>
                 <ul>
+                    <li><a href="#admin-user">User Management</a></li>
                     <li><a href="#admin-config">Configuration Variables</a></li>
+                    <li><a href="#admin-reset">Application Reset</a></li>
                     <li><a href="#admin-recovery">Account Recovery</a></li>
                 </ul>
             </li>
@@ -31,23 +40,57 @@
             <img src="/images/mobile_screenshot.png" id="mobile-screenshot" />
         </div>
         <h2 id="user">User Guide</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae tortor nisl. Mauris ultrices imperdiet neque, eget imperdiet velit tincidunt quis. Pellentesque non diam tincidunt, hendrerit purus sit amet, sodales elit. Integer rhoncus lacinia hendrerit. Quisque finibus urna eu feugiat molestie. Phasellus augue libero, efficitur vel malesuada eu, volutpat vitae ante. Quisque eu nisi vitae odio interdum volutpat ut quis enim. Etiam at nisi in eros hendrerit efficitur. Nullam consectetur risus non mauris hendrerit iaculis. Sed non blandit sem. Sed nibh justo, scelerisque vel purus imperdiet, cursus consequat augue. Aliquam massa nulla, tincidunt sed suscipit at, ullamcorper in leo. Suspendisse et consequat diam, nec suscipit dui. Proin auctor magna non semper ultrices.</p>
-        <p>Integer cursus viverra vulputate. Fusce auctor quis orci quis consequat. Ut vulputate dui sed tristique tempus. In aliquet condimentum tortor sit amet laoreet. Maecenas ut egestas magna. Ut sagittis lorem turpis, vitae pretium turpis laoreet a. Morbi aliquam auctor nisl vitae posuere. Curabitur sit amet lorem ac metus pulvinar consectetur non dapibus sapien. Nam vitae turpis ultricies, lobortis libero vitae, placerat dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nam vel metus faucibus diam fermentum semper non id erat.</p>
-        <p>Aenean pulvinar tristique risus nec dictum. Mauris nec nisl ultricies, imperdiet elit ut, eleifend leo. Nunc in laoreet dui. Nulla quis nisl sem. Nulla tincidunt, risus sit amet varius pharetra, est ante faucibus nulla, at suscipit sapien purus sit amet massa. Nam eleifend eget erat id semper. Vestibulum malesuada efficitur lorem, non venenatis ligula vestibulum et. Aliquam egestas lorem quis pharetra semper. Sed vulputate turpis in arcu bibendum, vitae vulputate elit finibus. Morbi eu sodales quam, nec accumsan elit.</p>
-        <p>Duis hendrerit imperdiet lorem ac commodo. Fusce semper nisi enim, a pellentesque dui volutpat a. Quisque consectetur neque eget urna aliquet tincidunt. Phasellus varius eleifend leo ac luctus. Cras eget luctus mi. Fusce eget gravida enim, nec interdum augue. Praesent dignissim sollicitudin diam, sit amet ullamcorper arcu dignissim eu. Vivamus et tortor ut lectus pharetra mattis nec quis lectus. Morbi id varius risus. Integer malesuada purus eget nibh commodo commodo. Donec auctor, erat ac varius lacinia, urna dui mollis sem, a posuere felis purus in justo. Aliquam malesuada vel augue in ultricies. Proin ac quam eu mauris aliquet pulvinar. Suspendisse elementum, elit ac ullamcorper luctus, sapien sem elementum tortor, non tincidunt massa risus in dui. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
-        <p>Vestibulum non risus feugiat, rhoncus nunc ornare, ornare nulla. Maecenas varius eleifend lacinia. Vivamus facilisis augue eu cursus ornare. Maecenas porttitor interdum eleifend. Nam tempor vel augue vitae mattis. In ullamcorper condimentum iaculis. Nunc mollis eu mauris ut iaculis. Vestibulum lobortis lectus sed justo sagittis, vitae interdum turpis tincidunt. Praesent quis pretium metus. Aliquam erat volutpat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed at consectetur felis. Phasellus quam nisi, blandit nec hendrerit vel, fringilla sit amet ante. Pellentesque a lectus et turpis dictum mattis vel et dui. Proin consectetur mauris vitae dui imperdiet aliquam. Nunc nec enim sit amet erat condimentum pretium.</p>
+        <h3 id="user-compatibility">Compatibility</h3>
+        <p>Package Manager has been tested and will work on the latest versions of the following browsers:</p>
+        <table id="browser-info">
+             <tr id="browser-logos">
+                <td><img src="/images/browsers/chrome.png" /></td>
+                <td><img src="/images/browsers/edge.png" /></td>
+                <td><img src="/images/browsers/firefox.png" /></td>
+                <td><img src="/images/browsers/opera.png" /></td>
+                <td><img src="/images/browsers/safari.png" /></td>
+            </tr>
+            <tr>
+                <td>48.0.2564</td>
+                <td>25.10586</td>
+                <td>43.0.4</td>
+                <td>34.0</td>
+                <td>9.0.2</td>
+            </tr>
+        </table>
+        <p>Tested on Windows 7, Windows 10, Mac OS X El Capitan, and Ubuntu 14.04 LTS.</p>
+        <h3 id="user-getting-started">Getting Started</h3>
+        <p><b>Welcome!</b> To start using Package Manager, simply scroll to the top of this page and press the Login item on the black navigation bar. If you do not have an account, click the Map item on the navigation bar. The rest of this guide will tell you how to use the features of Package Manager in more detail.</p>
+        <p>To find out more about a package, click on its marker on the map or click on its name in the Packages list on the left. Information about the package, such as distance, speed, and estimated time of arrival, will appear in a box to the upper right corner. To zoom back out again, press the <kbd>ESC</kbd> key on your keyboard.</p>
+        <h3 id="user-search">Package Search</h3>
+        <p>The search bar is located in the top left corner of the <a href="/map">map</a> page.</p>
+        <!-- TODO: talk about search bar features -->
+        <h3 id="user-info">Information Box</h3>
+        <p>The information box is located in the top right corner of the <a href="/map">map</a> page in browsers and below the search bar in mobile devices.</p>
+        <!-- TODO: talk about the info box, distance/speed/eta calculations, etc -->
         <h2 id="admin">Administrator Guide</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae tortor nisl. Mauris ultrices imperdiet neque, eget imperdiet velit tincidunt quis. Pellentesque non diam tincidunt, hendrerit purus sit amet, sodales elit. Integer rhoncus lacinia hendrerit. Quisque finibus urna eu feugiat molestie. Phasellus augue libero, efficitur vel malesuada eu, volutpat vitae ante. Quisque eu nisi vitae odio interdum volutpat ut quis enim. Etiam at nisi in eros hendrerit efficitur. Nullam consectetur risus non mauris hendrerit iaculis. Sed non blandit sem. Sed nibh justo, scelerisque vel purus imperdiet, cursus consequat augue. Aliquam massa nulla, tincidunt sed suscipit at, ullamcorper in leo. Suspendisse et consequat diam, nec suscipit dui. Proin auctor magna non semper ultrices.</p>
-        <p>Integer cursus viverra vulputate. Fusce auctor quis orci quis consequat. Ut vulputate dui sed tristique tempus. In aliquet condimentum tortor sit amet laoreet. Maecenas ut egestas magna. Ut sagittis lorem turpis, vitae pretium turpis laoreet a. Morbi aliquam auctor nisl vitae posuere. Curabitur sit amet lorem ac metus pulvinar consectetur non dapibus sapien. Nam vitae turpis ultricies, lobortis libero vitae, placerat dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nam vel metus faucibus diam fermentum semper non id erat.</p>
-        <p>Aenean pulvinar tristique risus nec dictum. Mauris nec nisl ultricies, imperdiet elit ut, eleifend leo. Nunc in laoreet dui. Nulla quis nisl sem. Nulla tincidunt, risus sit amet varius pharetra, est ante faucibus nulla, at suscipit sapien purus sit amet massa. Nam eleifend eget erat id semper. Vestibulum malesuada efficitur lorem, non venenatis ligula vestibulum et. Aliquam egestas lorem quis pharetra semper. Sed vulputate turpis in arcu bibendum, vitae vulputate elit finibus. Morbi eu sodales quam, nec accumsan elit.</p>
-        <p>Duis hendrerit imperdiet lorem ac commodo. Fusce semper nisi enim, a pellentesque dui volutpat a. Quisque consectetur neque eget urna aliquet tincidunt. Phasellus varius eleifend leo ac luctus. Cras eget luctus mi. Fusce eget gravida enim, nec interdum augue. Praesent dignissim sollicitudin diam, sit amet ullamcorper arcu dignissim eu. Vivamus et tortor ut lectus pharetra mattis nec quis lectus. Morbi id varius risus. Integer malesuada purus eget nibh commodo commodo. Donec auctor, erat ac varius lacinia, urna dui mollis sem, a posuere felis purus in justo. Aliquam malesuada vel augue in ultricies. Proin ac quam eu mauris aliquet pulvinar. Suspendisse elementum, elit ac ullamcorper luctus, sapien sem elementum tortor, non tincidunt massa risus in dui. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
-        <p>Vestibulum non risus feugiat, rhoncus nunc ornare, ornare nulla. Maecenas varius eleifend lacinia. Vivamus facilisis augue eu cursus ornare. Maecenas porttitor interdum eleifend. Nam tempor vel augue vitae mattis. In ullamcorper condimentum iaculis. Nunc mollis eu mauris ut iaculis. Vestibulum lobortis lectus sed justo sagittis, vitae interdum turpis tincidunt. Praesent quis pretium metus. Aliquam erat volutpat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed at consectetur felis. Phasellus quam nisi, blandit nec hendrerit vel, fringilla sit amet ante. Pellentesque a lectus et turpis dictum mattis vel et dui. Proin consectetur mauris vitae dui imperdiet aliquam. Nunc nec enim sit amet erat condimentum pretium.</p>
+        <h3 id="admin-user">User Management</h3>
+        <p>The sections below refer to the <a href="/accounts">Account Management</a> page. This page can be accessed by clicking the Admin item in the toolbar and then clicking Account Management. In the map page, the link to the Account Management page can be found in the lower left of the page.</p>
+        <div class="alert alert-success"><b>Tip:</b> When selecting users in the table, you can hold down the <kbd>Ctrl</kbd> key and click to select multiple rows at once. You can also hold down the <kbd>Shift</kbd> key and click to select rows between the first selected row and the row you clicked.</div>
+        <h4>Adding New Users</h4>
+        <p>To add a new user, deselect all existing users in the table if any are selected. The Create Account button should be enabled at this point. Enter a username, email and password for the new user. The email and password fields are optional. If no passwords are entered, the user will not be able to login until a password is set.</p>
+        <h4>Modifying Existing Users</h4>
+        <p>To modify a user, select exactly one user from the table. If more than one user is selected, the Modify Account button will be disabled. After you make your desired changes, click the Modify Account button to save your changes. The password for the selected user account will not be changed unless you press Edit Password or Generate Password. If you press Generate Password, a random password will be generated and shown to you.</p>
+        <h4>Deleting Users</h4>
+        <p>You can select one or more accounts to be deleted. After you have selected the accounts you want to delete, press the Delete Account(s) button. You cannot recover deleted user accounts, so be careful when using this feature.</p>
+        <h4>Permissions Editing</h4>
+        <p>Click the Modify Permissions button to edit permissions. If you click this button without any users selected, you will only be able to make packages public or private. When you click the button, a dialog box will appear with a list of permissions. If a UUID has a globe next to it (<i class="fa fa-globe"></i>), then that means that the package with that UUID is marked as public. Packages marked as public can be viewed by anyone, including users that are not logged in. If a UUID has a user icon next to it (<i class="fa fa-user"></i>), then that means that one of the users you have selected can access that package. There may be multiple user icons with the same UUID, this means that out of the users you have selected, there are multiple users that can access this package. Pressing the <i class="fa fa-times"></i> button next to the permission will remove it.</p>
+        <p>To add a permission, type the UUID of the package you want to add into the Package UUID textbox. An autocomplete menu will pop up to assist you. The first line of an autocomplete entry will be the name of a package, and the second line will be its UUID. The drop down menu next to the textbox will let you select whether to apply the permission the currently selected user or mark the package as public. Click the Add button after you have entered a UUID. The system will automatically prevent duplicate permission entries and display an error message if one is detected.</p>
+        <p>To rapidly add a subset of packages, click the link to enable bulk permission editing. After you have clicked the link, the textbox will be replaced with a textarea. Enter your UUIDs separated by newlines and press the Add Permissions button.</p>
+        <p>There is a configuration variable to specify whether new packages are automatically marked as public or hidden for only Administrators. This configuration variable is called new_package_public and can be found in the config.json file. Change this variable to true if you want to automatically mark new packages as public, otherwise set this variable to false.</p>
         <h3 id="admin-config">Configuration Variables</h3>
-        <p>Configuration variables change the way the application behaves. They can be used to turn features on and off.</p>
+        <p>Configuration variables change the way the application behaves. They can be used to turn features on and off. Some configuration variables will require a server restart to take effect. You can see the list of enabled configuration variables and a short description of their effects on the <a href="/global_settings">Application Settings</a> page.</p>
+        <h3 id="admin-reset">Application Reset</h3>
+        <p>You can delete all of the packages in the database on the <a href="/global-settings">Application Settings</a> page under Reset Packages. You may want to do this to clean up the package list after many packages have been delivered. This setting will delete packages in transit, which may cause them to not show up on the map. It is recommended to execute this action during a period when packages are not being delivered. This setting will permanantly affect the database. Packages deleted using this method cannot be recovered.</p>
         <h3 id="admin-recovery">Account Recovery</h3>
-        <p>You can reset an account password from the Account Management page. If you accidentally deleted all the accounts, run the command below to create a new administrator account.</p>
+        <p>You can reset an account password from the Account Management page. If you have accidentally deleted all of the accounts in the system, run the command below from a terminal to create a new administrator account.</p>
         <pre>python setup_helper.py recover</pre>
-        <p>The setup_helper.py script is located in the root directory of the application. You will be prompted to enter a new password after you run the script.</p>
+        <p>The setup_helper.py script is located in the root directory of the application. You will need to change your directory to this folder. You will be prompted to enter a new password after you run the script.</p>
         <h2 id="api">API</h2>
         <div class="alert alert-info"><b>Note:</b> All <span class="label label-primary">POST</span> requests must be in JSON encoded format.</div>
         <ul>
@@ -83,11 +126,7 @@
             </li>
         </ul>
         <h2 id="credits">Credits</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae tortor nisl. Mauris ultrices imperdiet neque, eget imperdiet velit tincidunt quis. Pellentesque non diam tincidunt, hendrerit purus sit amet, sodales elit. Integer rhoncus lacinia hendrerit. Quisque finibus urna eu feugiat molestie. Phasellus augue libero, efficitur vel malesuada eu, volutpat vitae ante. Quisque eu nisi vitae odio interdum volutpat ut quis enim. Etiam at nisi in eros hendrerit efficitur. Nullam consectetur risus non mauris hendrerit iaculis. Sed non blandit sem. Sed nibh justo, scelerisque vel purus imperdiet, cursus consequat augue. Aliquam massa nulla, tincidunt sed suscipit at, ullamcorper in leo. Suspendisse et consequat diam, nec suscipit dui. Proin auctor magna non semper ultrices.</p>
-        <p>Integer cursus viverra vulputate. Fusce auctor quis orci quis consequat. Ut vulputate dui sed tristique tempus. In aliquet condimentum tortor sit amet laoreet. Maecenas ut egestas magna. Ut sagittis lorem turpis, vitae pretium turpis laoreet a. Morbi aliquam auctor nisl vitae posuere. Curabitur sit amet lorem ac metus pulvinar consectetur non dapibus sapien. Nam vitae turpis ultricies, lobortis libero vitae, placerat dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nam vel metus faucibus diam fermentum semper non id erat.</p>
-        <p>Aenean pulvinar tristique risus nec dictum. Mauris nec nisl ultricies, imperdiet elit ut, eleifend leo. Nunc in laoreet dui. Nulla quis nisl sem. Nulla tincidunt, risus sit amet varius pharetra, est ante faucibus nulla, at suscipit sapien purus sit amet massa. Nam eleifend eget erat id semper. Vestibulum malesuada efficitur lorem, non venenatis ligula vestibulum et. Aliquam egestas lorem quis pharetra semper. Sed vulputate turpis in arcu bibendum, vitae vulputate elit finibus. Morbi eu sodales quam, nec accumsan elit.</p>
-        <p>Duis hendrerit imperdiet lorem ac commodo. Fusce semper nisi enim, a pellentesque dui volutpat a. Quisque consectetur neque eget urna aliquet tincidunt. Phasellus varius eleifend leo ac luctus. Cras eget luctus mi. Fusce eget gravida enim, nec interdum augue. Praesent dignissim sollicitudin diam, sit amet ullamcorper arcu dignissim eu. Vivamus et tortor ut lectus pharetra mattis nec quis lectus. Morbi id varius risus. Integer malesuada purus eget nibh commodo commodo. Donec auctor, erat ac varius lacinia, urna dui mollis sem, a posuere felis purus in justo. Aliquam malesuada vel augue in ultricies. Proin ac quam eu mauris aliquet pulvinar. Suspendisse elementum, elit ac ullamcorper luctus, sapien sem elementum tortor, non tincidunt massa risus in dui. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
-        <p>Vestibulum non risus feugiat, rhoncus nunc ornare, ornare nulla. Maecenas varius eleifend lacinia. Vivamus facilisis augue eu cursus ornare. Maecenas porttitor interdum eleifend. Nam tempor vel augue vitae mattis. In ullamcorper condimentum iaculis. Nunc mollis eu mauris ut iaculis. Vestibulum lobortis lectus sed justo sagittis, vitae interdum turpis tincidunt. Praesent quis pretium metus. Aliquam erat volutpat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed at consectetur felis. Phasellus quam nisi, blandit nec hendrerit vel, fringilla sit amet ante. Pellentesque a lectus et turpis dictum mattis vel et dui. Proin consectetur mauris vitae dui imperdiet aliquam. Nunc nec enim sit amet erat condimentum pretium.</p>
+        <!-- TODO: add credits here -->
     </div>
 </div>
 {% endblock %}
