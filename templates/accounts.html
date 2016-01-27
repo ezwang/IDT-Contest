@@ -3,11 +3,13 @@
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" type="text/css" href="/css/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/messenger.css"/>
     <script type="text/javascript" src="/js/datatables.min.js"></script>
     <link href='/css/index.css' rel='stylesheet' type='text/css' />
     <link href='/css/accounts.css' rel='stylesheet' type='text/css' />
     <script src='/js/index.js'></script>
     <script src='/js/typeahead.jquery.min.js'></script>
+    <script src='/js/messenger.min.js'></script>
     <script src='/js/accounts.js'></script>
 {% endblock %}
 {% block content %}
@@ -60,7 +62,6 @@
             </div>
             <div class="modal-body">
                 <p>If a package is marked as <i class="fa fa-globe"></i>, then it is visible to everyone.<br /><span id="permissions-user-info">If a package is marked as <i class="fa fa-user"></i>, it is visible to <b id="permissions-user-name"></b>.<br /></span>Administrators can view all packages.<br />Click <a id="permissions-bulk-edit" href="#">here</a> to toggle bulk permission editing.<span id="permissions-bulk-edit-info" style="display:none"><br />To insert multiple permissions at once, enter UUIDs separated by newlines.</span></p>
-                <div class="alert alert-danger" id="perm-info" style="display:none"></div>
                 <div id="bulk-permission-editing" style="display:none;margin-bottom:15px">
                     <textarea class="form-control" id="bulk-uuid" style="font-family:monospace;margin-bottom:15px"></textarea>
                     <select id="bulk-perm-type" name="type">

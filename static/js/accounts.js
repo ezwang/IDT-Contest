@@ -38,37 +38,54 @@ $(document).ready(function() {
     $("#btn-create").click(function(e) {
         $.post("/accounts/add_account", $("#user-form :input").serialize(), function(data) {
             if (data.error) {
-                // TODO: display error message in more attractive manner
-                alert(data.error);
+                Messenger().post({
+                    message: data.error,
+                    type: "danger"
+                });
             }
             else {
                 // TODO: update data table more efficiently
                 table.ajax.reload(updateButtons);
+                Messenger().post({
+                    message: "User account created!",
+                    type: "success"
+                });
             }
         }, 'json');
     });
     $("#btn-modify").click(function(e) {
         $.post("/accounts/modify_account", $("#user-form :input").serialize(), function(data) {
-            // TODO: update data table more efficiently
             if (data.error) {
-                // TODO: prettier alert format
-                alert(data.error);
+                Messenger().post({
+                    message: data.error,
+                    type: "danger"
+                });
             }
             else {
+                // TODO: update data table more efficiently
                 table.ajax.reload(updateButtons);
+                Messenger().post({
+                    message: "User account modified!",
+                    type: "success"
+                });
             }
-            // TODO: display success notification
         }, 'json');
     });
     $("#btn-delete").click(function(e) {
         $.post("/accounts/delete_account", $("#user-form :input").serialize(), function(data) {
             // TODO: update data table more efficiently
             if (data.error) {
-                // TODO: prettier alert format
-                alert(data.error);
+                Messenger().post({
+                    message: data.error,
+                    type: "danger"
+                });
             }
             else {
                 table.ajax.reload(updateButtons);
+                Messenger().post({
+                    message: "User account(s) deleted!",
+                    type: "success"
+                });
             }
         }, 'json');
     });
@@ -111,7 +128,6 @@ $(document).ready(function() {
         e.preventDefault();
         $("#permissions-bulk-edit-info, #single-permission-editing, #bulk-permission-editing").toggle();
     });
-    var permtimeoutid = false;
     $("#bulk-uuid-add").click(function(e) {
         e.preventDefault();
         var uuids = $("#bulk-uuid").val().split("\n");
@@ -124,15 +140,10 @@ $(document).ready(function() {
                 }
                 count--;
                 if (count <= 0) {
-                    $("#perm-info").text("Bulk insertion complete! " + errors + "/" + uuids.length + " failure(s) during operation.").slideDown();
-                    if (permtimeoutid) {
-                        clearTimeout(permtimeoutid);
-                        permtimeoutid = false;
-                    }
-                    permtimeoutid = setTimeout(function() {
-                        $("#perm-info").slideUp();
-                    }, 2000);
-                    return;
+                    Messenger().post({
+                        message: "Bulk insertion complete! " + errors + "/" + uuids.length + " failure(s) during operation.",
+                        type: errors == 0 ? "success" : (errors == uuids.length ? "danger" : "warning")
+                    });
                 }
             });
         });
@@ -140,14 +151,10 @@ $(document).ready(function() {
     $("#uuid-add").click(function(e) {
         $.post("/accounts/permissions/add", ($("#perm-type").val() == "user" ? $("#id, #uuid, #perm-type").serialize() : "type=global&id=-1&uuid=" + encodeURIComponent($("#uuid").val())), function(data) {
             if (data.error) {
-                $("#perm-info").text(data.error).slideDown();
-                if (permtimeoutid) {
-                    clearTimeout(permtimeoutid);
-                    permtimeoutid = false;
-                }
-                permtimeoutid = setTimeout(function() {
-                    $("#perm-info").slideUp();
-                }, 2000);
+                Messenger().post({
+                    message: data.error,
+                    type: "danger"
+                });
                 return;
             }
             if ($("#users tr.selected").length > 1) {
