@@ -114,8 +114,9 @@ else
     /opt/packagemanager/run.sh &
 fi
 
-echo '[*] Installation completed!'
 # allow some time for server to start up
 sleep 2
+
+echo '[*] Installation completed!'
 echo '[*] Opening user manual page...'
 xdg-open http://localhost:8080/about &>/dev/null
