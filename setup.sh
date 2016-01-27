@@ -115,5 +115,7 @@ else
 fi
 
 echo '[*] Installation completed!'
+# allow some time for server to start up
+sleep 2
 echo '[*] Opening user manual page...'
 xdg-open http://localhost:8080/about &>/dev/null
