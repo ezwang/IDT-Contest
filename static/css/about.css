@@ -29,6 +29,7 @@ nav
 #sidebar a:hover, #sidebar a:focus
 {
     text-decoration:none;
+    color:#777;
 }
 #sidebar a
 {
