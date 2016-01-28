@@ -41,7 +41,8 @@ def root():
 
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    with open('credits.json') as data:
+        return render_template('about.html', credits=json.load(data))
 
 import urllib2
 

@@ -117,3 +117,15 @@ nav
     margin-bottom:15px;
     text-align:center;
 }
+#credits-container div
+{
+    background-color:#ddd;
+    padding:5px;
+    padding-left:10px;
+    padding-right:10px;
+    margin-bottom:10px;
+}
+#credits-container .links
+{
+    float:right;
+}

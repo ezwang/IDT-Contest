@@ -29,6 +29,7 @@
                 </ul>
             </li>
             <li><a href="#api">API</a></li>
+            <li><a href="#credits">Credits</a></li>
         </ul>
     </div>
     <div id="info">
@@ -125,6 +126,12 @@
                 </ul>
             </li>
         </ul>
+        <h2 id="credits">Credits</h2>
+        <div id="credits-container">
+        {% for credit in credits %}
+            <div>{{ credit['name'] }} <span class="links"><a href="{{ credit['homepage'] }}">Homepage</a>{% if 'license' in credit %} - <a href="{{ credit['license'] }}">License</a>{% endif %}</span></div>
+        {% endfor %}
+        </div>
     </div>
 </div>
 {% endblock %}

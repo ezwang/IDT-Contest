@@ -1,0 +1,76 @@
+[
+    {
+        "name": "Google Maps API",
+        "homepage": "https://developers.google.com/maps/?hl=en"
+    },
+    {
+        "name": "Bootstrap v4",
+        "homepage": "http://getbootstrap.com/",
+        "license": "https://github.com/twbs/bootstrap/blob/master/LICENSE"
+    },
+    {
+        "name": "Bootstrap Switch",
+        "homepage": "http://www.bootstrap-switch.org/",
+        "license": "http://www.apache.org/licenses/LICENSE-2.0"
+    },
+    {
+        "name": "jQuery",
+        "homepage": "https://jquery.com/",
+        "license": "https://jquery.org/license/"
+    },
+    {
+        "name": "jQuery UI",
+        "homepage": "https://jqueryui.com/",
+        "license": "https://jquery.org/license/"
+    },
+    {
+        "name": "jQuery Cookie",
+        "homepage": "https://github.com/carhartl/jquery-cookie",
+        "license": "https://raw.githubusercontent.com/carhartl/jquery-cookie/master/MIT-LICENSE.txt"
+    },
+    {
+        "name": "jQuery DataTables",
+        "homepage": "https://www.datatables.net/",
+        "license": "https://www.datatables.net/license/mit"
+    },
+    {
+        "name": "jQuery TimeAgo",
+        "homepage": "http://timeago.yarp.com/",
+        "license": "http://opensource.org/licenses/mit-license.php"
+    },
+    {
+        "name": "Twitter Typeahead",
+        "homepage": "https://twitter.github.io/typeahead.js/",
+        "license": "https://raw.githubusercontent.com/twitter/typeahead.js/master/LICENSE"
+    },
+    {
+        "name": "Messenger",
+        "homepage": "http://github.hubspot.com/messenger/",
+        "license": "https://raw.githubusercontent.com/HubSpot/messenger/master/LICENSE"
+    },
+    {
+        "name": "Font Awesome",
+        "homepage": "https://fortawesome.github.io/Font-Awesome/",
+        "license": "https://fortawesome.github.io/Font-Awesome/license/"
+    },
+    {
+        "name": "Open Sans",
+        "homepage": "https://www.google.com/fonts/specimen/Open+Sans",
+        "license": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    {
+        "name": "Flask",
+        "homepage": "http://flask.pocoo.org/",
+        "license": "http://flask.pocoo.org/docs/0.10/license/"
+    },
+    {
+        "name": "Flask SocketIO",
+        "homepage": "https://flask-socketio.readthedocs.org/en/latest/",
+        "license": "https://raw.githubusercontent.com/miguelgrinberg/Flask-SocketIO/master/LICENSE"
+    },
+    {
+        "name": "Psycopg2",
+        "homepage": "http://initd.org/psycopg/",
+        "license": "http://initd.org/psycopg/license/"
+    }
+]
