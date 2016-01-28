@@ -46,6 +46,7 @@ def about():
 import urllib2
 
 def geocode(latlng):
+    """ Return a tuple with a boolean indicating success as the first value and an address or error message as the second value. """
     url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng={0}&key={1}'
     request = url.format(latlng, config["api"]["googlemaps_server"])
     data = json.loads(urllib2.urlopen(request).read())
@@ -91,6 +92,7 @@ def package_address(uuid):
     return jsonify(**{'location':loc})
 
 def getemail(usrid):
+    """ Return the email of an user given a user id, or a blank string on error. """
     cur = conn.cursor()
     cur.execute('SELECT email FROM users WHERE id = %s', (usrid,))
     if cur.rowcount == 0:
@@ -416,6 +418,7 @@ def logout():
 globalaccess = []
 
 def checkaccess(uuid):
+    """ Returns true or false depending on if the user can access the package. refreshaccess MUST be called before using this method. """
     if 'id' in session:
         if session['type'] > 0:
             return True
@@ -426,6 +429,7 @@ def checkaccess(uuid):
     return False
 
 def refreshaccess():
+    """ Caches the UUID of all public packages to minimize database lookup. """
     global globalaccess
     cur = conn.cursor()
     if 'id' in session:
