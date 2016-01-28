@@ -45,7 +45,7 @@ echo '[*] Entering virtual environment..'
 source venv/bin/activate || { echo '[!] Failed to enter virtual environment!'; exit 1; }
 pip -q install -r requirements.txt || { echo '[!] Failed to install pip packages!'; exit 1; }
 echo '[*] If you do not already have a database set up, this script can install one for you.'
-read -p "[*] Do you want this script to install a postgresql database for you? [Y/n] " -r
+read -p "Do you want this script to install a postgresql database for you? [Y/n] " -r
 if [[ ! $REPLY =~ ^[Nn]$ ]]
 then
     echo '[*] Installing postgresql database...'
@@ -85,33 +85,39 @@ else
     python setup_helper.py prompt || exit 1
 fi
 
-echo '[*] Copying files to /opt...'
-if [ -d "/opt/packagemanager" ]; then
-    echo '[*] Old installation exists, deleting...'
-    sudo rm -rf /opt/packagemanager || echo '[!] Warning: Failed to delete old installation.'
-fi
-sudo mkdir /opt/packagemanager || { echo '[!] Failed to create directory in opt!'; exit 1; }
-sudo cp -R . /opt/packagemanager || { echo '[!] Failed to copy files into new directory!'; exit 1; }
+read -p "Do you want to copy the server files to /opt/ and install a startup script? [Y/n] " -r
+if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+    echo '[*] Copying files to /opt...'
+    if [ -d "/opt/packagemanager" ]; then
+        echo '[*] Old installation exists, deleting...'
+        sudo rm -rf /opt/packagemanager || echo '[!] Warning: Failed to delete old installation.'
+    fi
+    sudo mkdir /opt/packagemanager || { echo '[!] Failed to create directory in opt!'; exit 1; }
+    sudo cp -R . /opt/packagemanager || { echo '[!] Failed to copy files into new directory!'; exit 1; }
 
-echo '[*] Application has been installed to /opt/packagemanager!'
+    echo '[*] Application has been installed to /opt/packagemanager!'
 
-echo '[*] Installing server handler...'
-echo '[*] This process will start Package Manager when the server boots.'
+    echo '[*] Installing server handler...'
+    echo '[*] This process will start Package Manager when the server boots.'
 
-if sudo bash -c 'type "initctl" > /dev/null 2>&1'; then
-    echo '[*] Upstart detected, registering service...'
-    sudo cp packagemanager.conf /etc/init/packagemanager.conf
-    sudo start packagemanager
-elif sudo bash -c 'type "update-rc.d" > /dev/null 2>&1'; then
-    echo '[*] Adding script to init.d and creating startup links...'
-    sudo cp packagemanager /etc/init.d/packagemanager
-    sudo chmod +x /etc/init.d/packagemanager
-    sudo update-rc.d packagemanager defaults
-    sudo /etc/init.d/packagemanager start
+    if sudo bash -c 'type "initctl" > /dev/null 2>&1'; then
+        echo '[*] Upstart detected, registering service...'
+        sudo cp packagemanager.conf /etc/init/packagemanager.conf
+        sudo start packagemanager
+    elif sudo bash -c 'type "update-rc.d" > /dev/null 2>&1'; then
+        echo '[*] Adding script to init.d and creating startup links...'
+        sudo cp packagemanager /etc/init.d/packagemanager
+        sudo chmod +x /etc/init.d/packagemanager
+        sudo update-rc.d packagemanager defaults
+        sudo /etc/init.d/packagemanager start
+    else
+        echo '[*] No service manager detected, running server...'
+        echo '[!] You will need to manually register run.sh to execute on boot.'
+        /opt/packagemanager/run.sh &
+    fi
 else
-    echo '[*] No service manager detected, running server...'
-    echo '[!] You will need to manually register run.sh to execute on boot.'
-    /opt/packagemanager/run.sh &
+    echo '[*] Starting server...'
+    ./run.sh &
 fi
 
 # allow some time for server to start up

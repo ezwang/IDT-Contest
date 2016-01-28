@@ -1,2 +1,2 @@
 #!/bin/sh -e
-python server.py
+venv/bin/python server.py
