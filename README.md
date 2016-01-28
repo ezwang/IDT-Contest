@@ -93,7 +93,16 @@ Use the command below to run the server:
 ```sh
 ./run.sh
 ```
-**Thats it!** Go to [http://localhost:8080/about](http://localhost:8080/about) and you should see the user guide!
+**Thats it!** Go to [http://localhost:8080/about](http://localhost:8080/about) from the server machine and you should see the user guide!
+
+#### Accessing from other machines
+You can run the following command to get your IP address:
+```sh
+ifconfig
+```
+Other machines on the same network can access the application by navigating to `http://(your ip address):8080/`.
+
+If you have set up the server inside of a virtual machine, you will have to configure port forwarding.
 
 #### Additional Steps
 - Enable or disable features in `config.json`
