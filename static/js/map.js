@@ -190,6 +190,34 @@ function requestGeocoding(curUUID) {
     });
 }
 
+function pad (str, max) {
+    str = str.toString();
+    return str.length < max ? pad("0" + str, max) : str;
+}
+
+function updateTimeTaken(uuid) {
+    if (uuid != trackingUUID) {
+        return;
+    }
+    var path = packages[trackingUUID].polyline.getPath();
+    if (path.getLength() < 2) {
+        setTimeout(function() {
+            updateTimeTaken(uuid);
+        }, 1000);
+        return;
+    }
+    var firstPoint = path.getAt(0).time;
+    var lastPoint = path.getAt(path.getLength()-1).time;
+    var seconds = lastPoint - firstPoint;
+    var days = Math.floor(seconds / 86400);
+    seconds -= days*86400;
+    var hours = Math.floor(seconds / 3600);
+    seconds -= hours*3600;
+    var minutes = Math.floor(seconds / 60);
+    seconds -= minutes*60;
+    $("#packageinfo #ptaken").text(days + " " + (days == 1 ? 'day' : 'days') + " " + pad(hours, 2) + ":" + pad(minutes, 2) + ":" + pad(seconds, 2));
+}
+
 function updateInfoBox() {
     if (!trackingUUID) {
         $("#packageinfo #phelp").show();
@@ -215,9 +243,13 @@ function updateInfoBox() {
     $("#packageinfo #pstatus").text(packages[trackingUUID].delivered ? 'Delivered' : 'In Transit');
     if (packages[trackingUUID].delivered) {
         $("#packageinfo #ptransit-container").hide();
+        $("#packageinfo #pdelivered-container").show();
+        $("#packageinfo #ptaken").html("<i class='fa fa-circle-o-notch fa-spin'></i>");
+        updateTimeTaken(trackingUUID);
     }
     else {
         $("#packageinfo #ptransit-container").show();
+        $("#packageinfo #pdelivered-container").hide();
         updateDistanceCalculations(trackingUUID);
     }
     if (mobile) {
@@ -231,6 +263,7 @@ function addPoint(uuid, lat, lon, ele, time) {
         var path = packages[uuid].polyline.getPath();
         var pos = new google.maps.LatLng(lat,lon);
         pos.ele = ele;
+        pos.time = time;
         path.push(pos);
         if (!packages[uuid].delivered) {
             packages[uuid].marker.setPosition(pos);
