@@ -64,6 +64,15 @@ def setup_admin_account(cur):
     print "[*] User created!"
     print "[*] Use the username 'admin' and the password you created to login to the website."
 
+def prompt_api_keys(config):
+    print '[*] Some features of this application require Google Maps API keys to function correctly.'
+    print '[*] This step is optional, and the application will still work without API keys.'
+    print '[*] You can obtain Google Maps API keys from https://developers.google.com/maps/web/'
+    client_key = raw_input('Enter Google Maps API client key: [Press ENTER to skip] ')
+    server_key = raw_input('Enter Google Maps API server key: [Press ENTER to skip] ')
+    config['api']['googlemaps_client'] = client_key
+    config['api']['googlemaps_server'] = server_key
+
 def setup_database(config):
     print "[*] Connecting to database..."
     conn = psycopg2.connect("dbname='" + config["database"]["dbname"] + "' user='" + config["database"]["user"] + "' host='" + config["database"]["host"] + "' password='" + config["database"]["pass"] + "'")
@@ -127,4 +136,5 @@ if __name__ == '__main__':
         print 'Run the setup script to install the application.'
         exit()
     setup_database(config)
+    prompt_api_keys(config)
     save_config(config)
