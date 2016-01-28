@@ -1,8 +1,6 @@
 # IDT Contest Submission
 Contest submission for TJHSST Team 1
 
-![Screenshot](/static/images/screenshot.png?raw=true)
-
 ## Installation
 You will need a Linux based operating system to install and run the server.
 We recommend [Ubuntu 14.04 LTS](http://www.ubuntu.com/download/desktop).
