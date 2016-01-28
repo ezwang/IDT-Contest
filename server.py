@@ -43,12 +43,60 @@ def root():
 def about():
     return render_template('about.html')
 
+import urllib2
+
+def geocode(latlng):
+    url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng={0}&key={1}'
+    request = url.format(latlng, config["api"]["googlemaps_server"])
+    data = json.loads(urllib2.urlopen(request).read())
+    if data['status'] == 'REQUEST_DENIED':
+        print '--- Google Maps Geocoding API'
+        print data['error_message']
+        print '--- End Google Maps Geocoding API'
+        return (False, 'REQUEST_DENIED')
+    if data['status'] == 'OVER_QUERY_LIMIT':
+        # TODO: handle this better
+        print 'Warning: Google Maps Geocoding API query limit exceeded!'
+        return (False, 'OVER_QUERY_LIMIT')
+    if data['status'] == 'ZERO_RESULTS':
+        return (False, 'ZERO_RESULTS')
+    if len(data['results']) > 0:
+        return (True, data['results'][0]['formatted_address'])
+    return (False, 'ZERO_RESULTS')
+
+@app.route('/packageaddress/<uuid>')
+def package_address(uuid):
+    if not config["api"]["googlemaps_server"]:
+        return jsonify(**{'status':'disabled'})
+    # TODO: implement geocode caching
+    cur = conn.cursor()
+    cur.execute('SELECT lat, lng, address FROM packages WHERE id = %s', (uuid,))
+    conn.commit()
+    if cur.rowcount == 0:
+        return jsonify(**{'status':'empty'})
+    row = cur.fetchone()
+    if row[2]:
+        if row[2] == 'ZERO_RESULTS':
+            return jsonify(**{'status':'empty'})
+        return jsonify(**{'location':row[2]})
+    worked, loc = geocode(str(row[0]) + "," + str(row[1]))
+    if not worked:
+        if loc == 'ZERO_RESULTS':
+            cur.execute('UPDATE PACKAGES SET address = %s WHERE id = %s', ('ZERO_RESULTS', uuid))
+            conn.commit()
+            return jsonify(**{'status':'empty'})
+        return jsonify(**{'status':'pending'})
+    cur.execute('UPDATE packages SET address = %s WHERE id = %s', (loc, uuid))
+    conn.commit()
+    return jsonify(**{'location':loc})
+
 def getemail(usrid):
     cur = conn.cursor()
     cur.execute('SELECT email FROM users WHERE id = %s', (usrid,))
     if cur.rowcount == 0:
         return ""
     row = cur.fetchone()
+    cur.commit()
     return row[0] if not row[0] == None else ""
 
 @app.route('/register')
@@ -287,7 +335,7 @@ def map():
         type = session['type']
     else:
         type = -1
-    return render_template('map.html', mapskey = config["api"]["googlemaps"] if config["api"]["googlemaps"] else "", id = session['id'] if 'id' in session else '', username = session['username'] if 'username' in session else '', can_edit = config["allow_user_edit"])
+    return render_template('map.html', mapskey = config["api"]["googlemaps_client"] if config["api"]["googlemaps_client"] else "", id = session['id'] if 'id' in session else '', username = session['username'] if 'username' in session else '', can_edit = config["allow_user_edit"])
 
 @app.route('/map/delete_package/<uuid>')
 def deletepackage(uuid):

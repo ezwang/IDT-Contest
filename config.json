@@ -3,7 +3,8 @@
     "allow_registration": true, 
     "allow_user_edit": true, 
     "api": {
-        "googlemaps": ""
+        "googlemaps_client": "",
+        "googlemaps_server": ""
     }, 
     "database": {
         "dbname": "mkkidnum", 

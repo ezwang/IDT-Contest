@@ -43,5 +43,13 @@
     <h5>User Editing</h5>
     <p>Allow users to rename and delete packages. Users will only be able to rename and delete packages that they have access to. Users will not be able to edit packages that are marked as global but not as user.</p>
     <input type="checkbox" {{ "checked" if config["allow_user_edit"] }} disabled />
+    <hr />
+    <h5>Google Maps API Client Key</h5>
+    <p>A Google Maps API client key is purely optional and will not affect the application in any way. You can set a client key if you are interested in monitoring API usage and traffic.</p>
+    <b style="color:{{ "green" if config["api"]["googlemaps_client"] else "red" }}">{{ "API Key Found" if config["api"]["googlemaps_client"] else "No API Key Found" }}</b>
+    <hr />
+    <h5>Google Maps API Server Key</h5>
+    <p>A Google Maps API server key is recommended so the application can use the Geocoding API. If this key is not entered, the application will fallback to displaying coordinates instead of addresses.</p>
+    <b style="color:{{ "green" if config["api"]["googlemaps_server"] else "red" }}">{{ "API Key Found" if config["api"]["googlemaps_server"] else "No API Key Found" }}</b>
 </form>
 {% endblock %}

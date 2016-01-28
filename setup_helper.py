@@ -92,7 +92,7 @@ def setup_database(config):
     cur.execute('CREATE TABLE access (id SERIAL, userid INTEGER, package UUID, CONSTRAINT u_constraint UNIQUE (userid, package))')
     conn.commit()
     print "[*] Creating package table..."
-    cur.execute('CREATE TABLE packages (id UUID, name TEXT, lat DOUBLE PRECISION, lng DOUBLE PRECISION, delivered BOOLEAN, PRIMARY KEY (id))')
+    cur.execute('CREATE TABLE packages (id UUID, name TEXT, lat DOUBLE PRECISION, lng DOUBLE PRECISION, delivered BOOLEAN, address TEXT, PRIMARY KEY (id))')
     conn.commit()
     print "[*] Creating package steps table..."
     cur.execute('CREATE TABLE steps (id UUID, lat DOUBLE PRECISION, lng DOUBLE PRECISION, ele DOUBLE PRECISION, time TIMESTAMP)')

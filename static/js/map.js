@@ -152,6 +152,35 @@ function speed(uuid) {
     } 
 }
 
+function round(num, decimals) {
+    return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
+}
+
+var geocoding_enabled = true;
+
+function requestGeocoding(curUUID) {
+    $.getJSON("/packageaddress/" + encodeURIComponent(curUUID), function(data) {
+        if (data.status == "disabled") {
+            geocoding_enabled = false;
+            return;
+        }
+        if (data.status == "empty") {
+            packages[curUUID].destinationAddress = false;
+            return;
+        }
+        if (data.status == "pending") {
+            setTimeout(function() {
+                requestGeocoding(curUUID);
+            }, 1000);
+            return;
+        }
+        packages[curUUID].destinationAddress = data.location;
+        if (curUUID == trackingUUID) {
+            $("#packageinfo #pdest").text(data.location);
+        }
+    });
+}
+
 function updateInfoBox() {
     if (!trackingUUID) {
         $("#packageinfo #phelp").show();
@@ -162,12 +191,24 @@ function updateInfoBox() {
     $("#packageinfo #pinfo").show();
     $("#packageinfo #pname").text(packages[trackingUUID].name);
     $("#packageinfo #puuid").text(trackingUUID);
-    $("#packageinfo #pstatus").text(packages[trackingUUID].delivered ? 'Delivered' : 'In Transit');
-    if (packages[trackingUUID].delivered) {
-        $("#packageinfo #peta-container, #pspeed-container, #pdist-container").hide();
+    if (packages[trackingUUID].destinationAddress) {
+        $("#packageinfo #pdest").text(packages[trackingUUID].destinationAddress);
     }
     else {
-        $("#packageinfo #peta-container, #pspeed-container, #pdist-container").show();
+        $("#packageinfo #pdest").text("(" + round(packages[trackingUUID].destination.lat(), 3) + ", " + round(packages[trackingUUID].destination.lng(), 3) + ")");
+        if (geocoding_enabled) {
+            if (typeof packages[trackingUUID].destinationAddress === 'undefined') {
+                var curUUID = trackingUUID;
+                requestGeocoding(curUUID);
+            }
+        }
+    }
+    $("#packageinfo #pstatus").text(packages[trackingUUID].delivered ? 'Delivered' : 'In Transit');
+    if (packages[trackingUUID].delivered) {
+        $("#packageinfo #ptransit-container").hide();
+    }
+    else {
+        $("#packageinfo #ptransit-container").show();
         updateDistanceCalculations(trackingUUID);
     }
     if (mobile) {
