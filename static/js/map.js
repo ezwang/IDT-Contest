@@ -216,6 +216,19 @@ function updateTimeTaken(uuid) {
     var minutes = Math.floor(seconds / 60);
     seconds -= minutes*60;
     $("#packageinfo #ptaken").text(days + " " + (days == 1 ? 'day' : 'days') + " " + pad(hours, 2) + ":" + pad(minutes, 2) + ":" + pad(seconds, 2));
+    var total_dist_traveled = 0;
+    for (var i=1; i<path.getLength(); i++) {
+        var lat1 = path.getAt(i-1).lat(), lng1 = path.getAt(i-1).lng();
+        var lat2 = path.getAt(i).lat(), lng2 = path.getAt(i).lng();
+        // TODO: account for elevation in kilometers
+        total_dist_traveled += distance(lat1, lng1, lat2, lng2);
+    }
+    if (s_display_units == 'km') {
+        $("#packageinfo #ptraveled").text(round(total_dist_traveled, 3).toLocaleString() + " km");
+    }
+    else {
+        $("#packageinfo #ptraveled").text(round(total_dist_traveled * km_to_mi, 3).toLocaleString() + " mi");
+    }
 }
 
 function updateInfoBox() {
@@ -244,7 +257,7 @@ function updateInfoBox() {
     if (packages[trackingUUID].delivered) {
         $("#packageinfo #ptransit-container").hide();
         $("#packageinfo #pdelivered-container").show();
-        $("#packageinfo #ptaken").html("<i class='fa fa-circle-o-notch fa-spin'></i>");
+        $("#packageinfo #ptaken, #packageinfo #ptraveled").html("<i class='fa fa-circle-o-notch fa-spin'></i>");
         updateTimeTaken(trackingUUID);
     }
     else {
