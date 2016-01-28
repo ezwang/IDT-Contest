@@ -66,9 +66,9 @@ You will need to create a new user and database using the following commands:
 sudo -u postgres createuser -D -A -P "pmuser"
 sudo -u postgres createdb -O "pmuser" "pmdb"
 ```
-You will be prompted for a password for the new user. Make sure you remember this password, you will need to use it later.
+You will be prompted for a password for the new user. Make sure you remember this password; you will need to use it later.
 
-By default, you will not be able to login using password authentication. Add the following line to your `pg_hba.conf` file.
+By default, you will not be able to login using password authentication. Add the following line to the end of your `pg_hba.conf` file.
 ```
 host all all 127.0.0.1/32 md5
 ```
