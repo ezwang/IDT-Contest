@@ -68,12 +68,12 @@ sudo -u postgres createdb -O "pmuser" "pmdb"
 ```
 You will be prompted for a password for the new user. Make sure you remember this password, you will need to use it later.
 
-By default, you will not be able to login using password authentication. Add the following line to your `pg\_hba.conf` file.
+By default, you will not be able to login using password authentication. Add the following line to your `pg_hba.conf` file.
 ```
 host all all 127.0.0.1/32 md5
 ```
 
-If you do not know where your `pg\_hba.conf` file is located, run the following command:
+If you do not know where your `pg_hba.conf` file is located, run the following command:
 ```sh
 sudo -u postgres psql -t -P format=unaligned -c 'show hba_file'
 ```
@@ -94,6 +94,8 @@ Use the command below to run the server:
 ./run.sh
 ```
 **Thats it!** Go to [http://localhost:8080/about](http://localhost:8080/about) and you should see the user guide!
+
 #### Additional Steps
 - Enable or disable features in `config.json`
+- Move server files to a more permanant location
 - Make the server start up on boot
