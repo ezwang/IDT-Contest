@@ -55,6 +55,14 @@ nav
 {
     font-size:0.8em;
 }
+#browser-logos img
+{
+    width:64px;
+}
+#browser-logos td
+{
+    padding:10px;
+}
 @media screen and (max-width:480px) {
     #sidebar
     {
@@ -63,6 +71,18 @@ nav
     #info
     {
         margin-left:0px;
+    }
+    #browser-versions td
+    {
+        font-size:0.75em;
+    }
+    #browser-logos td
+    {
+        padding:7px;
+    }
+    #browser-logos img
+    {
+        width:48px;
     }
 }
 @media print {
@@ -96,12 +116,4 @@ nav
 {
     margin-bottom:15px;
     text-align:center;
-}
-#browser-logos td
-{
-    padding:10px;
-}
-#browser-logos img
-{
-    width:64px;
 }
