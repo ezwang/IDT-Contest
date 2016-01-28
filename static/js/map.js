@@ -9,6 +9,9 @@ var default_zoom = mobile ? 1 : 2;
 
 var s_zoom_amount = parseInt($.cookie('s_zoom')) || 12;
 var s_map_type = $.cookie('s_type') || "roadmap";
+var s_display_units = $.cookie('s_units') || "km";
+
+var km_to_mi = 0.62137119;
 
 function escapeHtml(text) {
     var map = {
@@ -107,8 +110,14 @@ function updateDistanceCalculations(uuid) {
     var currentSpeed = speed(uuid);
     var lastPoint = path.getAt(path.getLength()-1);
     var dist_left = distance(packages[trackingUUID].destination.lat(), packages[trackingUUID].destination.lng(), lastPoint.lat(), lastPoint.lng());
-    $("#packageinfo #pdist").text(Math.round(dist_left) + " km");
-    $("#packageinfo #pspeed").text(Math.round(currentSpeed) + " km/h");
+    if (s_display_units == "km") {
+        $("#packageinfo #pdist").text(Math.round(dist_left) + " km");
+        $("#packageinfo #pspeed").text(Math.round(currentSpeed) + " km/h");
+    }
+    else {
+        $("#packageinfo #pdist").text(Math.round(dist_left * km_to_mi) + " mi");
+        $("#packageinfo #pspeed").text(Math.round(currentSpeed * km_to_mi) + " mi/h");
+    }
     $("#packageinfo #pmethod").html("");
     if (lastPoint.ele > 70000) {
         $("#packageinfo #pmethod").append("<i title='Rocket' class='fa fa-rocket'></i>");
@@ -136,7 +145,7 @@ function updateDistanceCalculations(uuid) {
     if (currentSpeed > 0) {
         var finDate = new Date(packages[trackingUUID].speedData.time2*1000);
         finDate.setSeconds(dist_left*60*60/currentSpeed);
-        $("#packageinfo #peta").text(/*Math.round(total_dist_traveled) + " km traveled, " + Math.round(currentSpeed) + " km/h, " + Math.round(dist_left) + " km left, " + */jQuery.timeago(finDate));
+        $("#packageinfo #peta").text(jQuery.timeago(finDate));
     }
     else {
         $("#packageinfo #peta").text("Unknown");
