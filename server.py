@@ -96,7 +96,7 @@ def getemail(usrid):
     if cur.rowcount == 0:
         return ""
     row = cur.fetchone()
-    cur.commit()
+    conn.commit()
     return row[0] if not row[0] == None else ""
 
 @app.route('/register')

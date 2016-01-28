@@ -45,11 +45,11 @@
     <input type="checkbox" {{ "checked" if config["allow_user_edit"] }} disabled />
     <hr />
     <h5>Google Maps API Client Key</h5>
-    <p>A Google Maps API client key is purely optional and will not affect the application in any way. You can set a client key if you are interested in monitoring API usage and traffic.</p>
+    <p>A Google Maps API client key is purely optional and will not affect the application in any way. You can set a client key if you are interested in monitoring API usage and traffic. This configuration variable is called <span style="font-family:monospace">googlemaps_client</span> under <span style="font-family:monospace">api</span>.</p>
     <b style="color:{{ "green" if config["api"]["googlemaps_client"] else "red" }}">{{ "API Key Found" if config["api"]["googlemaps_client"] else "No API Key Found" }}</b>
     <hr />
     <h5>Google Maps API Server Key</h5>
-    <p>A Google Maps API server key is recommended so the application can use the Geocoding API. If this key is not entered, the application will fallback to displaying coordinates instead of addresses.</p>
+    <p>A Google Maps API server key is recommended so the application can use the Geocoding API. If this key is not entered, the application will fallback to displaying coordinates instead of addresses. This configuration variable is called <span style="font-family:monospace">googlemaps_server</span> under <span style="font-family:monospace">api</span>.</p>
     <b style="color:{{ "green" if config["api"]["googlemaps_server"] else "red" }}">{{ "API Key Found" if config["api"]["googlemaps_server"] else "No API Key Found" }}</b>
 </form>
 {% endblock %}
