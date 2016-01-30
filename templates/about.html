@@ -29,6 +29,7 @@
                 </ul>
             </li>
             <li><a href="#api">API</a></li>
+            <li><a href="#requirements">Requirements</a></li>
             <li><a href="#credits">Credits</a></li>
         </ul>
     </div>
@@ -126,6 +127,20 @@
                 </ul>
             </li>
         </ul>
+        <h2 id="requirements">Requirements</h2>
+        <ol>
+            <li>The solution shall handle multiple simultaneous GPS tracked packages sending updates.</li>
+            <li>The solution shall be easily accessible from a Windows 7 computer.</li>
+            <li>The solution shall support an admin mode that shows all package location updates on a map.</li>
+            <li>The solution shall support a user mode that shows a subset of package location updates on a map.</li>
+            <li>The solution shall accept a list of UUIDs in user mode to control the subset of package location updates displayed on the map.</li>
+            <li>The solution shall accept name, destination, and GPS unit UUID information as HTTP query parameters on a HTTP GET of the URL path "/tracknewpackage".</li>
+            <li>The solution shall respond with a JSON encoded body which includes the registered uuid on an HTTP GET of the URL path "/tracknewpackage".</li>
+            <li>The solution shall accept a JSON encoded body which includes location, elevation, and time on a HTTP POST to the URL path "/packagetrackupdate/".</li>
+            <li>The solution shall accept a JSON encoded body which includes a delivered flag on a HTTP POST to the URL path "/packagetrackupdate/".</li>
+            <li>The solution shall calculate and display distance to destination.</li>
+            <li>The solution shall calculate and display estimated arrival time.</li>
+        </ol>
         <h2 id="credits">Credits</h2>
         <div id="credits-container">
         {% for credit in credits %}
