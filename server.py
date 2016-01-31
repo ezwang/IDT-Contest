@@ -229,7 +229,7 @@ def admin_permissions_remove(ids):
     conn.commit()
     return jsonify(**{'success':'Package permission deleted!'})
 
-@app.route('/accounts/delete_account', methods=['POST'])
+@app.route('/accounts/delete', methods=['POST'])
 def admin_delete_account():
     ids = [int(x) for x in request.form['id'].split(',')]
     cur = conn.cursor()
@@ -239,7 +239,7 @@ def admin_delete_account():
     conn.commit()
     return jsonify(**{'success':str(len(ids)) + ' account(s) deleted!'})
 
-@app.route('/accounts/modify_account', methods=['POST'])
+@app.route('/accounts/modify', methods=['POST'])
 def admin_modify_account():
     if not 'id' in session:
         return redirect('/')
@@ -258,7 +258,7 @@ def admin_modify_account():
     conn.commit()
     return jsonify(**{'success':'Account modified!'})
 
-@app.route('/accounts/add_account', methods=['POST'])
+@app.route('/accounts/add', methods=['POST'])
 def admin_add_account():
     if not 'id' in session:
         return redirect('/')
@@ -277,7 +277,9 @@ def admin_add_account():
         conn.rollback()
         return jsonify(**{'error':'Account exists with that username!'})
     conn.commit()
-    return jsonify(**{'success':'New account created!'})
+    if len(password) > 0:
+        return jsonify(**{'success':'New account created!'})
+    return jsonify(**{'warning':'New account created! You will need to set a password for this account before logging in.'})
 
 @app.route('/settings/change_password', methods=['POST'])
 def changepassword():

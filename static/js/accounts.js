@@ -36,7 +36,7 @@ $(document).ready(function() {
         "order": [[1, "asc"]]
     });
     $("#btn-create").click(function(e) {
-        $.post("/accounts/add_account", $("#user-form :input").serialize(), function(data) {
+        $.post("/accounts/add", $("#user-form :input").serialize(), function(data) {
             if (data.error) {
                 Messenger().post({
                     message: data.error,
@@ -46,15 +46,23 @@ $(document).ready(function() {
             else {
                 // TODO: update data table more efficiently
                 table.ajax.reload(updateButtons);
-                Messenger().post({
-                    message: "User account created!",
-                    type: "success"
-                });
+                if (data.warning) {
+                    Messenger().post({
+                        message: data.warning,
+                        type: "warning"
+                    });
+                }
+                else {
+                    Messenger().post({
+                        message: "User account created!",
+                        type: "success"
+                    });
+                }
             }
         }, 'json');
     });
     $("#btn-modify").click(function(e) {
-        $.post("/accounts/modify_account", $("#user-form :input").serialize(), function(data) {
+        $.post("/accounts/modify", $("#user-form :input").serialize(), function(data) {
             if (data.error) {
                 Messenger().post({
                     message: data.error,
@@ -64,15 +72,23 @@ $(document).ready(function() {
             else {
                 // TODO: update data table more efficiently
                 table.ajax.reload(updateButtons);
-                Messenger().post({
-                    message: "User account modified!",
-                    type: "success"
-                });
+                if (data.warning) {
+                    Messenger().post({
+                        message: data.warning,
+                        type: "warning"
+                    });
+                }
+                else {
+                    Messenger().post({
+                        message: "User account modified!",
+                        type: "success"
+                    });
+                }
             }
         }, 'json');
     });
     $("#btn-delete").click(function(e) {
-        $.post("/accounts/delete_account", $("#user-form :input").serialize(), function(data) {
+        $.post("/accounts/delete", $("#user-form :input").serialize(), function(data) {
             // TODO: update data table more efficiently
             if (data.error) {
                 Messenger().post({
@@ -82,10 +98,18 @@ $(document).ready(function() {
             }
             else {
                 table.ajax.reload(updateButtons);
-                Messenger().post({
-                    message: "User account(s) deleted!",
-                    type: "success"
-                });
+                if (data.warning) {
+                    Messenger().post({
+                        message: data.warning,
+                        type: "warning"
+                    });
+                }
+                else {
+                    Messenger().post({
+                        message: "User account(s) deleted!",
+                        type: "success"
+                    });
+                }
             }
         }, 'json');
     });
