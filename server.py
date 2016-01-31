@@ -25,6 +25,10 @@ conn = psycopg2.connect("dbname='" + config["database"]["dbname"] + "' user='" +
 def inject_user_data():
     return dict(logged_in='id' in session, is_admin=session['type'] > 0 if 'type' in session else False, allow_register=config["allow_registration"])
 
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('500.html'), 500
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
