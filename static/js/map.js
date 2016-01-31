@@ -90,7 +90,7 @@ function updateDistanceCalculations(uuid) {
     if (uuid != trackingUUID) {
         return;
     }
-    $("#packageinfo #peta").text("Loading...");
+    $("#packageinfo #peta").html("<i class='fa fa-circle-o-notch fa-spin'></i>");
     if (packages[trackingUUID].polyline.getPath().getLength() == 0) {
         setTimeout(function() {
             updateDistanceCalculations(uuid);
@@ -228,6 +228,9 @@ function updateTimeTaken(uuid) {
     }
     else {
         $("#packageinfo #ptraveled").text(round(total_dist_traveled * km_to_mi, 3).toLocaleString() + " mi");
+    }
+    if (mobile) {
+        scale_sidebar();
     }
 }
 
@@ -605,10 +608,10 @@ $(document).ready(function() {
             var sort_delivered = false;
             var sort_transit = false;
             $.each(term, function(k, v) {
-                if (v.indexOf("delivered") > -1) {
+                if (v.match(/^\s*delivered\s*$/)) {
                     sort_delivered = true;
                 }
-                if (v.indexOf("transit") > -1) {
+                if (v.match(/transit\s*$/)) {
                     sort_transit = true;
                 }
             });
@@ -616,9 +619,23 @@ $(document).ready(function() {
                 var is_visible = false;
                 var a = $(this);
                 $.each(term, function(k, v) {
-                    if (a.attr('data-id').indexOf(v) > -1 || a.text().toLowerCase().indexOf(v) > -1) {
-                        is_visible = true;
-                        return false;
+                    if (v.match(/^uuid:/)) {
+                        if (a.attr('data-id').indexOf(v.substring(5)) > -1) {
+                            is_visible = true;
+                            return false;
+                        }
+                    }
+                    else if (v.match(/^name:/)) {
+                        if (a.text().toLowerCase().indexOf(v) > -1) {
+                            is_visible  = true;
+                            return false;
+                        }
+                    }
+                    else {
+                        if (a.attr('data-id').indexOf(v) > -1 || a.text().toLowerCase().indexOf(v) > -1) {
+                            is_visible = true;
+                            return false;
+                        }
                     }
                 });
                 var delivered = packages[$(this).attr('data-id')].delivered;
