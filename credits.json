@@ -72,5 +72,10 @@
         "name": "Psycopg2",
         "homepage": "http://initd.org/psycopg/",
         "license": "http://initd.org/psycopg/license/"
+    },
+    {
+        "name": "Subtle Patterns",
+        "homepage": "http://subtlepatterns.com/",
+        "license": "http://subtlepatterns.com/about/"
     }
 ]
