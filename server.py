@@ -6,6 +6,8 @@ from flask_socketio import SocketIO, join_room, leave_room
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from time import time
+
 import psycopg2
 
 app = Flask(__name__, static_url_path='')
@@ -50,8 +52,17 @@ def about():
 
 import urllib2
 
+failed_requests = 0
+failed_time = -1
+
 def geocode(latlng):
     """ Return a tuple with a boolean indicating success as the first value and an address or error message as the second value. """
+    if failed_time > 0:
+        if time() - failed_time < 86400:
+            return (False, 'OVER_QUERY_LIMIT')
+        else:
+            failed_requests = 0
+            failed_time = -1
     url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng={0}&key={1}'
     request = url.format(latlng, config["api"]["googlemaps_server"])
     data = json.loads(urllib2.urlopen(request).read())
@@ -61,9 +72,12 @@ def geocode(latlng):
         print '--- End Google Maps Geocoding API'
         return (False, 'REQUEST_DENIED')
     if data['status'] == 'OVER_QUERY_LIMIT':
-        # TODO: handle this better
+        failed_requests += 1
+        if failed_requests > 10:
+            failed_time = time()
         print 'Warning: Google Maps Geocoding API query limit exceeded!'
         return (False, 'OVER_QUERY_LIMIT')
+    failed_requests = 0
     if data['status'] == 'ZERO_RESULTS':
         return (False, 'ZERO_RESULTS')
     if len(data['results']) > 0:
@@ -74,7 +88,6 @@ def geocode(latlng):
 def package_address(uuid):
     if not config["api"]["googlemaps_server"]:
         return jsonify(**{'status':'disabled'})
-    # TODO: implement geocode caching
     cur = conn.cursor()
     cur.execute('SELECT lat, lng, address FROM packages WHERE id = %s', (uuid,))
     conn.commit()
@@ -453,7 +466,6 @@ def getexistingdata():
         if session['type'] > 0:
             cur.execute('SELECT id,name,delivered,lat,lng,1 FROM packages ORDER BY name')
         else:
-            # TODO: make this SQL statement better
             cur.execute('(SELECT id,name,delivered,lat,lng,1 FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND access.userid = %s)) UNION (SELECT id,name,delivered,lat,lng,0 FROM packages WHERE EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND access.userid < 0) AND NOT EXISTS (SELECT 1 FROM access WHERE packages.id = access.package AND access.userid = %s)) ORDER BY name', (session['id'],session['id']))
             conn.commit()
             return jsonify(**{'data':[x for x in cur]})
