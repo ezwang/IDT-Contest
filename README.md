@@ -6,8 +6,8 @@ You will need a Linux based operating system to install and run the server.
 We recommend [Ubuntu 14.04 LTS](http://www.ubuntu.com/download/desktop).
 If you do not want to replace your operating system or dual boot, you can use [VirtualBox](https://www.virtualbox.org/wiki/Downloads) to create a virtual machine.
 
-You need to have git installed in order to use git clone.
-Make sure you have the sudo command and Python 2 installed before following the steps below.
+You need to have git installed in order to use git clone. Alternatively, you can download and unzip the project from the GitHub website.
+Make sure you have the sudo command and Python 2 installed before following the steps for automatic installation.
 ### Automatic Install
 To install our solution, simply run the commands:
 ```bash
