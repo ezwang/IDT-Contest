@@ -129,3 +129,15 @@ nav
 {
     float:right;
 }
+.carousel-indicators
+{
+    bottom:-50px;
+}
+.carousel-indicators .active
+{
+    background-color:#333;
+}
+.carousel-indicators li
+{
+    border-color:#333;
+}
