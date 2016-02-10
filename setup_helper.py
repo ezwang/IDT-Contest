@@ -73,6 +73,9 @@ def prompt_api_keys(config):
     config['api']['googlemaps_client'] = client_key
     config['api']['googlemaps_server'] = server_key
 
+def wipe_database(cur):
+    cur.execute('DROP TABLE IF EXISTS users, packages, steps, access')
+
 def setup_database(config):
     print "[*] Connecting to database..."
     conn = psycopg2.connect("dbname='" + config["database"]["dbname"] + "' user='" + config["database"]["user"] + "' host='" + config["database"]["host"] + "' password='" + config["database"]["pass"] + "'")
@@ -91,7 +94,7 @@ def setup_database(config):
             return
 
     print "[*] Deleting previous tables..."
-    cur.execute('DROP TABLE IF EXISTS users, packages, steps, access')
+    wipe_database(cur)
     conn.commit()
 
     print "[*] Creating user table..."
@@ -113,22 +116,30 @@ def setup_database(config):
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         config = load_config()
-        generate_flask_secret(config)
         if sys.argv[1] == "prompt":
+            generate_flask_secret(config)
             prompt_database_credentials(config)
         elif sys.argv[1] == "created":
+            generate_flask_secret(config)
             config["database"]["host"] = "localhost"
             config["database"]["dbname"] = "pmdb"
             config["database"]["user"] = "pmuser"
             if len(sys.argv) > 2:
                 config["database"]["pass"] = sys.argv[2]
             else:
-                print('[*] Enter the password you entered earlier for the database user.')
+                print '[*] Enter the password you entered earlier for the database user.'
                 config["database"]["pass"] = getpass.getpass("[*] Password: ")
         elif sys.argv[1].lower() == "recover":
             conn = psycopg2.connect("dbname='" + config["database"]["dbname"] + "' user='" + config["database"]["user"] + "' host='" + config["database"]["host"] + "' password='" + config["database"]["pass"] + "'")
             cur = conn.cursor()
             setup_admin_account(cur)
+            conn.commit()
+            conn.close()
+            exit()
+        elif sys.argv[1].lower() == "remove":
+            conn = psycopg2.connect("dbname='" + config["database"]["dbname"] + "' user='" + config["database"]["user"] + "' host='" + config["database"]["host"] + "' password='" + config["database"]["pass"] + "'")
+            cur = conn.cursor()
+            wipe_database(cur)
             conn.commit()
             conn.close()
             exit()
