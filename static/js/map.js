@@ -619,15 +619,15 @@ $(document).ready(function() {
                 var is_visible = false;
                 var a = $(this);
                 $.each(term, function(k, v) {
-                    if (v.match(/^uuid:/)) {
-                        if (a.attr('data-id').indexOf(v.substring(5)) > -1) {
+                    if (v.match(/^\s*uuid:/)) {
+                        if (a.attr('data-id').indexOf(v.trim().substring(5)) > -1) {
                             is_visible = true;
                             return false;
                         }
                     }
-                    else if (v.match(/^name:/)) {
-                        if (a.text().toLowerCase().indexOf(v) > -1) {
-                            is_visible  = true;
+                    else if (v.match(/^\s*name:/)) {
+                        if (a.text().toLowerCase().indexOf(v.trim().substring(5)) > -1) {
+                            is_visible = true;
                             return false;
                         }
                     }
