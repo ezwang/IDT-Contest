@@ -25,6 +25,7 @@ nav
     left:0px;
     height:100%;
     width:215px;
+    border-right:1px solid #ccc;
 }
 #sidebar a:hover, #sidebar a:focus
 {
@@ -114,7 +115,7 @@ nav
 }
 #browser-info
 {
-    margin-bottom:15px;
+    margin:15px auto;
     text-align:center;
 }
 #credits-container div
