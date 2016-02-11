@@ -1,4 +1,4 @@
-eventlet==0.18.0
+eventlet>=0.18.0
 Flask==0.10.1
 Flask-SocketIO==2.0
 gevent==1.0.2
