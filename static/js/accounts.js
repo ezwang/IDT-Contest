@@ -44,7 +44,6 @@ $(document).ready(function() {
                 });
             }
             else {
-                // TODO: update data table more efficiently
                 table.ajax.reload(updateButtons);
                 if (data.warning) {
                     Messenger().post({
@@ -70,7 +69,6 @@ $(document).ready(function() {
                 });
             }
             else {
-                // TODO: update data table more efficiently
                 table.ajax.reload(updateButtons);
                 if (data.warning) {
                     Messenger().post({
@@ -89,7 +87,6 @@ $(document).ready(function() {
     });
     $("#btn-delete").click(function(e) {
         $.post("/accounts/delete", $("#user-form :input").serialize(), function(data) {
-            // TODO: update data table more efficiently
             if (data.error) {
                 Messenger().post({
                     message: data.error,
@@ -248,20 +245,21 @@ $(document).ready(function() {
         var chars = "abcdefghijklmnopqrstuvwxyz!@#$%^&*()-+ABCDEFGHIJKLMNOP1234567890";
         var pass = "";
         if (window.crypto) {
-            var secArray = new Uint32Array(length);
-            window.crypto.getRandomValues(secArray);
-            for (var x = 0; x < length; x++) {
-                pass += chars[secArray[x] % chars.length];
+            try {
+                var secArray = new Uint32Array(length);
+                window.crypto.getRandomValues(secArray);
+                for (var x = 0; x < length; x++) {
+                    pass += chars[secArray[x] % chars.length];
+                }
+                return pass;
             }
-            return pass;
+            catch (err) { }
         }
-        else {
-            for (var x = 0; x < length; x++) {
-                var i = Math.floor(Math.random() * chars.length);
-                pass += chars.charAt(i);
-            }
-            return pass;
+        for (var x = 0; x < length; x++) {
+            var i = Math.floor(Math.random() * chars.length);
+            pass += chars.charAt(i);
         }
+        return pass;
     }
     $("#password-generate").click(function(e) {
         $("#password").prop("disabled", false).attr("type", "text").val(generateRandomPassword(16)).focus();
