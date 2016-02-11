@@ -31,6 +31,9 @@
             <hr />
             <ul class="fa-ul">
                 <li><i class="fa-li fa fa-map-o"></i> <a href="/settings">Map Settings</a></li>
+                {% if allow_register %}
+                <li><i class="fa-li fa fa-user-plus"></i> <a href="/register">Register</a></li>
+                {% endif %}
                 <li><i class="fa-li fa fa-sign-in"></i> <a href="/">Login</a></li>
             </ul>
         </span>
