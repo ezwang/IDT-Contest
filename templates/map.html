@@ -2,12 +2,14 @@
 {% block title %}Package Manager{% endblock %}
 {% block head %}
     {{ super() }}
+    <link rel="stylesheet" type="text/css" href="/css/messenger.css"/>
     <link href='/css/map.css' type='text/css' rel='stylesheet' />
     <script src="/js/socket.io.js"></script>
     <script src='/js/jquery.effects.core.js'></script>
     <script src='/js/jquery.effects.slide.js'></script>
     <script src='/js/jquery.cookie.js'></script>
     <script src="/js/jquery.timeago.js"></script>
+    <script src='/js/messenger.min.js'></script>
     <script src="/js/map.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?{{ "key=" + mapskey + "&" if mapskey else "" }}callback=initMap" async defer></script>
 {% endblock %}

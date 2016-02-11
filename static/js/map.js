@@ -97,15 +97,7 @@ function updateDistanceCalculations(uuid) {
         }, 100);
         return;
     }
-    // TODO: remote total_dist_traveled if not using it
-    var total_dist_traveled = 0;
     var path = packages[trackingUUID].polyline.getPath();
-    for (var i=1; i<path.getLength(); i++) {
-        var lat1 = path.getAt(i-1).lat(), lng1 = path.getAt(i-1).lng();
-        var lat2 = path.getAt(i).lat(), lng2 = path.getAt(i).lng();
-        // TODO: account for elevation in kilometers
-        total_dist_traveled += distance(lat1, lng1, lat2, lng2);
-    }
     // TODO: better eta
     var currentSpeed = speed(uuid);
     var lastPoint = path.getAt(path.getLength()-1);
@@ -291,7 +283,6 @@ function addPoint(uuid, lat, lon, ele, time) {
                 map.panTo(pos);
                 updateInfoBox();
             }
-            // TODO: move this to the initial load instead of on every point
             if (Math.abs(time - new Date().getTime()/1000) > 3600*24*30) {
                 addPackageDeleteButton(uuid);
             }
@@ -401,8 +392,10 @@ function package_delete(uuid, client_only) {
     if (!client_only) {
         $.getJSON("/map/delete_package/" + uuid, function(data) {
             if (data.error) {
-                // TODO: better error message
-                alert(data.error);
+                Messenger().post({
+                    "message": data.error,
+                    "type": "danger"
+                });
             }
         });
     }
@@ -424,8 +417,10 @@ function package_rename(uuid, name, client_only) {
     if (!client_only) {
         $.post("/map/rename_package/" + uuid, "name=" + encodeURIComponent(name), function(data) {
             if (data.error) {
-                // TODO: better error message
-                alert(data.error);
+                Messenger().post({
+                    "message": data.error,
+                    "type": "danger"
+                });
             }
         }, 'json');
     }
