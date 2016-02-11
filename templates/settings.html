@@ -9,12 +9,14 @@
     <script src="/js/settings.js"></script>
 {% endblock %}
 {% block content %}
+{% if logged_in %}
 <div class="form-box">
     <h3>Account Information</h3>
     <hr />
     <b>Username:</b> {{ username }}<br />
     <b>Account Type:</b> {{ type }}<br />
 </div>
+{% endif %}
 <div class="form-box">
     <h3>Map Settings</h3>
     <hr />
@@ -41,6 +43,7 @@
         <p>You are not prompted before deleting package records. Click <a id="s_deleteconfirm" href="#">here</a> to turn delete confirmations back on.</p>
     </div>
 </div>
+{% if logged_in %}
 <form action="/settings/change_password" method="POST">
     <h3>Change Password</h3>
     <hr />
@@ -95,5 +98,6 @@
     </fieldset>
     <input type="submit" value="Delete Account" class="btn btn-danger" />
 </form>
+{% endif %}
 {% endif %}
 {% endblock %}

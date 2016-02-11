@@ -26,7 +26,14 @@
     </div>
     <div id="guest" class="box">
         <span class="title">You are not logged in! <a href="/about" class="help-link fa fa-question-circle"></a></span>
-        <span class="message">You will only be able to see packages marked as public.<br />Click <a href="/">here</a> to login.</span>
+        <span class="message">
+            <div>You will only be able to see packages marked as public.</div>
+            <hr />
+            <ul class="fa-ul">
+                <li><i class="fa-li fa fa-map-o"></i> <a href="/settings">Map Settings</a></li>
+                <li><i class="fa-li fa fa-sign-in"></i> <a href="/">Login</a></li>
+            </ul>
+        </span>
     </div>
     <div id="member" class="box">
         <span class="title" style="font-weight:normal">Hello, <b id="username">{{ username }}</b>! <a href="/about" class="help-link fa fa-question-circle"></a></span>
