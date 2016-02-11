@@ -245,14 +245,23 @@ $(document).ready(function() {
         $("#password-opt").hide();
     });
     function generateRandomPassword(length) {
-        // TODO: this could be made more secure
         var chars = "abcdefghijklmnopqrstuvwxyz!@#$%^&*()-+ABCDEFGHIJKLMNOP1234567890";
         var pass = "";
-        for (var x = 0; x < length; x++) {
-            var i = Math.floor(Math.random() * chars.length);
-            pass += chars.charAt(i);
+        if (window.crypto) {
+            var secArray = new Uint32Array(length);
+            window.crypto.getRandomValues(secArray);
+            for (var x = 0; x < length; x++) {
+                pass += chars[secArray[x] % chars.length];
+            }
+            return pass;
         }
-        return pass;
+        else {
+            for (var x = 0; x < length; x++) {
+                var i = Math.floor(Math.random() * chars.length);
+                pass += chars.charAt(i);
+            }
+            return pass;
+        }
     }
     $("#password-generate").click(function(e) {
         $("#password").prop("disabled", false).attr("type", "text").val(generateRandomPassword(16)).focus();

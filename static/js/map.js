@@ -89,7 +89,6 @@ function updateDistanceCalculations(uuid) {
         return;
     }
     var path = packages[trackingUUID].polyline.getPath();
-    // TODO: better eta
     var currentSpeed = speed(uuid);
     var lastPoint = path.getAt(path.getLength()-1);
     var dist_left = distance(packages[trackingUUID].destination.lat(), packages[trackingUUID].destination.lng(), lastPoint.lat(), lastPoint.lng());

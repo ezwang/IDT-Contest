@@ -9,7 +9,6 @@ $(document).ready(function() {
         $("input[type=radio][name=s_units][value='" + s_units + "']").attr("checked", true);
     }
     update();
-    // TODO: save these on the server too
     $("#s_type .btn").click(function(e) {
         s_type = $(this).text().toLowerCase();
         $.cookie("s_type", s_type);
