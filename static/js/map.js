@@ -1,28 +1,19 @@
 jQuery.timeago.settings.allowFuture = true;
 
 var packages = {};
-// TODO: better check for mobile devices
 var mobile = window.innerWidth <= 480;
 var is_admin = false;
 var can_edit = false;
 var default_zoom = mobile ? 1 : 2;
 
-var s_zoom_amount = parseInt($.cookie('s_zoom')) || 12;
-var s_map_type = $.cookie('s_type') || "roadmap";
-var s_display_units = $.cookie('s_units') || "km";
+var s_zoom_amount = parseInt($.cookie("s_zoom")) || 12;
+var s_map_type = $.cookie("s_type") || "roadmap";
+var s_display_units = $.cookie("s_units") || "km";
 
 var km_to_mi = 0.62137119;
 
 function escapeHtml(text) {
-    var map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
-
-    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    return $("<div />").text(text).html();
 }
 
 function canAccess(uuid) {
@@ -37,7 +28,7 @@ function canAccess(uuid) {
 
 function addPackage(uuid, name, delivered, dLat, dLon, global) {
     if (uuid in packages) {
-        console.warn('The package with UUID ' + uuid + ' was initalized multiple times!');
+        console.warn("The package with UUID " + uuid + " was initalized multiple times!");
     }
     delivered = delivered || false;
     packages[uuid] = {name:name, polyline:new google.maps.Polyline({
@@ -182,7 +173,7 @@ function requestGeocoding(curUUID) {
     });
 }
 
-function pad (str, max) {
+function pad(str, max) {
     str = str.toString();
     return str.length < max ? pad("0" + str, max) : str;
 }
@@ -212,7 +203,6 @@ function updateTimeTaken(uuid) {
     for (var i=1; i<path.getLength(); i++) {
         var lat1 = path.getAt(i-1).lat(), lng1 = path.getAt(i-1).lng();
         var lat2 = path.getAt(i).lat(), lng2 = path.getAt(i).lng();
-        // TODO: account for elevation in kilometers
         total_dist_traveled += distance(lat1, lng1, lat2, lng2);
     }
     if (s_display_units == 'km') {
@@ -292,7 +282,7 @@ function addPoint(uuid, lat, lon, ele, time) {
         }
     }
     else {
-        console.warn('Package with UUID ' + uuid + ' was not initalized!');
+        console.warn("Package with UUID " + uuid + " was not initalized!");
     }
 }
 
@@ -311,8 +301,8 @@ function addPackageDeleteButton(uuid, remove) {
 function setDelivered(uuid) {
     if (uuid in packages) {
         packages[uuid].delivered = true;
-        packages[uuid].marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
-        $("#list li[data-id='" + uuid + "']>i").addClass('fa-check').removeClass('fa-archive');
+        packages[uuid].marker.setIcon("http://maps.google.com/mapfiles/ms/icons/blue-dot.png");
+        $("#list li[data-id='" + uuid + "']>i").addClass("fa-check").removeClass("fa-archive");
         addPackageDeleteButton(uuid);
         packages[uuid].marker.setPosition(packages[uuid].destination);
         if (uuid == trackingUUID) {
@@ -320,12 +310,12 @@ function setDelivered(uuid) {
         }
     }
     else {
-        console.warn('Package with UUID ' + uuid + 'was not initalized!');
+        console.warn("Package with UUID " + uuid + " was not initalized!");
     }
 }
 
 function loadPoints(uuid) {
-    $.getJSON('/getpackage/' + uuid, function(data) {
+    $.getJSON("/getpackage/" + uuid, function(data) {
         $.each(data.data, function(k, v) {
             addPoint(uuid, v[0], v[1], v[2], v[3]);
         });
@@ -335,7 +325,7 @@ function loadPoints(uuid) {
 var map;
 var socket;
 function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
+    map = new google.maps.Map(document.getElementById("map"), {
         center: {lat: 0, lng: 0},
         zoom: default_zoom,
         streetViewControl: false,
@@ -343,13 +333,12 @@ function initMap() {
         zoomControl: !mobile,
         mapTypeId: s_map_type
     });
-    map.addListener('drag', function() {
+    map.addListener("drag", function() {
         trackingUUID = false;
     });
-    $.getJSON('/getpackages', function(data) {
+    $.getJSON("/getpackages", function(data) {
         $.each(data.data, function(k, v) {
             var uuid = v[0];
-            // TODO: return package permissions
             addPackage(uuid, v[1], v[2], v[3], v[4], v[5]);
             if (v[2]) {
                 packages[uuid].unloaded = true;
@@ -359,23 +348,23 @@ function initMap() {
             }
         });
     });
-    socket = io.connect('//' + document.domain + ':' + location.port);
-    socket.on('newpackage', function(data) {
+    socket = io.connect("//" + document.domain + ":" + location.port);
+    socket.on("newpackage", function(data) {
         addPackage(data.uuid, data.name, false, data.dest[0], data.dest[1], data.global);
     });
-    socket.on('packagedelivered', function(data) {
+    socket.on("packagedelivered", function(data) {
         setDelivered(data.uuid);
     });
-    socket.on('deletepackage', function(data) {
+    socket.on("deletepackage", function(data) {
         package_delete(data.uuid, true);
     });
-    socket.on('renamepackage', function(data) {
+    socket.on("renamepackage", function(data) {
         package_rename(data.uuid, data.name, true);
     });
-    socket.on('refresh', function(data) {
+    socket.on("refresh", function(data) {
         location.reload();
     });
-    socket.on('plot', function(data) {
+    socket.on("plot", function(data) {
         addPoint(data.uuid, data.lat, data.lon, data.ele, data.time);
     });
 }
@@ -592,10 +581,10 @@ $(document).ready(function() {
         escapeOut();
     });
     scale_sidebar();
-    $("#search").on('keyup blur paste', function() {
+    $("#search").on("keyup blur paste", function() {
         if (!$(this).val()) {
             $("#list li").each(function(k, v) {
-                package_visible($(this).attr('data-id'), true);
+                package_visible($(this).attr("data-id"), true);
             });
         }
         else {
@@ -627,20 +616,20 @@ $(document).ready(function() {
                         }
                     }
                     else {
-                        if (a.attr('data-id').indexOf(v) > -1 || a.text().toLowerCase().indexOf(v) > -1) {
+                        if (a.attr("data-id").indexOf(v) > -1 || a.text().toLowerCase().indexOf(v) > -1) {
                             is_visible = true;
                             return false;
                         }
                     }
                 });
-                var delivered = packages[$(this).attr('data-id')].delivered;
+                var delivered = packages[$(this).attr("data-id")].delivered;
                 if (sort_delivered && delivered) {
                     is_visible = true;
                 }
                 if (sort_transit && !delivered) {
                     is_visible = true;
                 }
-                package_visible($(this).attr('data-id'), is_visible);
+                package_visible($(this).attr("data-id"), is_visible);
             });
         }
         updatePackageCount();
