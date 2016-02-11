@@ -126,3 +126,11 @@ table.dataTable tr.selected td.select-checkbox:after {
     text-align: center;
     text-shadow: 1px 1px #B0BED9, -1px -1px #B0BED9, 1px -1px #B0BED9, -1px 1px #B0BED9
 }
+#password-opt
+{
+    position:absolute;
+    z-index:1;
+    top:3px;
+    left:5px;
+    display:none;
+}
