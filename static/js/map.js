@@ -580,8 +580,8 @@ $(document).ready(function() {
         escapeOut();
     });
     scale_sidebar();
-    $("#search").on("keyup blur paste", function() {
-        if (!$(this).val()) {
+    function do_search() {
+        if (!$("#search").val()) {
             $("#list li").each(function(k, v) {
                 package_visible($(this).attr("data-id"), true);
             });
@@ -621,16 +621,21 @@ $(document).ready(function() {
                         }
                     }
                 });
-                var delivered = packages[$(this).attr("data-id")].delivered;
-                if (sort_delivered && delivered) {
-                    is_visible = true;
-                }
-                if (sort_transit && !delivered) {
-                    is_visible = true;
+                if (!is_visible) {
+                    var delivered = packages[$(this).attr("data-id")].delivered;
+                    if (sort_delivered && delivered) {
+                        is_visible = true;
+                    }
+                    if (sort_transit && !delivered) {
+                        is_visible = true;
+                    }
                 }
                 package_visible($(this).attr("data-id"), is_visible);
             });
         }
         updatePackageCount();
+    }
+    $("#search").on("keyup blur paste", function() {
+        do_search();
     });
 });
