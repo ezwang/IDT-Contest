@@ -124,11 +124,9 @@ python server.py
 **Thats it!** Go to [http://localhost:8080/about](http://localhost:8080/about) from the server machine and you should see the user guide!
 
 #### Accessing from other machines
-You can run the following command to get your IP address:
-```sh
-ifconfig
-```
-On a Windows operating system, open a command prompt window and run `ipconfig`.
+On Linux, you can run `ifconfig` to get your IP address.
+
+On Windows, open a command prompt window and run `ipconfig`.
 
 Other machines on the same network can access the application by navigating to `http://(your ip address):8080/`.
 
