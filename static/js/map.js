@@ -210,7 +210,7 @@ function updateTimeTaken(uuid) {
     if (path.getLength() < 2) {
         setTimeout(function() {
             updateTimeTaken(uuid);
-        }, 1000);
+        }, 100);
         return;
     }
     var firstPoint = path.getAt(0).time;
@@ -229,7 +229,7 @@ function updateTimeTaken(uuid) {
         var lat2 = path.getAt(i).lat(), lng2 = path.getAt(i).lng();
         total_dist_traveled += distance(lat1, lng1, lat2, lng2);
     }
-    if (s_display_units == 'km') {
+    if (s_display_units == "km") {
         $("#packageinfo #ptraveled").text(round(total_dist_traveled, 3).toLocaleString() + " km");
     }
     else {
