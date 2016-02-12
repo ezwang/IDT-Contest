@@ -102,14 +102,19 @@ function distance(lat1, lng1, lat2, lng2) {
     return 2 * 6371 * Math.asin(Math.sqrt(Math.pow(Math.sin((lat2-lat1)/2), 2) + Math.cos(lat1)*Math.cos(lat2)*Math.pow(Math.sin((lng2-lng1)/2), 2)));
 }
 
-function updateDistanceCalculations(uuid) {
+function updateDistanceCalculations(uuid, loop) {
+    loop = loop || 0;
     if (uuid != trackingUUID) {
         return;
     }
     $("#packageinfo #peta").html("<i class='fa fa-circle-o-notch fa-spin'></i>");
+    if (loop > 100) {
+        $("#packageinfo #peta").text("Unknown");
+        return;
+    }
     if (packages[trackingUUID].polyline.getPath().getLength() == 0) {
         setTimeout(function() {
-            updateDistanceCalculations(uuid);
+            updateDistanceCalculations(uuid, loop + 1);
         }, 100);
         return;
     }
@@ -202,14 +207,19 @@ function pad(str, max) {
     return str.length < max ? pad("0" + str, max) : str;
 }
 
-function updateTimeTaken(uuid) {
+function updateTimeTaken(uuid, loop) {
+    loop = loop || 0;
     if (uuid != trackingUUID) {
         return;
     }
     var path = packages[trackingUUID].polyline.getPath();
+    if (loop > 100) {
+        $("#packageinfo #ptaken, #packageinfo #ptraveled").text("Unknown");
+        return;
+    }
     if (path.getLength() < 2) {
         setTimeout(function() {
-            updateTimeTaken(uuid);
+            updateTimeTaken(uuid, loop + 1);
         }, 100);
         return;
     }
