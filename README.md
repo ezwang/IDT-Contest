@@ -5,7 +5,7 @@ Contest submission for TJHSST Team 1
 We recommend a Linux based operating system to install and run the server.
 We recommend [Ubuntu 14.04 LTS](http://www.ubuntu.com/download/desktop).
 If you do not want to replace your operating system or dual boot, you can use [VirtualBox](https://www.virtualbox.org/wiki/Downloads) to create a virtual machine.
-It is possible to install the server on a Windows operating system, but the installation process may be more difficult.
+You can also install the server on Windows and a guide is included below.
 
 You need to have git installed in order to use git clone. Alternatively, you can download and unzip the project from the GitHub website.
 Make sure you have the sudo command and Python 2 installed before following the steps for automatic installation.
@@ -129,11 +129,12 @@ You can run the following command to get your IP address:
 ifconfig
 ```
 On a Windows operating system, open a command prompt window and run `ipconfig`.
+
 Other machines on the same network can access the application by navigating to `http://(your ip address):8080/`.
 
 If you have set up the server inside of a virtual machine, you will have to configure port forwarding.
 
-#### Additional Steps
+#### Optional Steps
 - Enable or disable features in `config.json`
 - Move server files to a more permanant location
 - Make the server start up on boot
