@@ -51,8 +51,15 @@ function addPackage(uuid, name, delivered, dLat, dLon, global) {
         setDelivered(uuid);
     }
     packages[uuid].marker.addListener('click', function() {
+        scrollToPackage(uuid);
         onMarkerClick(uuid);
     });
+}
+
+function scrollToPackage(uuid) {
+    var parentElement = $("#packagelist .message");
+    var childElement = $("#list li[data-id='" + uuid + "']");
+    parentElement.scrollTop(parentElement.scrollTop() + (childElement.position().top - parentElement.position().top) - parentElement.height()/2 + childElement.height()/2);
 }
 
 function updatePackageCount() {
