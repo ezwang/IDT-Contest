@@ -37,7 +37,15 @@ function addPackage(uuid, name, delivered, dLat, dLon, global) {
     }), marker:new google.maps.Marker({
         map:map,
         title:name
-    }),delivered:delivered, destination:new google.maps.LatLng(dLat, dLon), unloaded:false, speedData:{coords1:null, coords2:null, time1:null, time2:null}, global:global, visible:true};
+    }),
+        delivered:delivered,
+        destination:new google.maps.LatLng(dLat, dLon),
+        unloaded:false,
+        speedData:{coords1:null, coords2:null, time1:null, time2:null},
+        global:global,
+        visible:true,
+        deleteVisible:false
+    };
     $("#list").append("<li data-id='" + uuid + "'><i class='fa-li fa fa-archive'></i> <span class='name'>" + escapeHtml(name) + "</span>" + (canAccess(uuid) ? "<span class='opt'><i class='p-rename fa fa-pencil'></i></span>" : "") + "</li>");
     if (delivered) {
         setDelivered(uuid);
@@ -271,10 +279,10 @@ function addPoint(uuid, lat, lon, ele, time) {
                 updateInfoBox();
             }
             if (Math.abs(time - new Date().getTime()/1000) > 3600*24*30) {
-                addPackageDeleteButton(uuid);
+                addPackageDeleteButton(uuid, true);
             }
             else {
-                addPackageDeleteButton(uuid, true);
+                addPackageDeleteButton(uuid, false);
             }
         }
     }
@@ -283,15 +291,18 @@ function addPoint(uuid, lat, lon, ele, time) {
     }
 }
 
-function addPackageDeleteButton(uuid, remove) {
-    remove = remove || false;
-    if (remove) {
-        $("#list li[data-id='" + uuid + "'] .opt .p-delete").remove();
+function addPackageDeleteButton(uuid, enable) {
+    if (packages[uuid].deleteVisible == enable) {
+        return;
     }
-    else if (canAccess(uuid)) {
+    packages[uuid].deleteVisible = enable;
+    if (canAccess(uuid) && enable) {
         if ($("#list li[data-id='" + uuid + "']").has(".p-delete").length == 0) {
             $("#list li[data-id='" + uuid + "'] .opt").append("<i class='p-delete fa fa-times'></i>");
         }
+    }
+    else {
+        $("#list li[data-id='" + uuid + "'] .opt .p-delete").remove();
     }
 }
 
@@ -300,7 +311,7 @@ function setDelivered(uuid) {
         packages[uuid].delivered = true;
         packages[uuid].marker.setIcon("http://maps.google.com/mapfiles/ms/icons/blue-dot.png");
         $("#list li[data-id='" + uuid + "']>i").addClass("fa-check").removeClass("fa-archive");
-        addPackageDeleteButton(uuid);
+        addPackageDeleteButton(uuid, true);
         packages[uuid].marker.setPosition(packages[uuid].destination);
         if (uuid == trackingUUID) {
             updateInfoBox();
