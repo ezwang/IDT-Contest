@@ -537,6 +537,22 @@ $(document).ready(function() {
             e.preventDefault();
         }
     });
+    $("#download").click(function(e) {
+        e.preventDefault();
+        var contents = "";
+        var count = 0;
+        var total = 0;
+        $.each(packages, function(k, v) {
+            if (v.visible) {
+                contents += k + "\n";
+                count += 1;
+            }
+            total += 1;
+        });
+        $("#download-contents").text(contents);
+        $("#download-details").html("<b>" + count + "</b> out of <b>" + total + "</b> package UUIDs are shown below.");
+        $("#downloadModal").modal("show");
+    });
     $("#list").on("click", "li", function(e) {
         e.preventDefault();
         onMarkerClick($(this).attr("data-id"));

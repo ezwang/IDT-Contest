@@ -183,14 +183,14 @@ body
     width:100%;
     padding:0;
 }
-.help-link,.help-link:focus
+.help-link,.help-link:focus, #download
 {
     float:right;
     padding:5px;
     color:#888;
     text-decoration:none;
 }
-.help-link:hover
+.help-link:hover, #download:hover
 {
     text-decoration:none;
     color:#555;
@@ -203,4 +203,11 @@ body
 {
     margin:7px;
     background-color:#ccc;
+}
+#download-contents
+{
+    font-family:monospace;
+    background-color:white;
+    min-height:200px;
+    margin-top:10px;
 }
