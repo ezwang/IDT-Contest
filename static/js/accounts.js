@@ -152,24 +152,33 @@ $(document).ready(function() {
     $("#bulk-uuid-add").click(function(e) {
         e.preventDefault();
         var uuids = $("#bulk-uuid").val().split("\n");
+        uuids = $.grep(uuids, function(n) { return n.trim().length > 0 });
         var errors = 0;
         var count = uuids.length;
-        $("#bulk-uuid-add").prop("disabled", true);
-        $.each(uuids, function(k, v) {
-            $.post("/accounts/permissions/add", ($("#bulk-perm-type").val() == "user" ? $("#id, #bulk-perm-type").serialize() : "type=global&id=-1") + "&uuid=" + encodeURIComponent(v), function(data) {
-                if (data.error) {
-                    errors += 1;
-                }
-                count--;
-                if (count <= 0) {
-                    $("#bulk-uuid-add").prop("disabled", false);
-                    Messenger().post({
-                        message: "Bulk insertion complete! " + (uuids.length - errors) + "/" + uuids.length + " permission(s) added.",
-                        type: errors == 0 ? "success" : (errors == uuids.length ? "danger" : "warning")
-                    });
-                }
+        if (uuids.length > 0) {
+            $("#bulk-uuid-add").prop("disabled", true);
+            $.each(uuids, function(k, v) {
+                $.post("/accounts/permissions/add", ($("#bulk-perm-type").val() == "user" ? $("#id, #bulk-perm-type").serialize() : "type=global&id=-1") + "&uuid=" + encodeURIComponent(v), function(data) {
+                    if (data.error) {
+                        errors += 1;
+                    }
+                    count--;
+                    if (count <= 0) {
+                        $("#bulk-uuid-add").prop("disabled", false);
+                        Messenger().post({
+                            message: "Bulk insertion complete! " + (uuids.length - errors) + "/" + uuids.length + " permission(s) added.",
+                            type: errors == 0 ? "success" : (errors == uuids.length ? "danger" : "warning")
+                        });
+                    }
+                });
             });
-        });
+        }
+        else {
+            Messenger().post({
+                message: "No UUIDs entered!",
+                type: "warning"
+            });
+        }
     });
     $("#uuid-add").click(function(e) {
         $.post("/accounts/permissions/add", ($("#perm-type").val() == "user" ? $("#id, #uuid, #perm-type").serialize() : "type=global&id=-1&uuid=" + encodeURIComponent($("#uuid").val())), function(data) {
