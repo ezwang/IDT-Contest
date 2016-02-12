@@ -38,7 +38,7 @@ function addPackage(uuid, name, delivered, dLat, dLon, global) {
     }), marker:new google.maps.Marker({
         map:map,
         title:name
-    }),delivered:delivered, destination:new google.maps.LatLng(dLat, dLon), unloaded:false, speedData:{coords1:null, coords2:null, time1:null, time2:null}, global:global};
+    }),delivered:delivered, destination:new google.maps.LatLng(dLat, dLon), unloaded:false, speedData:{coords1:null, coords2:null, time1:null, time2:null}, global:global, visible:true};
     $("#list").append("<li data-id='" + uuid + "'><i class='fa-li fa fa-archive'></i> <span class='name'>" + escapeHtml(name) + "</span>" + (canAccess(uuid) ? "<span class='opt'><i class='p-rename fa fa-pencil'></i></span>" : "") + "</li>");
     if (delivered) {
         setDelivered(uuid);
@@ -421,9 +421,10 @@ function package_rename(uuid, name, client_only) {
 }
 
 function package_visible(uuid, show) {
-    if (!(uuid in packages) || $("#list li[data-id='" + uuid + "']").is(":visible") == show) {
+    if (!(uuid in packages) || packages[uuid].visible == show) {
         return;
     }
+    packages[uuid].visible = show;
     packages[uuid].marker.setVisible(show);
     packages[uuid].polyline.setVisible(show);
     if (show) {
@@ -590,6 +591,9 @@ $(document).ready(function() {
             var term = $("#search").val().toLowerCase().split(",");
             var sort_delivered = false;
             var sort_transit = false;
+            var name_terms = [];
+            var uuid_terms = [];
+            var misc_terms = [];
             $.each(term, function(k, v) {
                 if (v.match(/^\s*delivered\s*$/)) {
                     sort_delivered = true;
@@ -597,32 +601,45 @@ $(document).ready(function() {
                 if (v.match(/transit\s*$/)) {
                     sort_transit = true;
                 }
+                if (v.match(/^\s*uuid:/)) {
+                    uuid_terms.push(v.trim().substring(5));
+                }
+                else if (v.match(/^\s*name:/)) {
+                    name_terms.push(v.trim().substring(5));
+                }
+                else {
+                    misc_terms.push(v.trim());
+                }
             });
             $("#list li").each(function(k, v) {
                 var is_visible = false;
                 var a = $(this);
-                $.each(term, function(k, v) {
-                    if (v.match(/^\s*uuid:/)) {
-                        if (a.attr('data-id').indexOf(v.trim().substring(5)) > -1) {
-                            is_visible = true;
-                            return false;
-                        }
-                    }
-                    else if (v.match(/^\s*name:/)) {
-                        if (a.text().toLowerCase().indexOf(v.trim().substring(5)) > -1) {
-                            is_visible = true;
-                            return false;
-                        }
-                    }
-                    else {
-                        if (a.attr("data-id").indexOf(v) > -1 || a.text().toLowerCase().indexOf(v) > -1) {
-                            is_visible = true;
-                            return false;
-                        }
+                var a_id = a.attr("data-id");
+                var a_name = a.text().toLowerCase();
+                $.each(misc_terms, function(k, v) {
+                    if (a_name.indexOf(v) > -1 || a_id.indexOf(v) > -1) {
+                        is_visible = true;
+                        return false;
                     }
                 });
                 if (!is_visible) {
-                    var delivered = packages[$(this).attr("data-id")].delivered;
+                    $.each(name_terms, function(k, v) {
+                        if (a_name.indexOf(v) > -1) {
+                            is_visible = true;
+                            return false;
+                        }
+                    });
+                }
+                if (!is_visible) {
+                    $.each(uuid_terms, function(k, v) {
+                        if (a_id.indexOf(v) > -1) {
+                            is_visible = true;
+                            return false;
+                        }
+                    });
+                }
+                if (!is_visible) {
+                    var delivered = packages[a_id].delivered;
                     if (sort_delivered && delivered) {
                         is_visible = true;
                     }
@@ -630,7 +647,7 @@ $(document).ready(function() {
                         is_visible = true;
                     }
                 }
-                package_visible($(this).attr("data-id"), is_visible);
+                package_visible(a_id, is_visible);
             });
         }
         updatePackageCount();
