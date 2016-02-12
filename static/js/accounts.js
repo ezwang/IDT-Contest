@@ -154,6 +154,7 @@ $(document).ready(function() {
         var uuids = $("#bulk-uuid").val().split("\n");
         var errors = 0;
         var count = uuids.length;
+        $("#bulk-uuid-add").prop("disabled", true);
         $.each(uuids, function(k, v) {
             $.post("/accounts/permissions/add", ($("#bulk-perm-type").val() == "user" ? $("#id, #bulk-perm-type").serialize() : "type=global&id=-1") + "&uuid=" + encodeURIComponent(v), function(data) {
                 if (data.error) {
@@ -161,8 +162,9 @@ $(document).ready(function() {
                 }
                 count--;
                 if (count <= 0) {
+                    $("#bulk-uuid-add").prop("disabled", false);
                     Messenger().post({
-                        message: "Bulk insertion complete! " + errors + "/" + uuids.length + " failure(s) during operation.",
+                        message: "Bulk insertion complete! " + (uuids.length - errors) + "/" + uuids.length + " permission(s) added.",
                         type: errors == 0 ? "success" : (errors == uuids.length ? "danger" : "warning")
                     });
                 }
