@@ -30,7 +30,6 @@ function addPackage(uuid, name, delivered, dLat, dLon, global) {
     if (uuid in packages) {
         console.warn("The package with UUID " + uuid + " was initalized multiple times!");
     }
-    delivered = delivered || false;
     packages[uuid] = {name:name, polyline:new google.maps.Polyline({
         strokeColor:'#000000',
         strokeWeight:3,
@@ -46,7 +45,6 @@ function addPackage(uuid, name, delivered, dLat, dLon, global) {
     packages[uuid].marker.addListener('click', function() {
         onMarkerClick(uuid);
     });
-    updatePackageCount();
 }
 
 function updatePackageCount() {
@@ -346,10 +344,12 @@ function initMap() {
                 loadPoints(uuid);
             }
         });
+        updatePackageCount();
     });
     socket = io.connect("//" + document.domain + ":" + location.port);
     socket.on("newpackage", function(data) {
         addPackage(data.uuid, data.name, false, data.dest[0], data.dest[1], data.global);
+        updatePackageCount();
     });
     socket.on("packagedelivered", function(data) {
         setDelivered(data.uuid);
