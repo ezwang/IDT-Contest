@@ -26,6 +26,9 @@ function canAccess(uuid) {
     return packages[uuid].global;
 }
 
+var tempList = "";
+var tempDeliveredList = [];
+
 function addPackage(uuid, name, delivered, dLat, dLon, global) {
     if (uuid in packages) {
         console.warn("The package with UUID " + uuid + " was initalized multiple times!");
@@ -46,14 +49,23 @@ function addPackage(uuid, name, delivered, dLat, dLon, global) {
         visible:true,
         deleteVisible:false
     };
-    $("#list").append("<li data-id='" + uuid + "'><i class='fa-li fa fa-archive'></i> <span class='name'>" + escapeHtml(name) + "</span>" + (canAccess(uuid) ? "<span class='opt'><i class='p-rename fa fa-pencil'></i></span>" : "") + "</li>");
+    tempList += "<li data-id='" + uuid + "'><i class='fa-li fa fa-archive'></i> <span class='name'>" + escapeHtml(name) + "</span>" + (canAccess(uuid) ? "<span class='opt'><i class='p-rename fa fa-pencil'></i></span>" : "") + "</li>";
     if (delivered) {
-        setDelivered(uuid);
+        tempDeliveredList.push(uuid);
     }
     packages[uuid].marker.addListener('click', function() {
         scrollToPackage(uuid);
         onMarkerClick(uuid);
     });
+}
+
+function applyListChanges() {
+    $("#list").append(tempList);
+    $.each(tempDeliveredList, function(k, v) {
+        setDelivered(v);
+    });
+    tempList = "";
+    tempDeliveredList = [];
 }
 
 function scrollToPackage(uuid) {
@@ -362,11 +374,13 @@ function initMap() {
                 loadPoints(uuid);
             }
         });
+        applyListChanges();
         updatePackageCount();
     });
     socket = io.connect("//" + document.domain + ":" + location.port);
     socket.on("newpackage", function(data) {
         addPackage(data.uuid, data.name, false, data.dest[0], data.dest[1], data.global);
+        applyListChanges();
         updatePackageCount();
     });
     socket.on("packagedelivered", function(data) {
