@@ -207,6 +207,7 @@ body
 #download-contents
 {
     font-family:monospace;
+    word-break:break-all;
     background-color:white;
     min-height:200px;
     margin-top:10px;

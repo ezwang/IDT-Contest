@@ -537,21 +537,32 @@ $(document).ready(function() {
             e.preventDefault();
         }
     });
-    $("#download").click(function(e) {
-        e.preventDefault();
+    function exportData(commas) {
         var contents = "";
         var count = 0;
         var total = 0;
         $.each(packages, function(k, v) {
             if (v.visible) {
-                contents += k + "\n";
+                contents += k + (commas ? "\n" : ",");
                 count += 1;
             }
             total += 1;
         });
-        $("#download-contents").text(contents);
+        if (total > 0) {
+            $("#download-contents").text(commas ? contents : contents.substring(0, contents.length-1));
+        }
+        else {
+            $("#download-contents").text("");
+        }
         $("#download-details").html("<b>" + count + "</b> out of <b>" + total + "</b> package UUIDs are shown below.");
+    }
+    $("#download").click(function(e) {
+        e.preventDefault();
+        exportData(!$("#download-commas").is(":checked"));
         $("#downloadModal").modal("show");
+    });
+    $("#download-commas").change(function() {
+        exportData(!$(this).is(":checked"));
     });
     $("#list").on("click", "li", function(e) {
         e.preventDefault();
