@@ -7,10 +7,10 @@
         "googlemaps_server": ""
     }, 
     "database": {
-        "dbname": "mkkidnum", 
-        "host": "pellefant.db.elephantsql.com", 
-        "pass": "wiZq1MPK2RsMXAkH1DFrhCl9HxI5_sxm", 
-        "user": "mkkidnum"
+        "dbname": "", 
+        "host": "", 
+        "pass": "", 
+        "user": ""
     }, 
     "flasksecret": "G>p5+-pYy'Ol9JTkIN\t#XEtB(2Q\u000b,:B\rMzXAXN`f:mEmlwqy|I", 
     "new_package_public": true
