@@ -135,7 +135,15 @@
                 <b>Response</b><br />
                 <ul>
                     <li><span class="label label-warning">JSON</span> <b>ackUUID</b> - String - The uuid of the new package, surrounded by brackets.</li>
-                    <li><span class="label label-warning">JSON</span> <b>error</b> - String - A short message about why the package could not be added (ex: invalid uuid format).</li>
+                    <li><span class="label label-warning">JSON</span> <b>error</b> - String - A short error code about why the package could not be added.<br />
+                        <b>Error Codes:</b>
+                        <ul>
+                            <li><b>INVALID_UUID</b> - The UUID parameter passed to the server was not in the correct format.</li>
+                            <li><b>NO_UUID</b> - No UUID parameter was passed to the server.</li>
+                            <li><b>NO_LATITUDE</b> - No latitude parameter was passed to the server.</li>
+                            <li><b>NO_LONGITUDE</b> - No longitude parameter was passed to the server.</li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
             <li><span class="label label-primary">POST</span> /packagetrackupdate/&lt;uuid&gt;<br />
@@ -145,13 +153,21 @@
                     <li><span class="label label-primary">POST</span> <b>delivered</b> - Boolean - If this variable is set to true, all other options are ignored and the package is marked as delivered.</li>
                     <li><span class="label label-primary">POST</span> <b>lat</b> - Decimal - The current latitude of the package.</li>
                     <li><span class="label label-primary">POST</span> <b>lon</b> - Decimal - The current longitude of the package.</li>
-                    <li><span class="label label-primary">POST</span> <b>ele</b> - Decimal - The current elevation of the package.</li>
-                    <li><span class="label label-primary">POST</span> <b>time</b> - ISO 8601 Format - The time of the GPS update.</li>
+                    <li><span class="label label-primary">POST</span> <b>ele</b> - Decimal - (optional) - The current elevation of the package. This will be set to 0 if no parameter is sent.</li>
+                    <li><span class="label label-primary">POST</span> <b>time</b> - ISO 8601 Format - (optional) - The time of the GPS update. This will be set to the time the API request was received if no parameter is sent.</li>
                 </ul>
                 <b>Response</b><br />
                 <ul>
                     <li><span class="label label-warning">JSON</span> <b>ackUUID</b> - String - The uuid of the new package, surrounded by brackets.</li>
-                    <li><span class="label label-warning">JSON</span> <b>error</b> - String - A short message about why the package could not be added (ex: invalid uuid format).</li>
+                    <li><span class="label label-warning">JSON</span> <b>error</b> - String - A short error code about why the package could not be added.<br />
+                        <b>Error Codes:</b>
+                        <ul>
+                            <li><b>INVALID_UUID</b> - The UUID parameter passed to the server was not in the correct format.</li>
+                            <li><b>NO_UUID</b> - No UUID parameter was passed to the server.</li>
+                            <li><b>NO_LATITUDE</b> - No latitude parameter was passed to the server.</li>
+                            <li><b>NO_LONGITUDE</b> - No longitude parameter was passed to the server.</li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
         </ul>

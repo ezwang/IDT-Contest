@@ -480,10 +480,18 @@ def tracknewpackage():
     if not name:
         name = 'Unnamed Package'
     uuid = request.args.get('uuid')
-    if not uuid or not uuidpattern.match(uuid):
-        return jsonify(**{"error":"Invalid UUID parameter passed to server!"})
-    dLat = float(request.args.get('destinationLat'))
-    dLon = float(request.args.get('destinationLon'))
+    if not uuid:
+        return jsonify(**{"error":"NO_UUID"})
+    if not uuidpattern.match(uuid):
+        return jsonify(**{"error":"INVALID_UUID"})
+    dLat = request.args.get('destinationLat')
+    if not dLat:
+        return jsonify(**{"error":"NO_LATITUDE"})
+    dLat = float(dLat)
+    dLon = request.args.get('destinationLon')
+    if not dLon:
+        return jsonify(**{"error":"NO_LONGITUDE"})
+    dLon = float(dLon)
     cur = conn.cursor()
     cur.execute('INSERT INTO packages (id, name, lat, lng, delivered) VALUES (%s, %s, %s, %s, false)', (uuid, name, dLat, dLon))
     if config["new_package_public"]:
@@ -499,13 +507,14 @@ import re
 
 uuidpattern = re.compile("^[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}$")
 
+import datetime
+
 @app.route('/packagetrackupdate/<uuid>', methods=['POST'])
 def packagetrackupdate(uuid):
     if not uuid:
-        return jsonify(**{"error":"No UUID parameter passed to server!"})
+        return jsonify(**{"error":"NO_UUID"})
     if not uuidpattern.match(uuid):
-        print 'Warning: Received invalid UUID ' + uuid
-        return jsonify(**{"error":"Invalid UUID!"})
+        return jsonify(**{"error":"INVALID_UUID"})
     content = request.get_json()
     if "delivered" in content:
         cur = conn.cursor()
@@ -514,10 +523,17 @@ def packagetrackupdate(uuid):
         socketio.emit('packagedelivered', {'uuid':uuid}, room='admin')
         socketio.emit('packagedelivered', {'uuid':uuid}, room=uuid)
     else:
+        if not 'lat' in content:
+            return jsonify(**{"error":"NO_LATITUDE"})
         lat = float(content['lat'])
+        if not 'lon' in content:
+            return jsonify(**{"error":"NO_LONGITUDE"})
         lon = float(content['lon'])
-        ele = float(content['ele'])
-        time = content['time']
+        ele = float(content['ele'] if 'ele' in content else '0')
+        if not 'time' in content:
+            time = datetime.datetime.now().isoformat()
+        else:
+            time = content['time']
         cur = conn.cursor()
         cur.execute('INSERT INTO steps (id, lat, lng, ele, time) VALUES (%s, %s, %s, %s, %s)', (uuid, lat, lon, ele, time))
         conn.commit()
