@@ -75,10 +75,10 @@ function scrollToPackage(uuid) {
 }
 
 function updatePackageCount() {
-    $("#package_count").text(" (" + $("#list li").length + " total)");
+    $("#package_count").text(" (" + tryLocale($("#list li").length) + " total)");
     $("#list").removeClass("noresults");
     if ($("#list").children("li:hidden").length > 0) {
-        $("#package_count").text(" (" + $("#list li:visible").length + " visible, " + $("#list li").length + " total)");
+        $("#package_count").text(" (" + tryLocale($("#list li:visible").length) + " visible, " + tryLocale($("#list li").length) + " total)");
         if ($("#list li:visible").length == 0) {
             $("#list").addClass("noresults");
         }
@@ -207,6 +207,15 @@ function pad(str, max) {
     return str.length < max ? pad("0" + str, max) : str;
 }
 
+function tryLocale(str) {
+    try {
+        return str.toLocaleString();
+    }
+    catch (err) {
+        return str;
+    }
+}
+
 function updateTimeTaken(uuid, loop) {
     loop = loop || 0;
     if (uuid != trackingUUID) {
@@ -240,10 +249,10 @@ function updateTimeTaken(uuid, loop) {
         total_dist_traveled += distance(lat1, lng1, lat2, lng2);
     }
     if (s_display_units == "km") {
-        $("#packageinfo #ptraveled").text(round(total_dist_traveled, 3).toLocaleString() + " km");
+        $("#packageinfo #ptraveled").text(tryLocale(round(total_dist_traveled, 3)) + " km");
     }
     else {
-        $("#packageinfo #ptraveled").text(round(total_dist_traveled * km_to_mi, 3).toLocaleString() + " mi");
+        $("#packageinfo #ptraveled").text(tryLocale(round(total_dist_traveled * km_to_mi, 3)) + " mi");
     }
     if (mobile) {
         scale_sidebar();
