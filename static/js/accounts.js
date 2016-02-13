@@ -213,10 +213,29 @@ $(document).ready(function() {
             $("#uuid").typeahead('val', '');
         });
     });
-    $("#package-list").on("click", ".fa-times", function() {
+    $("#package-list").on("click", ".package-permission", function(e) {
+        e.preventDefault();
+        if (e.shiftKey) {
+            $(".package-permission.selected:first").nextUntil(this).toggleClass("selected");
+        }
+        $(this).toggleClass("selected");
+        $("#uuid-delete-selected").toggle($(".package-permission.selected").length > 0);
+    });
+    $("#package-list").on("click", ".fa-times", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
         var a = $(this);
         $.getJSON("/accounts/permissions/remove/" + $(this).parent().data("id"), function(data) {
             a.parent().remove();
+        });
+    });
+    $("#uuid-delete-selected").click(function(e) {
+        e.preventDefault();
+        $.each($(".package-permission.selected"), function(k, v) {
+            var a = $(this);
+            $.getJSON("/accounts/permissions/remove/" + a.data("id"), function(data) {
+                a.remove();
+            });
         });
     });
     $("#users tbody").on("click", "tr", function(e) {
